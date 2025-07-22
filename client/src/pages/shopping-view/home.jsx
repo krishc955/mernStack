@@ -1,0 +1,469 @@
+import { Button } from "@/components/ui/button";
+import bannerOne from "../../assets/banner-1.webp";
+import bannerTwo from "../../assets/banner-2.webp";
+import bannerThree from "../../assets/banner-3.webp";
+import {
+  BabyIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  CloudLightning,
+  Images,
+  ShirtIcon,
+  UmbrellaIcon,
+  WatchIcon,
+} from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchAllFilteredProducts,
+  fetchProductDetails,
+} from "@/store/shop/products-slice";
+import ShoppingProductTile from "@/components/shopping-view/product-tile";
+import { useNavigate } from "react-router-dom";
+import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
+import { useToast } from "@/components/ui/use-toast";
+import ProductDetailsDialog from "@/components/shopping-view/product-details";
+import { getFeatureImages } from "@/store/common-slice";
+
+const categoriesWithIcon = [
+  { id: "men", label: "Men", icon: ShirtIcon },
+  { id: "women", label: "Women", icon: CloudLightning },
+  { id: "kids", label: "Kids", icon: BabyIcon },
+  { id: "accessories", label: "Accessories", icon: WatchIcon },
+  { id: "footwear", label: "Footwear", icon: UmbrellaIcon },
+];
+function ShoppingHome() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const [imageColors, setImageColors] = useState({});
+  
+  const { productList, productDetails } = useSelector(
+    (state) => state.shopProducts
+  );
+  const { featureImageList } = useSelector((state) => state.commonFeature);
+
+  const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+
+  const { user } = useSelector((state) => state.auth);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  // Function to extract dominant color from image edges
+  const extractImageEdgeColor = (imageUrl, index) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          // Set canvas size to match image
+          canvas.width = img.width;
+          canvas.height = img.height;
+          
+          // Draw image to canvas
+          ctx.drawImage(img, 0, 0);
+          
+          // Sample pixels from the edges (outer 10% of each side)
+          const edgeWidth = Math.floor(img.width * 0.1);
+          const edgeHeight = Math.floor(img.height * 0.1);
+          
+          const edgePixels = [];
+          
+          // Sample from all four edges
+          // Top edge
+          for (let x = 0; x < img.width; x += 5) {
+            for (let y = 0; y < edgeHeight; y += 2) {
+              const pixelData = ctx.getImageData(x, y, 1, 1).data;
+              edgePixels.push([pixelData[0], pixelData[1], pixelData[2]]);
+            }
+          }
+          
+          // Bottom edge
+          for (let x = 0; x < img.width; x += 5) {
+            for (let y = img.height - edgeHeight; y < img.height; y += 2) {
+              const pixelData = ctx.getImageData(x, y, 1, 1).data;
+              edgePixels.push([pixelData[0], pixelData[1], pixelData[2]]);
+            }
+          }
+          
+          // Left edge
+          for (let x = 0; x < edgeWidth; x += 2) {
+            for (let y = 0; y < img.height; y += 5) {
+              const pixelData = ctx.getImageData(x, y, 1, 1).data;
+              edgePixels.push([pixelData[0], pixelData[1], pixelData[2]]);
+            }
+          }
+          
+          // Right edge
+          for (let x = img.width - edgeWidth; x < img.width; x += 2) {
+            for (let y = 0; y < img.height; y += 5) {
+              const pixelData = ctx.getImageData(x, y, 1, 1).data;
+              edgePixels.push([pixelData[0], pixelData[1], pixelData[2]]);
+            }
+          }
+          
+          // Calculate average color
+          if (edgePixels.length > 0) {
+            const avgColor = edgePixels.reduce(
+              (acc, pixel) => [
+                acc[0] + pixel[0],
+                acc[1] + pixel[1],
+                acc[2] + pixel[2]
+              ],
+              [0, 0, 0]
+            );
+            
+            const finalColor = [
+              Math.floor(avgColor[0] / edgePixels.length),
+              Math.floor(avgColor[1] / edgePixels.length),
+              Math.floor(avgColor[2] / edgePixels.length)
+            ];
+            
+            // Create a gradient from the extracted color
+            const baseColor = `rgb(${finalColor[0]}, ${finalColor[1]}, ${finalColor[2]})`;
+            const lighterColor = `rgb(${Math.min(255, finalColor[0] + 20)}, ${Math.min(255, finalColor[1] + 20)}, ${Math.min(255, finalColor[2] + 20)})`;
+            const darkerColor = `rgb(${Math.max(0, finalColor[0] - 20)}, ${Math.max(0, finalColor[1] - 20)}, ${Math.max(0, finalColor[2] - 20)})`;
+            
+            const gradient = `linear-gradient(135deg, ${lighterColor} 0%, ${baseColor} 50%, ${darkerColor} 100%)`;
+            resolve(gradient);
+          } else {
+            // Fallback gradient
+            resolve('linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)');
+          }
+        } catch (error) {
+          console.error('Error extracting color:', error);
+          // Fallback gradient
+          resolve('linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)');
+        }
+      };
+      
+      img.onerror = () => {
+        // Fallback gradient
+        resolve('linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)');
+      };
+      
+      img.src = imageUrl;
+    });
+  };
+
+  // Extract colors when feature images are loaded
+  useEffect(() => {
+    if (featureImageList && featureImageList.length > 0) {
+      featureImageList.forEach(async (slide, index) => {
+        if (slide?.image && !imageColors[index]) {
+          const color = await extractImageEdgeColor(slide.image, index);
+          setImageColors(prev => ({
+            ...prev,
+            [index]: color
+          }));
+        }
+      });
+    }
+  }, [featureImageList]);
+
+  // Get background for current slide
+  const getCurrentBackground = (index) => {
+    return imageColors[index] || 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)';
+  };
+
+  // Touch handlers for mobile swipe
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      setCurrentSlide((prevSlide) => (prevSlide + 1) % featureImageList.length);
+    }
+    if (isRightSwipe) {
+      setCurrentSlide(
+        (prevSlide) => (prevSlide - 1 + featureImageList.length) % featureImageList.length
+      );
+    }
+  };
+
+  function handleNavigateToListingPage(getCurrentItem, section) {
+    sessionStorage.removeItem("filters");
+    const currentFilter = {
+      [section]: [getCurrentItem.id],
+    };
+
+    sessionStorage.setItem("filters", JSON.stringify(currentFilter));
+    navigate(`/shop/listing`);
+  }
+
+  function handleGetProductDetails(getCurrentProductId) {
+    dispatch(fetchProductDetails(getCurrentProductId));
+  }
+
+  function handleAddtoCart(getCurrentProductId) {
+    dispatch(
+      addToCart({
+        userId: user?.id,
+        productId: getCurrentProductId,
+        quantity: 1,
+      })
+    ).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(fetchCartItems(user?.id));
+        toast({
+          title: "Product is added to cart",
+        });
+      }
+    });
+  }
+
+  useEffect(() => {
+    if (productDetails !== null) setOpenDetailsDialog(true);
+  }, [productDetails]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prevSlide) => (prevSlide + 1) % featureImageList.length);
+    }, 15000);
+
+    return () => clearInterval(timer);
+  }, [featureImageList]);
+
+  useEffect(() => {
+    dispatch(
+      fetchAllFilteredProducts({
+        filterParams: {},
+        sortParams: "price-lowtohigh",
+      })
+    );
+  }, [dispatch]);
+
+  console.log(productList, "productList");
+
+  useEffect(() => {
+    dispatch(getFeatureImages());
+  }, [dispatch]);
+
+  return (
+    <div className="flex flex-col min-h-screen" style={{ backgroundColor: '#faf8f2' }}>
+      {/* Mobile-Responsive Hero Slider with Touch Support - Larger Size */}
+      <div 
+        className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[650px] xl:h-[700px] overflow-hidden select-none group"
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
+        {featureImageList && featureImageList.length > 0
+          ? featureImageList.map((slide, index) => (
+              <div
+                key={index}
+                className={`${
+                  index === currentSlide ? "opacity-100" : "opacity-0"
+                } absolute top-0 left-0 w-full h-full transition-opacity duration-1000 flex items-center justify-center`}
+                style={{
+                  background: getCurrentBackground(index)
+                }}
+              >
+                <img
+                  src={slide?.image}
+                  alt={`Slide ${index + 1}`}
+                  className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+                  loading="lazy"
+                  style={{
+                    filter: 'drop-shadow(0 8px 32px rgba(0,0,0,0.3))',
+                    maxWidth: '98%',
+                    maxHeight: '98%',
+                    minWidth: '70%',
+                    minHeight: '70%'
+                  }}
+                />
+              </div>
+            ))
+          : (
+            /* Fallback when no images */
+            <div className="absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-200 flex items-center justify-center">
+              <div className="text-center text-gray-500">
+                <div className="w-16 h-16 mx-auto mb-4 bg-gray-300 rounded-full flex items-center justify-center">
+                  <Images className="w-8 h-8" />
+                </div>
+                <p className="text-lg font-medium">Welcome to Our Store</p>
+                <p className="text-sm">Discover amazing products</p>
+              </div>
+            </div>
+          )}
+        
+        {/* Navigation Arrows - Brown with translucent background */}
+        {featureImageList && featureImageList.length > 1 && (
+          <>
+            <button
+              onClick={() =>
+                setCurrentSlide(
+                  (prevSlide) =>
+                    (prevSlide - 1 + featureImageList.length) %
+                    featureImageList.length
+                )
+              }
+              className="absolute top-1/2 left-2 md:left-4 transform -translate-y-1/2 w-10 h-10 z-10 flex items-center justify-center transition-all duration-300 hover:scale-125 opacity-0 group-hover:opacity-100 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30"
+            >
+              <ChevronLeftIcon className="w-6 h-6 text-amber-800 drop-shadow-lg hover:text-amber-900 transition-colors duration-200" />
+            </button>
+            <button
+              onClick={() =>
+                setCurrentSlide(
+                  (prevSlide) => (prevSlide + 1) % featureImageList.length
+                )
+              }
+              className="absolute top-1/2 right-2 md:right-4 transform -translate-y-1/2 w-10 h-10 z-10 flex items-center justify-center transition-all duration-300 hover:scale-125 opacity-0 group-hover:opacity-100 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30"
+            >
+              <ChevronRightIcon className="w-6 h-6 text-amber-800 drop-shadow-lg hover:text-amber-900 transition-colors duration-200" />
+            </button>
+          </>
+        )}
+        
+        {/* Slide Indicators - Only show if there are multiple images */}
+        {featureImageList && featureImageList.length > 1 && (
+          <div className="absolute bottom-2 sm:bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-1 sm:space-x-2">
+            {featureImageList && featureImageList.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentSlide(index)}
+                className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
+                  index === currentSlide 
+                    ? 'bg-white shadow-lg' 
+                    : 'bg-white/50 hover:bg-white/75'
+                }`}
+              />
+            ))}
+          </div>
+        )}
+        
+        {/* Swipe indicators for mobile */}
+        <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-black/20 to-transparent pointer-events-none sm:hidden" />
+      </div>
+      {/* Categories Section - Elegant Cream Theme */}
+      <section className="py-12 sm:py-16" style={{ backgroundColor: '#f9f6f0' }}>
+        <div className="container mx-auto px-4 sm:px-6">
+          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8 sm:mb-12 text-amber-900 tracking-tight">
+            Shop by Category
+          </h2>
+          {/* Mobile: Horizontal scroll, Desktop: Grid */}
+          <div className="block sm:hidden">
+            <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+              {categoriesWithIcon.map((categoryItem) => (
+                <Card
+                  key={categoryItem.id}
+                  onClick={() =>
+                    handleNavigateToListingPage(categoryItem, "category")
+                  }
+                  className="cursor-pointer transition-all duration-300 flex-shrink-0 w-36 h-32 border-amber-200 shadow-md hover:shadow-xl hover:-translate-y-1"
+                  style={{ backgroundColor: '#fefbf6' }}
+                >
+                  <CardContent className="flex flex-col items-center justify-center p-4 h-full">
+                    <categoryItem.icon className="w-10 h-10 mb-3 text-amber-700" />
+                    <span className="font-semibold text-sm text-center leading-tight text-amber-900">{categoryItem.label}</span>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+          {/* Desktop: Grid layout */}
+          <div className="hidden sm:grid grid-cols-3 lg:grid-cols-5 gap-6">
+            {categoriesWithIcon.map((categoryItem) => (
+              <Card
+                key={categoryItem.id}
+                onClick={() =>
+                  handleNavigateToListingPage(categoryItem, "category")
+                }
+                className="cursor-pointer transition-all duration-300 h-36 border-amber-200 shadow-md hover:shadow-xl hover:-translate-y-1"
+                style={{ backgroundColor: '#fefbf6' }}
+              >
+                <CardContent className="flex flex-col items-center justify-center p-8 h-full">
+                  <categoryItem.icon className="w-16 h-16 mb-4 text-amber-700" />
+                  <span className="font-semibold text-lg text-amber-900">{categoryItem.label}</span>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Products Section - Elegant Cream Theme */}
+      <section className="py-12 sm:py-16" style={{ backgroundColor: '#f7f4ed' }}>
+        <div className="container mx-auto px-4 sm:px-6">
+          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8 sm:mb-12 text-amber-900 tracking-tight">
+            Featured Products
+          </h2>
+          {/* Always horizontal scroll on all screen sizes with navigation arrows */}
+          <div className="relative group">
+            <div 
+              id="featured-products-scroll" 
+              className="flex gap-4 sm:gap-6 overflow-x-auto pb-4 scrollbar-hide scroll-smooth"
+            >
+              {productList && productList.length > 0
+                ? productList.map((productItem) => (
+                    <div key={productItem._id} className="flex-shrink-0 w-72 sm:w-80">
+                      <ShoppingProductTile
+                        handleGetProductDetails={handleGetProductDetails}
+                        product={productItem}
+                        handleAddtoCart={handleAddtoCart}
+                      />
+                    </div>
+                  ))
+                : null}
+            </div>
+            
+            {/* Navigation Arrows - Brown with translucent background */}
+            {productList && productList.length > 1 && (
+              <>
+                <button
+                  onClick={() => {
+                    const container = document.getElementById('featured-products-scroll');
+                    const scrollAmount = container.querySelector('div').offsetWidth + 24; // card width + gap
+                    container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                  }}
+                  className="absolute left-2 top-1/2 transform -translate-y-1/2 w-8 h-8 z-10 flex items-center justify-center transition-all duration-300 hover:scale-125 opacity-0 group-hover:opacity-100 bg-amber-100/60 backdrop-blur-sm rounded-full hover:bg-amber-100/80"
+                >
+                  <ChevronLeftIcon className="w-5 h-5 text-amber-800 hover:text-amber-900 transition-colors duration-200" />
+                </button>
+                <button
+                  onClick={() => {
+                    const container = document.getElementById('featured-products-scroll');
+                    const scrollAmount = container.querySelector('div').offsetWidth + 24; // card width + gap
+                    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                  }}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 z-10 flex items-center justify-center transition-all duration-300 hover:scale-125 opacity-0 group-hover:opacity-100 bg-amber-100/60 backdrop-blur-sm rounded-full hover:bg-amber-100/80"
+                >
+                  <ChevronRightIcon className="w-5 h-5 text-amber-800 hover:text-amber-900 transition-colors duration-200" />
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      </section>
+
+
+      <ProductDetailsDialog
+        open={openDetailsDialog}
+        setOpen={setOpenDetailsDialog}
+        productDetails={productDetails}
+      />
+    </div>
+  );
+}
+
+export default ShoppingHome;
