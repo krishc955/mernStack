@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 42 25% 97%; /* Light cream background */
+    --foreground: 30 25% 15%; /* Dark brown text */
+    --card: 42 30% 98%; /* Cream card background */
+    --card-foreground: 30 25% 15%; /* Dark brown card text */
+    --popover: 42 30% 98%;
+    --popover-foreground: 30 25% 15%;
+    --primary: 30 50% 25%; /* Rich brown primary */
+    --primary-foreground: 42 30% 95%;
+    --secondary: 35 25% 90%; /* Light warm secondary */
+    --secondary-foreground: 30 25% 15%;
+    --muted: 35 20% 92%; /* Warm muted */
+    --muted-foreground: 30 15% 45%;
+    --accent: 35 30% 88%; /* Warm accent */
+    --accent-foreground: 30 25% 15%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 35 20% 85%; /* Warm border */
+    --input: 35 20% 88%; /* Warm input */
+    --ring: 30 50% 25%;
+    --radius: 0.75rem; /* Slightly more rounded */
+    --chart-1: 25 76% 65%;
+    --chart-2: 35 58% 50%;
+    --chart-3: 40 37% 35%;
+    --chart-4: 30 74% 55%;
+    --chart-5: 20 65% 60%;
+  }
+
+  .dark {
+    --background: 30 25% 8%;
+    --foreground: 42 25% 95%;
+    --card: 30 25% 10%;
+    --card-foreground: 42 25% 95%;
+    --popover: 30 25% 10%;
+    --popover-foreground: 42 25% 95%;
+    --primary: 42 30% 85%;
+    --primary-foreground: 30 25% 15%;
+    --secondary: 30 20% 15%;
+    --secondary-foreground: 42 25% 95%;
+    --muted: 30 15% 18%;
+    --muted-foreground: 42 15% 60%;
+    --accent: 30 20% 18%;
+    --accent-foreground: 42 25% 95%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 30 15% 20%;
+    --input: 30 15% 20%;
+    --ring: 42 30% 85%;
+    --chart-1: 25 65% 55%;
+    --chart-2: 35 48% 40%;
+    --chart-3: 40 27% 25%;
+    --chart-4: 30 64% 45%;
+    --chart-5: 20 55% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Safari and Chrome */
+  }
+  
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+}
