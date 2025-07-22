@@ -116,7 +116,7 @@ function HeaderRightContent() {
   console.log(cartItems, "sangam");
 
   return (
-    <div className="flex lg:items-center lg:flex-row flex-col gap-4 mt-6 pt-6 border-t border-amber-700/30">
+    <div className="flex lg:items-center lg:flex-row lg:gap-3 flex-col gap-4 mt-6 pt-6 border-t border-amber-700/30 lg:mt-0 lg:pt-0 lg:border-t-0">
       {/* Mobile Cart Button in Menu */}
       <div className="lg:hidden">
         <Sheet open={openCartSheet} onOpenChange={() => setOpenCartSheet(false)}>
@@ -147,10 +147,10 @@ function HeaderRightContent() {
             onClick={() => setOpenCartSheet(true)}
             variant="outline"
             size="icon"
-            className="relative bg-amber-200/30 border-amber-400 hover:bg-amber-300/40 text-amber-800 hover:text-amber-900"
+            className="relative bg-amber-200/30 border-amber-400 hover:bg-amber-300/40 text-amber-800 hover:text-amber-900 h-9 w-9"
           >
-            <ShoppingCart className="w-6 h-6" />
-            <span className="absolute top-[-5px] right-[2px] font-bold text-xs bg-orange-600 text-white rounded-full w-5 h-5 flex items-center justify-center">
+            <ShoppingCart className="w-5 h-5" />
+            <span className="absolute -top-2 -right-2 font-bold text-xs bg-orange-600 text-white rounded-full w-5 h-5 flex items-center justify-center">
               {cartItems?.items?.length || 0}
             </span>
             <span className="sr-only">User cart</span>
@@ -206,7 +206,7 @@ function HeaderRightContent() {
         <div className="hidden lg:block">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Avatar className="bg-amber-700 hover:bg-amber-800 transition-colors">
+              <Avatar className="bg-amber-700 hover:bg-amber-800 transition-colors h-9 w-9 cursor-pointer">
                 <AvatarFallback className="bg-amber-700 text-amber-100 font-extrabold">
                   {user?.userName[0].toUpperCase()}
                 </AvatarFallback>
@@ -314,7 +314,7 @@ function ShoppingHeader() {
         </div>
 
         {/* Desktop Right Content */}
-        <div className="hidden lg:block">
+        <div className="hidden lg:flex lg:items-center lg:gap-3">
           <HeaderRightContent />
         </div>
       </div>
