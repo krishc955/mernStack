@@ -16,11 +16,7 @@ export const registerUser = createAsyncThunk(
 
   async (formData) => {
     const response = await axios.post(
-<<<<<<< HEAD
       `${API_BASE_URL}/api/auth/register`,
-=======
-      "http://localhost:5000/api/auth/register",
->>>>>>> e956d4d3cdc8ff2583988fbd9f971bd88e3b278b
       formData,
       {
         withCredentials: true,
@@ -36,7 +32,7 @@ export const loginUser = createAsyncThunk(
 
   async (formData) => {
     const response = await axios.post(
-      "http://localhost:5000/api/auth/login",
+      `${API_BASE_URL}/api/auth/login`,
       formData,
       {
         withCredentials: true,
@@ -52,7 +48,7 @@ export const logoutUser = createAsyncThunk(
 
   async () => {
     const response = await axios.post(
-      "http://localhost:5000/api/auth/logout",
+      `${API_BASE_URL}/api/auth/logout`,
       {},
       {
         withCredentials: true,
@@ -68,7 +64,7 @@ export const checkAuth = createAsyncThunk(
 
   async () => {
     const response = await axios.get(
-      "http://localhost:5000/api/auth/check-auth",
+      `${API_BASE_URL}/api/auth/check-auth`,
       {
         withCredentials: true,
         headers: {

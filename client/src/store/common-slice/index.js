@@ -14,11 +14,7 @@ export const getFeatureImages = createAsyncThunk(
   "/order/getFeatureImages",
   async () => {
     const response = await axios.get(
-<<<<<<< HEAD
       `${API_BASE_URL}/api/common/feature/get`
-=======
-      `http://localhost:5000/api/common/feature/get`
->>>>>>> e956d4d3cdc8ff2583988fbd9f971bd88e3b278b
     );
 
     return response.data;
@@ -29,7 +25,7 @@ export const addFeatureImage = createAsyncThunk(
   "/order/addFeatureImage",
   async (image) => {
     const response = await axios.post(
-      `http://localhost:5000/api/common/feature/add`,
+      `${API_BASE_URL}/api/common/feature/add`,
       { image }
     );
 
@@ -41,7 +37,7 @@ export const deleteFeatureImage = createAsyncThunk(
   "/order/deleteFeatureImage",
   async (id) => {
     const response = await axios.delete(
-      `http://localhost:5000/api/common/feature/delete/${id}`
+      `${API_BASE_URL}/api/common/feature/delete/${id}`
     );
 
     return response.data;
