@@ -1,6 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+<<<<<<< HEAD
 import { API_BASE_URL } from "@/config/api";
+=======
+>>>>>>> e956d4d3cdc8ff2583988fbd9f971bd88e3b278b
 
 const initialState = {
   isAuthenticated: false,
@@ -13,7 +16,11 @@ export const registerUser = createAsyncThunk(
 
   async (formData) => {
     const response = await axios.post(
+<<<<<<< HEAD
       `${API_BASE_URL}/api/auth/register`,
+=======
+      "http://localhost:5000/api/auth/register",
+>>>>>>> e956d4d3cdc8ff2583988fbd9f971bd88e3b278b
       formData,
       {
         withCredentials: true,

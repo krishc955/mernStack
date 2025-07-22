@@ -1,0 +1,11 @@
+[phases.setup]
+npmVersions = ["18.x"]
+
+[phases.install]
+cmds = ["npm ci"]
+
+[phases.build]
+cmds = ["echo 'No build step required'"]
+
+[start]
+cmd = "npm start"

@@ -1,6 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+<<<<<<< HEAD
 import { API_BASE_URL } from "@/config/api";
+=======
+>>>>>>> e956d4d3cdc8ff2583988fbd9f971bd88e3b278b
 
 const initialState = {
   isLoading: false,
@@ -11,7 +14,11 @@ export const getFeatureImages = createAsyncThunk(
   "/order/getFeatureImages",
   async () => {
     const response = await axios.get(
+<<<<<<< HEAD
       `${API_BASE_URL}/api/common/feature/get`
+=======
+      `http://localhost:5000/api/common/feature/get`
+>>>>>>> e956d4d3cdc8ff2583988fbd9f971bd88e3b278b
     );
 
     return response.data;

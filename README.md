@@ -13,6 +13,7 @@ A full-stack e-commerce application built with MongoDB, Express.js, React, and N
 
 ## Deployment
 
+<<<<<<< HEAD
 ### Vercel + Render Deployment
 
 This application is configured for deployment using Vercel (frontend) and Render (backend).
@@ -43,6 +44,24 @@ This application is configured for deployment using Vercel (frontend) and Render
    - **Build Command**: `npm run build`
    - **Output Directory**: `dist`
 4. Add environment variable: `VITE_API_URL=https://your-backend.onrender.com`
+=======
+### Railway Deployment
+
+This application is configured for easy deployment on Railway.
+
+#### Backend Deployment
+1. Create a new Railway project
+2. Connect your GitHub repository
+3. Select the `server` folder
+4. Add environment variables (see .env.example)
+5. Deploy!
+
+#### Frontend Deployment
+1. Add a new service to your Railway project
+2. Connect to the same repository
+3. Select the `client` folder
+4. Set VITE_API_URL to your backend Railway URL
+>>>>>>> e956d4d3cdc8ff2583988fbd9f971bd88e3b278b
 5. Deploy!
 
 ## Local Development
