@@ -51,7 +51,7 @@ function MenuItems({ isMobile = false }) {
   }
 
   return (
-    <nav className={`flex ${isMobile ? 'flex-col mb-6 space-y-4' : 'flex-col mb-3 lg:mb-0 lg:items-center gap-6 lg:flex-row'}`}>
+    <nav className={`flex ${isMobile ? 'flex-col mb-6 space-y-4' : 'flex-col mb-3 lg:mb-0 lg:items-center gap-4 lg:flex-row'}`}>
       {shoppingViewHeaderMenuItems.map((menuItem) => (
         <Label
           onClick={() => handleNavigate(menuItem)}
@@ -304,7 +304,7 @@ function ShoppingHeader() {
         </div>
 
         {/* Desktop Search Bar */}
-        <div className="flex-1 max-w-md mx-8 hidden lg:block">
+        <div className="flex-1 max-w-md mx-4 hidden lg:block">
           <SearchBar />
         </div>
 
@@ -314,7 +314,7 @@ function ShoppingHeader() {
         </div>
 
         {/* Desktop Right Content */}
-        <div className="hidden lg:flex lg:items-center lg:gap-3">
+        <div className="hidden lg:flex lg:items-center lg:gap-3 lg:ml-4">
           <HeaderRightContent />
         </div>
       </div>

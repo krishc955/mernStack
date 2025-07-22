@@ -28,20 +28,46 @@ mongoose
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(
-  cors({
-    origin: process.env.CLIENT_BASE_URL || "http://localhost:5173",
-    methods: ["GET", "POST", "DELETE", "PUT"],
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-      "Cache-Control",
-      "Expires",
-      "Pragma",
-    ],
-    credentials: true,
-  })
-);
+// Configure CORS for both development and production
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      "http://localhost:5173", // Development frontend (Vite default)
+      "http://localhost:3000", // Development frontend (React default)
+      "http://127.0.0.1:5173", // Alternative localhost
+      "http://127.0.0.1:3000", // Alternative localhost
+    ];
+    
+    // Add production URL if it exists in environment
+    if (process.env.CLIENT_BASE_URL) {
+      allowedOrigins.push(process.env.CLIENT_BASE_URL);
+    }
+    
+    console.log('CORS request from origin:', origin);
+    console.log('Allowed origins:', allowedOrigins);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.warn(`CORS blocked request from origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ["GET", "POST", "DELETE", "PUT"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "Cache-Control",
+    "Expires",
+    "Pragma",
+  ],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 app.use(cookieParser());
 app.use(express.json());
