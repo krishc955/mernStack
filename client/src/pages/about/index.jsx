@@ -5,7 +5,7 @@ function AboutUs() {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-extrabold text-amber-900 mb-4 tracking-tight">
-            About StyleHub
+            About Vinora
           </h1>
           <p className="text-lg text-amber-700/80 font-medium max-w-2xl mx-auto leading-relaxed">
             Your trusted partner in fashion and lifestyle since our founding.
@@ -19,7 +19,7 @@ function AboutUs() {
             <section>
               <h2 className="text-2xl font-bold text-amber-900 mb-4 tracking-tight">Our Story</h2>
               <p className="text-amber-700/85 leading-relaxed font-medium mb-4">
-                StyleHub was born from a simple belief: everyone deserves access to premium fashion and lifestyle products 
+                Vinora was born from a simple belief: everyone deserves access to premium fashion and lifestyle products 
                 that blend style, quality, and affordability. Founded with a vision to revolutionize the online shopping 
                 experience in India, we've grown from a small startup to a trusted name in e-commerce.
               </p>
@@ -72,7 +72,7 @@ function AboutUs() {
 
             {/* Why Choose Us */}
             <section>
-              <h2 className="text-2xl font-bold text-amber-900 mb-4 tracking-tight">Why Choose StyleHub?</h2>
+              <h2 className="text-2xl font-bold text-amber-900 mb-4 tracking-tight">Why Choose Vinora?</h2>
               <div className="space-y-4">
                 <div className="flex items-start space-x-3">
                   <div className="w-2 h-2 bg-amber-600 rounded-full mt-2 flex-shrink-0"></div>

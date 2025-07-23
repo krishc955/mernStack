@@ -58,8 +58,8 @@ function Contact() {
                 <div>
                   <h3 className="font-bold text-amber-900 mb-2">Email Us</h3>
                   <p className="text-amber-700/85 font-medium">
-                    info@stylehub.com<br />
-                    support@stylehub.com
+                    info@vinora.com<br />
+                    support@vinora.com
                   </p>
                 </div>
               </div>

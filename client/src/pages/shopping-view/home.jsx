@@ -216,6 +216,22 @@ function ShoppingHome() {
   }
 
   function handleAddtoCart(getCurrentProductId) {
+    if (!user?.id) {
+      toast({
+        title: "Please login to add items to cart",
+        action: (
+          <Button
+            onClick={() => navigate("/auth/login")}
+            variant="outline"
+            size="sm"
+          >
+            Login
+          </Button>
+        ),
+      });
+      return;
+    }
+
     dispatch(
       addToCart({
         userId: user?.id,
@@ -355,10 +371,10 @@ function ShoppingHome() {
         {/* Swipe indicators for mobile */}
         <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-black/20 to-transparent pointer-events-none sm:hidden" />
       </div>
-      {/* Categories Section - Elegant Cream Theme */}
-      <section className="py-12 sm:py-16" style={{ backgroundColor: '#f9f6f0' }}>
+      {/* Categories Section - Elegant Brown-Beige Theme */}
+      <section className="py-12 sm:py-16 bg-beige-200">
         <div className="container mx-auto px-4 sm:px-6">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8 sm:mb-12 text-amber-900 tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8 sm:mb-12 text-brown-800 tracking-tight">
             Shop by Category
           </h2>
           {/* Mobile: Horizontal scroll, Desktop: Grid */}
@@ -370,12 +386,11 @@ function ShoppingHome() {
                   onClick={() =>
                     handleNavigateToListingPage(categoryItem, "category")
                   }
-                  className="cursor-pointer transition-all duration-300 flex-shrink-0 w-36 h-32 border-amber-200 shadow-md hover:shadow-xl hover:-translate-y-1"
-                  style={{ backgroundColor: '#fefbf6' }}
+                  className="cursor-pointer transition-all duration-300 flex-shrink-0 w-36 h-32 bg-white border-beige-300 shadow-md hover:shadow-xl hover:-translate-y-1 hover:bg-beige-50"
                 >
                   <CardContent className="flex flex-col items-center justify-center p-4 h-full">
-                    <categoryItem.icon className="w-10 h-10 mb-3 text-amber-700" />
-                    <span className="font-semibold text-sm text-center leading-tight text-amber-900">{categoryItem.label}</span>
+                    <categoryItem.icon className="w-10 h-10 mb-3 text-brown-700" />
+                    <span className="font-semibold text-sm text-center leading-tight text-brown-800">{categoryItem.label}</span>
                   </CardContent>
                 </Card>
               ))}
@@ -389,12 +404,11 @@ function ShoppingHome() {
                 onClick={() =>
                   handleNavigateToListingPage(categoryItem, "category")
                 }
-                className="cursor-pointer transition-all duration-300 h-36 border-amber-200 shadow-md hover:shadow-xl hover:-translate-y-1"
-                style={{ backgroundColor: '#fefbf6' }}
+                className="cursor-pointer transition-all duration-300 h-36 bg-white border-beige-300 shadow-md hover:shadow-xl hover:-translate-y-1 hover:bg-beige-50"
               >
                 <CardContent className="flex flex-col items-center justify-center p-8 h-full">
-                  <categoryItem.icon className="w-16 h-16 mb-4 text-amber-700" />
-                  <span className="font-semibold text-lg text-amber-900">{categoryItem.label}</span>
+                  <categoryItem.icon className="w-16 h-16 mb-4 text-brown-700" />
+                  <span className="font-semibold text-lg text-brown-800">{categoryItem.label}</span>
                 </CardContent>
               </Card>
             ))}
@@ -402,10 +416,10 @@ function ShoppingHome() {
         </div>
       </section>
 
-      {/* Featured Products Section - Elegant Cream Theme */}
-      <section className="py-12 sm:py-16" style={{ backgroundColor: '#f7f4ed' }}>
+      {/* Featured Products Section - Brown-Beige Theme */}
+      <section className="py-12 sm:py-16 bg-beige-100">
         <div className="container mx-auto px-4 sm:px-6">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8 sm:mb-12 text-amber-900 tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8 sm:mb-12 text-brown-800 tracking-tight">
             Featured Products
           </h2>
           {/* Always horizontal scroll on all screen sizes with navigation arrows */}
@@ -420,7 +434,6 @@ function ShoppingHome() {
                       <ShoppingProductTile
                         handleGetProductDetails={handleGetProductDetails}
                         product={productItem}
-                        handleAddtoCart={handleAddtoCart}
                       />
                     </div>
                   ))

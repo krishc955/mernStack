@@ -36,8 +36,10 @@ const corsOptions = {
     
     const allowedOrigins = [
       "http://localhost:5173", // Development frontend (Vite default)
+      "http://localhost:5175", // Development frontend (Vite alternative)
       "http://localhost:3000", // Development frontend (React default)
       "http://127.0.0.1:5173", // Alternative localhost
+      "http://127.0.0.1:5175", // Alternative localhost
       "http://127.0.0.1:3000", // Alternative localhost
     ];
     

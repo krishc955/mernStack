@@ -19,9 +19,9 @@ function ShoppingOrderDetailsView({ orderDetails }) {
             <p className="font-medium">Order Date</p>
             <Label>{orderDetails?.orderDate.split("T")[0]}</Label>
           </div>
-          <div className="flex mt-2 items-center justify-between">
-            <p className="font-medium">Order Price</p>
-            <Label>${orderDetails?.totalAmount}</Label>
+                    <div className="flex justify-between">
+            <span className="font-medium">Total Amount</span>
+            <Label>₹{orderDetails?.totalAmount?.toLocaleString('en-IN')}</Label>
           </div>
           <div className="flex mt-2 items-center justify-between">
             <p className="font-medium">Payment method</p>
@@ -58,7 +58,7 @@ function ShoppingOrderDetailsView({ orderDetails }) {
                     <li className="flex items-center justify-between">
                       <span>Title: {item.title}</span>
                       <span>Quantity: {item.quantity}</span>
-                      <span>Price: ${item.price}</span>
+                      <span>Price: ₹{item.price?.toLocaleString('en-IN')}</span>
                     </li>
                   ))
                 : null}

@@ -1,5 +1,6 @@
 import ProductDetailsDialog from "@/components/shopping-view/product-details";
 import ShoppingProductTile from "@/components/shopping-view/product-tile";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
@@ -10,13 +11,14 @@ import {
 } from "@/store/shop/search-slice";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 function SearchProducts() {
   const [keyword, setKeyword] = useState("");
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { searchResults } = useSelector((state) => state.shopSearch);
   const { productDetails } = useSelector((state) => state.shopProducts);
 
@@ -37,6 +39,22 @@ function SearchProducts() {
   }, [keyword]);
 
   function handleAddtoCart(getCurrentProductId, getTotalStock) {
+    if (!user?.id) {
+      toast({
+        title: "Please login to add items to cart",
+        action: (
+          <Button
+            onClick={() => navigate("/auth/login")}
+            variant="outline"
+            size="sm"
+          >
+            Login
+          </Button>
+        ),
+      });
+      return;
+    }
+
     console.log(cartItems);
     let getCartItems = cartItems.items || [];
 
@@ -103,7 +121,6 @@ function SearchProducts() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
         {searchResults.map((item) => (
           <ShoppingProductTile
-            handleAddtoCart={handleAddtoCart}
             product={item}
             handleGetProductDetails={handleGetProductDetails}
           />

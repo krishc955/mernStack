@@ -26,7 +26,7 @@ import {
 import { ArrowUpDownIcon, Filter } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 function createSearchParamsHelper(filterParams) {
   const queryParams = [];
@@ -46,6 +46,7 @@ function createSearchParamsHelper(filterParams) {
 
 function ShoppingListing() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { productList, productDetails } = useSelector(
     (state) => state.shopProducts
   );
@@ -97,6 +98,22 @@ function ShoppingListing() {
   }
 
   function handleAddtoCart(getCurrentProductId, getTotalStock) {
+    if (!user?.id) {
+      toast({
+        title: "Please login to add items to cart",
+        action: (
+          <Button
+            onClick={() => navigate("/auth/login")}
+            variant="outline"
+            size="sm"
+          >
+            Login
+          </Button>
+        ),
+      });
+      return;
+    }
+
     console.log(cartItems);
     let getCartItems = cartItems.items || [];
 
@@ -226,7 +243,6 @@ function ShoppingListing() {
                   key={productItem._id}
                   handleGetProductDetails={handleGetProductDetails}
                   product={productItem}
-                  handleAddtoCart={handleAddtoCart}
                 />
               ))
             : null}

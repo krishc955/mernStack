@@ -109,11 +109,11 @@ function CommonForm({
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
-      <div className="grid gap-4 sm:gap-6">
+    <form onSubmit={onSubmit} className="space-y-6">
+      <div className="space-y-5">
         {formControls.map((controlItem) => (
           <div className="space-y-2" key={controlItem.name}>
-            <Label className="text-sm font-medium text-gray-700">
+            <Label className="text-sm font-semibold text-gray-700 tracking-wide">
               {controlItem.label}
             </Label>
             <div className="relative">
@@ -122,11 +122,11 @@ function CommonForm({
           </div>
         ))}
       </div>
-      <div className="pt-4 border-t">
+      <div className="pt-2">
         <Button 
           disabled={isBtnDisabled} 
           type="submit" 
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg hover:shadow-xl"
         >
           {buttonText || "Submit"}
         </Button>

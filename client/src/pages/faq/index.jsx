@@ -26,7 +26,7 @@ function FAQ() {
     },
     {
       question: "How do I contact customer support?",
-      answer: "You can reach us via phone at +91 98765 43210, email at support@stylehub.com, or use our live chat feature. We're available Mon-Sat, 9 AM to 7 PM."
+      answer: "You can reach us via phone at +91 98765 43210, email at support@vinora.com, or use our live chat feature. We're available Mon-Sat, 9 AM to 7 PM."
     },
     {
       question: "Can I modify or cancel my order?",

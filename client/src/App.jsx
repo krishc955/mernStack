@@ -38,7 +38,7 @@ function App() {
   console.log(isLoading, user);
 
   return (
-    <div className="flex flex-col overflow-hidden bg-white">
+    <div className="flex flex-col overflow-hidden bg-white no-horizontal-scroll container-safe">
       <Routes>
         <Route
           path="/"

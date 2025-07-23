@@ -30,9 +30,9 @@ function UserCartWrapper({ cartItems, setOpenCartSheet }) {
           : null}
       </div>
       <div className="mt-8 space-y-4">
-        <div className="flex justify-between">
-          <span className="font-bold">Total</span>
-          <span className="font-bold">${totalCartAmount}</span>
+                <div className="flex items-center justify-between">
+          <span className="font-medium text-muted-foreground">Total</span>
+          <span className="font-bold">₹{totalCartAmount?.toLocaleString('en-IN')}</span>
         </div>
       </div>
       <Button

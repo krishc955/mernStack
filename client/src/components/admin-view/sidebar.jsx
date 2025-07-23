@@ -41,7 +41,7 @@ function MenuItems({ setOpen }) {
             navigate(menuItem.path);
             setOpen ? setOpen(false) : null;
           }}
-          className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-900 active:bg-gray-200"
+          className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-brown-700 transition-all hover:bg-beige-100 hover:text-brown-800 active:bg-beige-200"
         >
           <div className="flex-shrink-0">
             {menuItem.icon}
@@ -63,9 +63,9 @@ function AdminSideBar({ open, setOpen }) {
         <SheetContent side="left" className="w-80 p-0 bg-white">
           <div className="flex flex-col h-full">
             {/* Mobile Header */}
-            <div className="flex items-center gap-3 px-6 py-4 border-b bg-gray-50">
-              <ChartNoAxesCombined size={24} className="text-blue-600" />
-              <h1 className="text-xl font-bold text-gray-900">Admin Panel</h1>
+            <div className="flex items-center gap-3 px-6 py-4 border-b bg-beige-100">
+              <ChartNoAxesCombined size={24} className="text-brown-600" />
+              <h1 className="text-xl font-bold text-brown-800">Admin Panel</h1>
             </div>
             
             {/* Mobile Menu Items */}
@@ -74,8 +74,8 @@ function AdminSideBar({ open, setOpen }) {
             </div>
             
             {/* Mobile Footer */}
-            <div className="p-4 border-t bg-gray-50">
-              <p className="text-xs text-gray-500 text-center">Admin Dashboard v2.0</p>
+            <div className="p-4 border-t bg-beige-100">
+              <p className="text-xs text-brown-600 text-center">Admin Dashboard v2.0</p>
             </div>
           </div>
         </SheetContent>
@@ -89,12 +89,12 @@ function AdminSideBar({ open, setOpen }) {
             onClick={() => navigate("/admin/dashboard")}
             className="flex cursor-pointer items-center gap-3 hover:opacity-80 transition-opacity"
           >
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <ChartNoAxesCombined size={20} className="text-blue-600" />
+            <div className="p-2 bg-brown-100 rounded-lg">
+              <ChartNoAxesCombined size={20} className="text-brown-600" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-gray-900">Admin Panel</h1>
-              <p className="text-xs text-gray-500">Management System</p>
+              <h1 className="text-lg font-bold text-brown-800">Admin Panel</h1>
+              <p className="text-xs text-brown-600">Management System</p>
             </div>
           </div>
         </div>
@@ -106,7 +106,7 @@ function AdminSideBar({ open, setOpen }) {
 
         {/* Desktop Footer */}
         <div className="p-4 border-t">
-          <p className="text-xs text-gray-400 text-center">v2.0.0</p>
+          <p className="text-xs text-brown-500 text-center">v2.0.0</p>
         </div>
       </aside>
     </Fragment>

@@ -12,12 +12,14 @@ import { Label } from "../ui/label";
 import StarRatingComponent from "../common/star-rating";
 import { useEffect, useState } from "react";
 import { addReview, getReviews } from "@/store/shop/review-slice";
+import { useNavigate } from "react-router-dom";
 
 function ProductDetailsDialog({ open, setOpen, productDetails }) {
   const [reviewMsg, setReviewMsg] = useState("");
   const [rating, setRating] = useState(0);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shopCart);
   const { reviews } = useSelector((state) => state.shopReview);
@@ -55,6 +57,22 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
   }
 
   function handleAddToCart(getCurrentProductId, getTotalStock) {
+    if (!user?.id) {
+      toast({
+        title: "Please login to add items to cart",
+        action: (
+          <Button
+            onClick={() => navigate("/auth/login")}
+            variant="outline"
+            size="sm"
+          >
+            Login
+          </Button>
+        ),
+      });
+      return;
+    }
+
     let getCartItems = cartItems.items || [];
 
     if (getCartItems.length) {

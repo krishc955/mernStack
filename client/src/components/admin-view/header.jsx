@@ -12,14 +12,14 @@ function AdminHeader({ setOpen }) {
   }
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+    <header className="sticky top-0 z-40 w-full border-b border-beige-300 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
       <div className="flex h-14 items-center justify-between px-4 sm:px-6">
         {/* Mobile Menu Button */}
         <Button 
           onClick={() => setOpen(true)} 
           variant="ghost"
           size="sm"
-          className="lg:hidden hover:bg-gray-100 p-2"
+          className="lg:hidden hover:bg-beige-100 p-2"
         >
           <AlignJustify className="h-5 w-5" />
           <span className="sr-only">Toggle Menu</span>
@@ -27,18 +27,18 @@ function AdminHeader({ setOpen }) {
 
         {/* Desktop Brand/Title */}
         <div className="hidden lg:flex items-center space-x-2">
-          <h1 className="text-lg font-semibold text-gray-900">Admin Dashboard</h1>
+          <h1 className="text-lg font-semibold text-brown-800">Admin Dashboard</h1>
         </div>
 
         {/* Mobile Brand */}
         <div className="flex lg:hidden">
-          <h1 className="text-base font-semibold text-gray-900">Admin</h1>
+          <h1 className="text-base font-semibold text-brown-800">Admin</h1>
         </div>
 
         {/* Right Side - User Info & Logout */}
         <div className="flex items-center space-x-2 sm:space-x-4">
           {/* User Profile (Hidden on mobile) */}
-          <div className="hidden md:flex items-center space-x-2 text-sm text-gray-600">
+          <div className="hidden md:flex items-center space-x-2 text-sm text-brown-700">
             <User className="h-4 w-4" />
             <span className="max-w-32 truncate">{user?.userName || 'Admin'}</span>
           </div>
@@ -47,7 +47,7 @@ function AdminHeader({ setOpen }) {
           <Button
             variant="ghost"
             size="sm"
-            className="hidden sm:flex hover:bg-gray-100 p-2"
+            className="hidden sm:flex hover:bg-beige-100 p-2"
           >
             <Settings className="h-4 w-4" />
           </Button>
@@ -57,7 +57,7 @@ function AdminHeader({ setOpen }) {
             onClick={handleLogout}
             variant="outline"
             size="sm"
-            className="flex items-center space-x-2 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors"
+            className="flex items-center space-x-2 hover:bg-error-50 hover:text-error-600 hover:border-error-200 transition-colors"
           >
             <LogOut className="h-4 w-4" />
             <span className="hidden sm:inline">Logout</span>
