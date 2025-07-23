@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 // Script to copy Vinora logo as favicon
 console.log('🎨 Setting up Vinora favicon...');
 
-const logoPath = path.join(__dirname, 'src', 'assets', 'img.png');
+const logoPath = path.join(__dirname, 'src', 'assets', 'vinora-logo.png');
 const faviconPath = path.join(__dirname, 'public', 'favicon.png');
 
 try {

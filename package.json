@@ -1,0 +1,45 @@
+{
+  "name": "mern-ecommerce-2024",
+  "version": "1.0.0",
+  "description": "A full-stack MERN ecommerce application with React frontend and Node.js backend",
+  "main": "server/server.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
+    "start": "npm run server:start",
+    "server:dev": "cd server && npm run dev",
+    "server:start": "cd server && npm start",
+    "client:dev": "cd client && npm run dev",
+    "client:build": "cd client && npm run build",
+    "client:preview": "cd client && npm run preview",
+    "install:all": "npm install && cd server && npm install && cd ../client && npm install",
+    "build": "cd client && npm run build",
+    "heroku-postbuild": "cd client && npm install && npm run build"
+  },
+  "keywords": [
+    "mern",
+    "ecommerce",
+    "react",
+    "node",
+    "express",
+    "mongodb",
+    "full-stack",
+    "online-store"
+  ],
+  "author": "Vinora Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/krishc955/mernStack.git"
+  },
+  "bugs": {
+    "url": "https://github.com/krishc955/mernStack/issues"
+  },
+  "homepage": "https://vinora.royalappleshimla.com"
+}
