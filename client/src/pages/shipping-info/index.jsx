@@ -1,3 +1,5 @@
+import React from 'react';
+
 function ShippingInfo() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#faf8f2' }}>

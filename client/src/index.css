@@ -63,21 +63,25 @@
   * {
     @apply border-border;
     max-width: 100vw; /* Prevent elements from exceeding viewport width */
+    box-sizing: border-box;
   }
   body {
     @apply bg-background text-foreground;
     overflow-x: hidden; /* Prevent horizontal scroll on body */
     width: 100vw; /* Ensure body doesn't exceed viewport */
+    max-width: 100vw;
   }
   html {
     overflow-x: hidden; /* Prevent horizontal scroll on html */
     width: 100vw; /* Ensure html doesn't exceed viewport */
+    max-width: 100vw;
   }
   
   /* Prevent any element from causing horizontal scroll */
   #root {
     overflow-x: hidden;
     width: 100vw;
+    max-width: 100vw;
   }
 }
 
@@ -130,11 +134,51 @@
     box-sizing: border-box;
   }
   
+  /* Header specific fixes */
+  header {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box;
+  }
+  
+  header * {
+    box-sizing: border-box;
+  }
+  
+  /* Prevent any header element from causing overflow */
+  header img {
+    max-width: none;
+    height: auto;
+  }
+  
+  /* Fix flexbox overflow issues */
+  .flex-shrink-0 {
+    flex-shrink: 0;
+  }
+  
+  /* Ensure navigation doesn't overflow */
+  nav {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  /* Brands scroll container - allow horizontal scroll */
+  #brands-scroll-container {
+    overflow-x: auto !important;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  #brands-scroll-container::-webkit-scrollbar {
+    display: none;
+  }
+  
   .line-clamp-2 {
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
   }
 
   /* Enhanced gradient utilities */

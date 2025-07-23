@@ -23,6 +23,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import PaypalReturnPage from "./pages/shopping-view/paypal-return";
 import PaymentSuccessPage from "./pages/shopping-view/payment-success";
 import SearchProducts from "./pages/shopping-view/search";
+import AboutUs from "./pages/about/index.jsx";
+import Contact from "./pages/contact/index.jsx";
+import FAQ from "./pages/faq/index.jsx";
+import ShippingInfo from "./pages/shipping-info/index.jsx";
+import Returns from "./pages/returns/index.jsx";
+import SizeGuide from "./pages/size-guide/index.jsx";
 
 function App() {
   const { user, isAuthenticated, isLoading } = useSelector(
@@ -91,6 +97,27 @@ function App() {
           <Route path="payment-success" element={<PaymentSuccessPage />} />
           <Route path="search" element={<SearchProducts />} />
         </Route>
+        
+        {/* Public Pages - With Shopping Layout (Header & Footer) */}
+        <Route path="/about" element={<ShoppingLayout />}>
+          <Route index element={<AboutUs />} />
+        </Route>
+        <Route path="/contact" element={<ShoppingLayout />}>
+          <Route index element={<Contact />} />
+        </Route>
+        <Route path="/faq" element={<ShoppingLayout />}>
+          <Route index element={<FAQ />} />
+        </Route>
+        <Route path="/shipping" element={<ShoppingLayout />}>
+          <Route index element={<ShippingInfo />} />
+        </Route>
+        <Route path="/returns" element={<ShoppingLayout />}>
+          <Route index element={<Returns />} />
+        </Route>
+        <Route path="/size-guide" element={<ShoppingLayout />}>
+          <Route index element={<SizeGuide />} />
+        </Route>
+        
         <Route path="/unauth-page" element={<UnauthPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

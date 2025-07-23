@@ -1,3 +1,5 @@
+import React from 'react';
+
 function Contact() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#faf8f2' }}>

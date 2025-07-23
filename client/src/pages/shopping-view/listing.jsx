@@ -179,17 +179,17 @@ function ShoppingListing() {
   return (
     <div className="grid grid-cols-1 gap-6 p-4 md:p-6">
       <SEOHead 
-        title={`${filters?.category ? filters.category.charAt(0).toUpperCase() + filters.category.slice(1) + ' Products - ' : ''}Shop Premium Products at Vinora | Best Online Store India`}
-        description={`Discover ${filters?.category ? filters.category + ' ' : ''}premium products at Vinora. Shop quality ${filters?.category || 'items'} with fast delivery, secure payments & authentic brands. Free shipping across India.`}
-        keywords={`Vinora ${filters?.category || 'products'}, online shopping India, ${filters?.category || 'premium products'}, buy ${filters?.category || 'products'} online, ecommerce store, quality products, secure shopping`}
-        canonicalUrl={`https://vinora.royalappleshimla.com/shop/listing${filters?.category ? '?category=' + filters.category : ''}`}
+        title={`${filters?.category && Array.isArray(filters.category) && filters.category.length > 0 ? filters.category[0].charAt(0).toUpperCase() + filters.category[0].slice(1) + ' Products - ' : ''}Shop Premium Products at Vinora | Best Online Store India`}
+        description={`Discover ${filters?.category && Array.isArray(filters.category) && filters.category.length > 0 ? filters.category[0] + ' ' : ''}premium products at Vinora. Shop quality ${filters?.category && Array.isArray(filters.category) && filters.category.length > 0 ? filters.category[0] : 'items'} with fast delivery, secure payments & authentic brands. Free shipping across India.`}
+        keywords={`Vinora ${filters?.category && Array.isArray(filters.category) && filters.category.length > 0 ? filters.category[0] : 'products'}, online shopping India, ${filters?.category && Array.isArray(filters.category) && filters.category.length > 0 ? filters.category[0] : 'premium products'}, buy ${filters?.category && Array.isArray(filters.category) && filters.category.length > 0 ? filters.category[0] : 'products'} online, ecommerce store, quality products, secure shopping`}
+        canonicalUrl={`https://vinora.royalappleshimla.com/shop/listing${filters?.category && Array.isArray(filters.category) && filters.category.length > 0 ? '?category=' + filters.category[0] : ''}`}
         ogImage="https://vinora.royalappleshimla.com/vinora-logo.png"
         structuredData={{
           "@context": "https://schema.org",
           "@type": "CollectionPage",
-          "name": `${filters?.category ? filters.category.charAt(0).toUpperCase() + filters.category.slice(1) + ' ' : ''}Products - Vinora`,
-          "description": `Browse ${filters?.category ? filters.category + ' ' : ''}products at Vinora, India's trusted online store`,
-          "url": `https://vinora.royalappleshimla.com/shop/listing${filters?.category ? '?category=' + filters.category : ''}`,
+          "name": `${filters?.category && Array.isArray(filters.category) && filters.category.length > 0 ? filters.category[0].charAt(0).toUpperCase() + filters.category[0].slice(1) + ' ' : ''}Products - Vinora`,
+          "description": `Browse ${filters?.category && Array.isArray(filters.category) && filters.category.length > 0 ? filters.category[0] + ' ' : ''}products at Vinora, India's trusted online store`,
+          "url": `https://vinora.royalappleshimla.com/shop/listing${filters?.category && Array.isArray(filters.category) && filters.category.length > 0 ? '?category=' + filters.category[0] : ''}`,
           "mainEntity": {
             "@type": "ItemList",
             "numberOfItems": productList?.length || 0,

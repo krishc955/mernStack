@@ -52,13 +52,13 @@ function MenuItems({ isMobile = false }) {
   }
 
   return (
-    <nav className={`flex ${isMobile ? 'flex-col mb-4 space-y-3 no-horizontal-scroll max-w-full' : 'flex-col mb-3 lg:mb-0 lg:items-center gap-4 lg:flex-row'}`}>
+    <nav className={`flex ${isMobile ? 'flex-col mb-4 space-y-3 max-w-full overflow-hidden' : 'flex-col mb-3 lg:mb-0 lg:items-center gap-4 lg:flex-row'}`}>
       {shoppingViewHeaderMenuItems.map((menuItem) => (
         <Label
           onClick={() => handleNavigate(menuItem)}
           className={`${isMobile 
             ? 'text-sm font-semibold cursor-pointer text-beige-100 hover:text-white bg-brown-600/40 hover:bg-brown-500/50 px-3 py-2 rounded-lg transition-all duration-200 border border-brown-500/40 hover:border-brown-400/60 max-w-full overflow-hidden whitespace-nowrap text-ellipsis' 
-            : 'text-sm font-medium cursor-pointer text-beige-100 hover:text-white transition-colors px-3 py-2 rounded-lg hover:bg-brown-600/30'
+            : 'text-sm font-medium cursor-pointer text-beige-100 hover:text-white transition-colors px-3 py-2 rounded-lg hover:bg-brown-600/30 whitespace-nowrap'
           }`}
           key={menuItem.id}
         >
@@ -119,19 +119,19 @@ function HeaderRightContent() {
   // If user is not authenticated, show login/register buttons
   if (!isAuthenticated) {
     return (
-      <div className="flex lg:items-center lg:flex-row lg:gap-3 flex-col gap-3 mt-4 pt-4 border-t border-brown-600/30 lg:mt-0 lg:pt-0 lg:border-t-0 no-horizontal-scroll max-w-full">
+      <div className="flex lg:items-center lg:flex-row lg:gap-3 flex-col gap-3 mt-4 pt-4 border-t border-brown-600/30 lg:mt-0 lg:pt-0 lg:border-t-0 max-w-full overflow-hidden">
         <div className="flex flex-col lg:flex-row gap-2 max-w-full">
           <Button 
             onClick={() => navigate("/auth/login")} 
             variant="outline"
-            className="bg-brand-600 border-brand-700 hover:bg-brand-700 text-white hover:text-white font-semibold py-2 transition-all duration-200"
+            className="bg-brand-600 border-brand-700 hover:bg-brand-700 text-white hover:text-white font-semibold py-2 transition-all duration-200 whitespace-nowrap"
           >
             Login
           </Button>
           <Button 
             onClick={() => navigate("/auth/register")} 
             variant="outline"
-            className="bg-transparent border-brand-400 hover:bg-brand-600/20 text-beige-100 hover:text-white font-semibold py-2 transition-all duration-200"
+            className="bg-transparent border-brand-400 hover:bg-brand-600/20 text-beige-100 hover:text-white font-semibold py-2 transition-all duration-200 whitespace-nowrap"
           >
             Register
           </Button>
@@ -143,7 +143,7 @@ function HeaderRightContent() {
   console.log(cartItems, "sangam");
 
   return (
-    <div className="flex lg:items-center lg:flex-row lg:gap-3 flex-col gap-3 mt-4 pt-4 border-t border-brown-600/30 lg:mt-0 lg:pt-0 lg:border-t-0 no-horizontal-scroll max-w-full">
+    <div className="flex lg:items-center lg:flex-row lg:gap-3 flex-col gap-3 mt-4 pt-4 border-t border-brown-600/30 lg:mt-0 lg:pt-0 lg:border-t-0 max-w-full overflow-hidden">
       {/* Mobile Cart Button in Menu */}
       <div className="lg:hidden max-w-full">
         <Sheet open={openCartSheet} onOpenChange={() => setOpenCartSheet(false)}>
@@ -151,7 +151,7 @@ function HeaderRightContent() {
             onClick={() => setOpenCartSheet(true)}
             variant="outline"
             size="default"
-            className="w-full relative bg-brown-600/20 border-brown-400 hover:bg-brown-500/30 text-beige-100 hover:text-white font-semibold py-2 transition-all duration-200 max-w-full overflow-hidden"
+            className="w-full relative bg-brown-600/20 border-brown-400 hover:bg-brown-500/30 text-beige-100 hover:text-white font-semibold py-2 transition-all duration-200 max-w-full overflow-hidden whitespace-nowrap"
           >
             <ShoppingCart className="w-5 h-5 mr-2" />
             View Cart ({cartItems?.items?.length || 0} items)
@@ -194,7 +194,7 @@ function HeaderRightContent() {
       </div>
 
       {/* User Profile Section */}
-      <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3 max-w-full no-horizontal-scroll">
+      <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3 max-w-full overflow-hidden">
         <div className="lg:hidden bg-brown-600/30 border border-brown-500/40 rounded-lg p-2 max-w-full overflow-hidden">
           <div className="flex items-center gap-2 max-w-full overflow-hidden">
             <Avatar className="bg-beige-600 hover:bg-beige-500 transition-colors h-8 w-8 flex-shrink-0">
@@ -202,7 +202,7 @@ function HeaderRightContent() {
                 {user?.userName[0].toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <div className="overflow-hidden flex-1">
+            <div className="overflow-hidden flex-1 min-w-0">
               <p className="text-beige-100 font-semibold text-sm truncate">{user?.userName}</p>
               <p className="text-beige-200 text-xs truncate">Welcome back!</p>
             </div>
@@ -210,11 +210,11 @@ function HeaderRightContent() {
         </div>
 
         {/* Mobile Menu Actions */}
-        <div className="lg:hidden space-y-2 max-w-full no-horizontal-scroll">
+        <div className="lg:hidden space-y-2 max-w-full overflow-hidden">
           <Button 
             onClick={() => navigate("/shop/account")} 
             variant="outline"
-            className="w-full bg-beige-600/20 border-beige-400 hover:bg-beige-500/30 text-beige-100 hover:text-white font-semibold py-2 transition-all duration-200 max-w-full overflow-hidden"
+            className="w-full bg-beige-600/20 border-beige-400 hover:bg-beige-500/30 text-beige-100 hover:text-white font-semibold py-2 transition-all duration-200 max-w-full overflow-hidden whitespace-nowrap"
           >
             <UserCog className="mr-2 h-4 w-4 flex-shrink-0" />
             <span className="truncate">My Account</span>
@@ -222,7 +222,7 @@ function HeaderRightContent() {
           <Button 
             onClick={handleLogout} 
             variant="outline"
-            className="w-full bg-brown-600/20 border-brown-500 hover:bg-brown-500/30 text-beige-100 hover:text-white font-semibold py-2 transition-all duration-200 max-w-full overflow-hidden"
+            className="w-full bg-brown-600/20 border-brown-500 hover:bg-brown-500/30 text-beige-100 hover:text-white font-semibold py-2 transition-all duration-200 max-w-full overflow-hidden whitespace-nowrap"
           >
             <LogOut className="mr-2 h-5 w-5 flex-shrink-0" />
             <span className="truncate">Logout</span>
@@ -274,23 +274,23 @@ function ShoppingHeader() {
   }, [dispatch, isAuthenticated, user?.id]);
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-beige-300 bg-gradient-to-r from-beige-700 via-beige-600 to-beige-700 shadow-lg no-horizontal-scroll container-safe">
-      <div className="flex h-14 items-center justify-between px-4 md:px-6 no-horizontal-scroll container-safe max-w-full">
-        <Link to="/shop/home" className="flex items-center transition-colors">
+    <header className="sticky top-0 z-40 w-full border-b border-beige-300 bg-gradient-to-r from-beige-700 via-beige-600 to-beige-700 shadow-lg overflow-x-hidden">
+      <div className="flex h-14 items-center justify-between px-4 md:px-6 max-w-full overflow-x-hidden">
+        <Link to="/shop/home" className="flex items-center transition-colors flex-shrink-0">
           <img 
             src={VinoraLogo} 
             alt="Vinora" 
-            className="h-24 w-auto max-w-none transition-transform duration-200 hover:scale-105"
+            className="h-8 sm:h-10 w-auto transition-transform duration-200 hover:scale-105"
           />
         </Link>
 
         {/* Mobile Search Bar - Always Visible */}
-        <div className="flex-1 max-w-xs mx-4 lg:hidden no-horizontal-scroll">
+        <div className="flex-1 max-w-xs mx-2 sm:mx-4 lg:hidden">
           <SearchBar isMobile={true} />
         </div>
 
         {/* Mobile Right Section - Cart + Menu */}
-        <div className="flex items-center gap-2 lg:hidden">
+        <div className="flex items-center gap-1 sm:gap-2 lg:hidden flex-shrink-0">
           {/* Mobile Cart Button - Show only for authenticated users */}
           {isAuthenticated ? (
             <Sheet open={openCartSheet} onOpenChange={() => setOpenCartSheet(false)}>
@@ -335,13 +335,13 @@ function ShoppingHeader() {
                 <span className="sr-only">Toggle header menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-full max-w-xs bg-gradient-to-b from-brown-800 via-brown-700 to-brown-800 border-brown-600 p-4 overflow-y-auto no-horizontal-scroll container-safe mobile-menu-content scrollbar-hide">
-              <div className="mb-4 max-w-full no-horizontal-scroll overflow-hidden">
+            <SheetContent side="left" className="w-full max-w-xs bg-gradient-to-b from-brown-800 via-brown-700 to-brown-800 border-brown-600 p-4 overflow-y-auto overflow-x-hidden">
+              <div className="mb-4 max-w-full overflow-hidden">
                 <Link to="/shop/home" className="flex items-center transition-colors">
                   <img 
                     src={VinoraLogo} 
                     alt="Vinora" 
-                    className="h-24 w-auto max-w-none transition-transform duration-200 hover:scale-105"
+                    className="h-8 w-auto transition-transform duration-200 hover:scale-105"
                   />
                 </Link>
               </div>
@@ -357,12 +357,12 @@ function ShoppingHeader() {
         </div>
 
         {/* Desktop Menu */}
-        <div className="hidden lg:block">
+        <div className="hidden lg:block flex-shrink-0">
           <MenuItems />
         </div>
 
         {/* Desktop Right Content */}
-        <div className="hidden lg:flex lg:items-center lg:gap-3 lg:ml-4">
+        <div className="hidden lg:flex lg:items-center lg:gap-3 lg:ml-4 flex-shrink-0">
           <HeaderRightContent />
         </div>
       </div>
