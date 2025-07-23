@@ -35,38 +35,44 @@ const corsOptions = {
     if (!origin) return callback(null, true);
     
     const allowedOrigins = [
-      "http://localhost:5173", // Development frontend (Vite default)
-      "http://localhost:5175", // Development frontend (Vite alternative)
-      "http://localhost:3000", // Development frontend (React default)
-      "http://127.0.0.1:5173", // Alternative localhost
-      "http://127.0.0.1:5175", // Alternative localhost
-      "http://127.0.0.1:3000", // Alternative localhost
-    ];
+      // Development origins
+      "http://localhost:5173",
+      "http://localhost:5175", 
+      "http://localhost:3000",
+      "http://127.0.0.1:5173",
+      "http://127.0.0.1:5175",
+      "http://127.0.0.1:3000",
+      // Production origins - Vinora subdomain
+      "https://vinora.royalappleshimla.com",
+      "https://www.vinora.royalappleshimla.com",
+      // Any additional production URLs from environment
+      process.env.CLIENT_BASE_URL,
+      process.env.FRONTEND_URL,
+    ].filter(Boolean); // Remove any undefined values
     
-    // Add production URL if it exists in environment
-    if (process.env.CLIENT_BASE_URL) {
-      allowedOrigins.push(process.env.CLIENT_BASE_URL);
-    }
+    console.log('🔗 CORS request from origin:', origin);
+    console.log('✅ Allowed origins:', allowedOrigins);
     
-    console.log('CORS request from origin:', origin);
-    console.log('Allowed origins:', allowedOrigins);
-    
-    if (allowedOrigins.indexOf(origin) !== -1) {
+    if (allowedOrigins.includes(origin)) {
+      console.log('✅ CORS allowed for:', origin);
       callback(null, true);
     } else {
-      console.warn(`CORS blocked request from origin: ${origin}`);
+      console.error('❌ CORS blocked request from origin:', origin);
+      console.error('💡 Please add this origin to allowedOrigins array');
       callback(new Error('Not allowed by CORS'));
     }
   },
-  methods: ["GET", "POST", "DELETE", "PUT"],
+  methods: ["GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"],
   allowedHeaders: [
     "Content-Type",
     "Authorization",
     "Cache-Control",
     "Expires",
     "Pragma",
+    "X-Requested-With",
   ],
   credentials: true,
+  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
 app.use(cors(corsOptions));

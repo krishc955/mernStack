@@ -132,7 +132,15 @@ function ShoppingFooter() {
             </div>
             
             <p className="text-brown-700 text-sm text-center md:text-right font-medium tracking-wide">
-              © 2024 Vinora. All rights reserved.
+              © 2024 Vinora. All rights reserved by{" "}
+              <a 
+                href="https://www.krish.royalappleshimla.com/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-brown-800 hover:text-brown-900 font-semibold underline hover:no-underline transition-all duration-200"
+              >
+                Krish
+              </a>
             </p>
           </div>
         </div>
