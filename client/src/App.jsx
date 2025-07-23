@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import AuthLayout from "./components/auth/layout";
 import AuthLogin from "./pages/auth/login";
 import AuthRegister from "./pages/auth/register";
@@ -38,7 +39,8 @@ function App() {
   console.log(isLoading, user);
 
   return (
-    <div className="flex flex-col overflow-hidden bg-white no-horizontal-scroll container-safe">
+    <HelmetProvider>
+      <div className="flex flex-col overflow-hidden bg-white no-horizontal-scroll container-safe">
       <Routes>
         <Route
           path="/"
@@ -92,7 +94,8 @@ function App() {
         <Route path="/unauth-page" element={<UnauthPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </div>
+      </div>
+    </HelmetProvider>
   );
 }
 

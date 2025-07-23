@@ -1,4 +1,5 @@
 import ProductFilter from "@/components/shopping-view/filter";
+import SEOHead from "@/components/common/seo-head";
 import ProductDetailsDialog from "@/components/shopping-view/product-details";
 import ShoppingProductTile from "@/components/shopping-view/product-tile";
 import { Button } from "@/components/ui/button";
@@ -177,6 +178,41 @@ function ShoppingListing() {
 
   return (
     <div className="grid grid-cols-1 gap-6 p-4 md:p-6">
+      <SEOHead 
+        title={`${filters?.category ? filters.category.charAt(0).toUpperCase() + filters.category.slice(1) + ' Products - ' : ''}Shop Premium Products at Vinora | Best Online Store India`}
+        description={`Discover ${filters?.category ? filters.category + ' ' : ''}premium products at Vinora. Shop quality ${filters?.category || 'items'} with fast delivery, secure payments & authentic brands. Free shipping across India.`}
+        keywords={`Vinora ${filters?.category || 'products'}, online shopping India, ${filters?.category || 'premium products'}, buy ${filters?.category || 'products'} online, ecommerce store, quality products, secure shopping`}
+        canonicalUrl={`https://vinora.royalappleshimla.com/shop/listing${filters?.category ? '?category=' + filters.category : ''}`}
+        ogImage="https://vinora.royalappleshimla.com/vinora-logo.png"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          "name": `${filters?.category ? filters.category.charAt(0).toUpperCase() + filters.category.slice(1) + ' ' : ''}Products - Vinora`,
+          "description": `Browse ${filters?.category ? filters.category + ' ' : ''}products at Vinora, India's trusted online store`,
+          "url": `https://vinora.royalappleshimla.com/shop/listing${filters?.category ? '?category=' + filters.category : ''}`,
+          "mainEntity": {
+            "@type": "ItemList",
+            "numberOfItems": productList?.length || 0,
+            "itemListElement": productList?.slice(0, 10).map((product, index) => ({
+              "@type": "Product",
+              "position": index + 1,
+              "name": product.title,
+              "description": product.description,
+              "image": product.image,
+              "offers": {
+                "@type": "Offer",
+                "price": product.salePrice > 0 ? product.salePrice : product.price,
+                "priceCurrency": "INR",
+                "availability": "https://schema.org/InStock"
+              },
+              "brand": {
+                "@type": "Brand",
+                "name": "Vinora"
+              }
+            })) || []
+          }
+        }}
+      />
       <div className="bg-background w-full rounded-lg shadow-sm">
         <div className="p-4 border-b flex items-center justify-between">
           <h2 className="text-lg font-extrabold">All Products</h2>

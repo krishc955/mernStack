@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import SEOHead from "@/components/common/seo-head";
 import bannerOne from "../../assets/banner-1.webp";
 import bannerTwo from "../../assets/banner-2.webp";
 import bannerThree from "../../assets/banner-3.webp";
@@ -277,6 +278,33 @@ function ShoppingHome() {
 
   return (
     <div className="flex flex-col min-h-screen" style={{ backgroundColor: '#faf8f2' }}>
+      <SEOHead 
+        title="Vinora - Premium Online Shopping Store in India | Best Deals & Quality Products"
+        description="Shop at Vinora, India's trusted online ecommerce store. Discover premium fashion, electronics, home decor & accessories with fast delivery, secure payments & quality guarantee."
+        keywords="Vinora, online shopping India, ecommerce store, premium products, fashion, electronics, home decor, fast delivery, secure shopping, quality products"
+        canonicalUrl="https://vinora.royalappleshimla.com"
+        ogImage="https://vinora.royalappleshimla.com/vinora-logo.png"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "Vinora",
+          "alternateName": "Vinora Online Store",
+          "url": "https://vinora.royalappleshimla.com",
+          "description": "India's premium online shopping destination for fashion, electronics, and lifestyle products",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://vinora.royalappleshimla.com/shop/search?query={search_term_string}",
+            "query-input": "required name=search_term_string"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Vinora",
+            "url": "https://vinora.royalappleshimla.com",
+            "logo": "https://vinora.royalappleshimla.com/vinora-logo.png"
+          }
+        }}
+      />
+      
       {/* Mobile-Responsive Hero Slider with Touch Support - Larger Size */}
       <div 
         className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[650px] xl:h-[700px] overflow-hidden select-none group"
@@ -469,6 +497,80 @@ function ShoppingHome() {
         </div>
       </section>
 
+      {/* SEO Content Section - About Vinora */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-brown-800">
+              Welcome to Vinora - Your Premium Shopping Destination
+            </h2>
+            <div className="max-w-4xl mx-auto space-y-6 text-lg text-brown-700 leading-relaxed">
+              <p>
+                <strong>Vinora</strong> is India's premier online ecommerce store, offering an exclusive collection of high-quality products across multiple categories. When you shop at <strong>Vinora</strong>, you're not just buying products – you're investing in quality, style, and exceptional customer service.
+              </p>
+              <p>
+                Our <strong>Vinora</strong> team carefully curates each product to ensure you receive only the finest items. From fashion to electronics, home decor to accessories, <strong>Vinora</strong> brings you the best brands and products at competitive prices with fast, secure delivery across India.
+              </p>
+            </div>
+          </div>
+
+          {/* Why Choose Vinora Grid */}
+          <div className="grid md:grid-cols-3 gap-8 mt-12">
+            <div className="text-center p-6 bg-beige-50 rounded-lg border border-beige-200">
+              <div className="w-16 h-16 mx-auto mb-4 bg-amber-100 rounded-full flex items-center justify-center">
+                <CloudLightning className="w-8 h-8 text-amber-600" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 text-brown-800">Fast Delivery</h3>
+              <p className="text-brown-600">
+                Experience <strong>Vinora's</strong> lightning-fast delivery service. Order today and receive your premium products at your doorstep within 2-3 business days.
+              </p>
+            </div>
+            
+            <div className="text-center p-6 bg-beige-50 rounded-lg border border-beige-200">
+              <div className="w-16 h-16 mx-auto mb-4 bg-amber-100 rounded-full flex items-center justify-center">
+                <ShirtIcon className="w-8 h-8 text-amber-600" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 text-brown-800">Premium Quality</h3>
+              <p className="text-brown-600">
+                Every product at <strong>Vinora</strong> undergoes strict quality checks. We partner with trusted brands to bring you authentic, high-quality merchandise.
+              </p>
+            </div>
+            
+            <div className="text-center p-6 bg-beige-50 rounded-lg border border-beige-200">
+              <div className="w-16 h-16 mx-auto mb-4 bg-amber-100 rounded-full flex items-center justify-center">
+                <Images className="w-8 h-8 text-amber-600" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 text-brown-800">Secure Shopping</h3>
+              <p className="text-brown-600">
+                Shop with confidence at <strong>Vinora</strong>. Our secure payment gateway and data protection ensure your personal information is always safe.
+              </p>
+            </div>
+          </div>
+
+          {/* Categories Section */}
+          <div className="mt-16 text-center">
+            <h3 className="text-2xl font-bold mb-8 text-brown-800">Shop by Category at Vinora</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {["Men's Fashion", "Women's Clothing", "Kids Wear", "Electronics", "Home & Decor", "Accessories"].map((category, index) => (
+                <div key={index} className="p-4 bg-gradient-to-br from-amber-50 to-beige-100 rounded-lg border border-amber-200 hover:shadow-md transition-shadow">
+                  <p className="font-medium text-brown-800">{category}</p>
+                  <p className="text-sm text-brown-600 mt-1">Shop at Vinora</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* SEO Keywords Footer */}
+          <div className="mt-16 p-6 bg-amber-50 rounded-lg border border-amber-200">
+            <p className="text-center text-sm text-brown-600 leading-relaxed">
+              <strong>Vinora</strong> - India's trusted online shopping destination | Premium ecommerce store | 
+              Shop <strong>Vinora</strong> for fashion, electronics, home decor | Secure online shopping at <strong>Vinora</strong> | 
+              Fast delivery across India | Quality products | <strong>Vinora</strong> customer reviews | 
+              Best deals and offers | Shop now at <strong>Vinora.royalappleshimla.com</strong>
+            </p>
+          </div>
+        </div>
+      </section>
 
       <ProductDetailsDialog
         open={openDetailsDialog}
