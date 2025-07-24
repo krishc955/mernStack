@@ -8,6 +8,8 @@ const initialState = {
   orderId: null,
   orderList: [],
   orderDetails: null,
+  razorpayOrder: null,
+  razorpayKey: null,
 };
 
 export const createNewOrder = createAsyncThunk(
@@ -38,6 +40,23 @@ export const capturePayment = createAsyncThunk(
   }
 );
 
+export const verifyRazorpayPayment = createAsyncThunk(
+  "/order/verifyRazorpayPayment",
+  async ({ razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId }) => {
+    const response = await axios.post(
+      `${API_BASE_URL}/api/shop/order/verify-razorpay`,
+      {
+        razorpay_order_id,
+        razorpay_payment_id,
+        razorpay_signature,
+        orderId,
+      }
+    );
+
+    return response.data;
+  }
+);
+
 export const getAllOrdersByUserId = createAsyncThunk(
   "/order/getAllOrdersByUserId",
   async (userId) => {
@@ -60,6 +79,28 @@ export const getOrderDetails = createAsyncThunk(
   }
 );
 
+export const deleteOrder = createAsyncThunk(
+  "/order/deleteOrder",
+  async (id) => {
+    const response = await axios.delete(
+      `${API_BASE_URL}/api/shop/order/delete/${id}`
+    );
+
+    return response.data;
+  }
+);
+
+export const deleteAllPendingOrders = createAsyncThunk(
+  "/order/deleteAllPendingOrders",
+  async (userId) => {
+    const response = await axios.delete(
+      `${API_BASE_URL}/api/shop/order/delete-all-pending/${userId}`
+    );
+
+    return response.data;
+  }
+);
+
 const shoppingOrderSlice = createSlice({
   name: "shoppingOrderSlice",
   initialState,
@@ -75,7 +116,13 @@ const shoppingOrderSlice = createSlice({
       })
       .addCase(createNewOrder.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.approvalURL = action.payload.approvalURL;
+        if (action.payload.approvalURL) {
+          state.approvalURL = action.payload.approvalURL;
+        }
+        if (action.payload.razorpayOrder) {
+          state.razorpayOrder = action.payload.razorpayOrder;
+          state.razorpayKey = action.payload.key;
+        }
         state.orderId = action.payload.orderId;
         sessionStorage.setItem(
           "currentOrderId",
@@ -86,6 +133,8 @@ const shoppingOrderSlice = createSlice({
         state.isLoading = false;
         state.approvalURL = null;
         state.orderId = null;
+        state.razorpayOrder = null;
+        state.razorpayKey = null;
       })
       .addCase(getAllOrdersByUserId.pending, (state) => {
         state.isLoading = true;
@@ -108,6 +157,32 @@ const shoppingOrderSlice = createSlice({
       .addCase(getOrderDetails.rejected, (state) => {
         state.isLoading = false;
         state.orderDetails = null;
+      })
+      .addCase(deleteOrder.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteOrder.fulfilled, (state, action) => {
+        state.isLoading = false;
+        // Remove the deleted order from the orderList
+        state.orderList = state.orderList.filter(
+          order => order._id !== action.meta.arg
+        );
+      })
+      .addCase(deleteOrder.rejected, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(deleteAllPendingOrders.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteAllPendingOrders.fulfilled, (state, action) => {
+        state.isLoading = false;
+        // Remove all pending orders from the orderList
+        state.orderList = state.orderList.filter(
+          order => order.orderStatus !== "pending"
+        );
+      })
+      .addCase(deleteAllPendingOrders.rejected, (state) => {
+        state.isLoading = false;
       });
   },
 });

@@ -20,7 +20,7 @@ import {
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { logoutUser } from "@/store/auth-slice";
-import UserCartWrapper from "./cart-wrapper";
+import UserCartWrapper from "./cart-wrapper-new";
 import { useEffect, useState } from "react";
 import { fetchCartItems } from "@/store/shop/cart-slice";
 import { Label } from "../ui/label";
@@ -275,17 +275,17 @@ function ShoppingHeader() {
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-beige-300 bg-gradient-to-r from-beige-700 via-beige-600 to-beige-700 shadow-lg overflow-x-hidden">
-      <div className="flex h-14 items-center justify-between px-4 md:px-6 max-w-full overflow-x-hidden">
-        <Link to="/shop/home" className="flex items-center transition-colors flex-shrink-0">
+      <div className="flex h-14 items-center justify-between pr-4 md:pr-6 max-w-full overflow-x-hidden relative">
+        <Link to="/shop/home" className="flex items-center transition-colors flex-shrink-0 h-full absolute left-0 top-0">
           <img 
             src={VinoraLogo} 
-            alt="Vinora" 
-            className="h-8 sm:h-10 w-auto transition-transform duration-200 hover:scale-105"
+            alt="Wearables" 
+            className="h-full w-auto transition-transform duration-200 hover:scale-105 block"
           />
         </Link>
 
         {/* Mobile Search Bar - Always Visible */}
-        <div className="flex-1 max-w-xs mx-2 sm:mx-4 lg:hidden">
+        <div className="flex-1 max-w-xs ml-16 mr-2 sm:ml-20 sm:mr-4 lg:hidden">
           <SearchBar isMobile={true} />
         </div>
 
@@ -337,11 +337,11 @@ function ShoppingHeader() {
             </SheetTrigger>
             <SheetContent side="left" className="w-full max-w-xs bg-gradient-to-b from-brown-800 via-brown-700 to-brown-800 border-brown-600 p-4 overflow-y-auto overflow-x-hidden">
               <div className="mb-4 max-w-full overflow-hidden">
-                <Link to="/shop/home" className="flex items-center transition-colors">
+                <Link to="/shop/home" className="flex items-center transition-colors h-10">
                   <img 
                     src={VinoraLogo} 
-                    alt="Vinora" 
-                    className="h-8 w-auto transition-transform duration-200 hover:scale-105"
+                    alt="Wearables" 
+                    className="h-full w-auto transition-transform duration-200 hover:scale-105"
                   />
                 </Link>
               </div>
@@ -352,7 +352,7 @@ function ShoppingHeader() {
         </div>
 
         {/* Desktop Search Bar */}
-        <div className="flex-1 max-w-md mx-4 hidden lg:block">
+        <div className="flex-1 max-w-md ml-20 mr-4 hidden lg:block">
           <SearchBar />
         </div>
 

@@ -10,6 +10,7 @@ import { useToast } from "../ui/use-toast";
 import { setProductDetails } from "@/store/shop/products-slice";
 import { Label } from "../ui/label";
 import StarRatingComponent from "../common/star-rating";
+import ProductVariantSelector from "./product-variant-selector";
 import { useEffect, useState } from "react";
 import { addReview, getReviews } from "@/store/shop/review-slice";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +19,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
   const [reviewMsg, setReviewMsg] = useState("");
   const [rating, setRating] = useState(0);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [selectedVariant, setSelectedVariant] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
@@ -56,7 +58,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
     setRating(getRating);
   }
 
-  function handleAddToCart(getCurrentProductId, getTotalStock) {
+  function handleAddToCart(getCurrentProductId, getTotalStock, variantInfo = null) {
     if (!user?.id) {
       toast({
         title: "Please login to add items to cart",
@@ -91,13 +93,25 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
         }
       }
     }
-    dispatch(
-      addToCart({
-        userId: user?.id,
-        productId: getCurrentProductId,
-        quantity: 1,
-      })
-    ).then((data) => {
+    
+    const cartData = {
+      userId: user?.id,
+      productId: getCurrentProductId,
+      quantity: 1,
+    };
+    
+    // Add variant information if provided
+    if (variantInfo) {
+      cartData.variant = {
+        color: variantInfo.color,
+        colorCode: variantInfo.colorCode,
+        size: variantInfo.size
+      };
+    }
+    
+    console.log("Adding to cart with data:", cartData);
+    
+    dispatch(addToCart(cartData)).then((data) => {
       if (data?.payload?.success) {
         dispatch(fetchCartItems(user?.id));
         toast({
@@ -267,32 +281,73 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
             </span>
           </div>
           
+          {/* Product Variants */}
+          {productDetails?.variants && productDetails.variants.length > 0 && (
+            <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+              <h3 className="font-semibold text-gray-900">Select Options</h3>
+              <ProductVariantSelector
+                variants={productDetails.variants}
+                onVariantChange={setSelectedVariant}
+              />
+            </div>
+          )}
+          
           {/* Stock and Add to Cart */}
           <div className="space-y-4">
+            {/* Show variant stock if variant is selected, otherwise show total stock */}
             <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
               <span className="text-gray-700 font-medium">Availability:</span>
-              <span className={`font-semibold ${productDetails?.totalStock === 0 ? 'text-red-600' : 'text-green-600'}`}>
-                {productDetails?.totalStock === 0 ? 'Out of Stock' : `${productDetails?.totalStock} in stock`}
+              <span className={`font-semibold ${
+                (selectedVariant ? selectedVariant.stock === 0 : productDetails?.totalStock === 0) 
+                  ? 'text-red-600' 
+                  : 'text-green-600'
+              }`}>
+                {selectedVariant 
+                  ? (selectedVariant.stock === 0 ? 'Out of Stock' : `${selectedVariant.stock} in stock`)
+                  : (productDetails?.totalStock === 0 ? 'Out of Stock' : `${productDetails?.totalStock} in stock`)
+                }
               </span>
             </div>
             
-            {productDetails?.totalStock === 0 ? (
-              <Button className="w-full bg-gray-400 cursor-not-allowed text-white py-3" disabled>
-                Out of Stock
-              </Button>
-            ) : (
-              <Button
-                className="w-full bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white py-3 font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300"
-                onClick={() =>
-                  handleAddToCart(
-                    productDetails?._id,
-                    productDetails?.totalStock
-                  )
-                }
-              >
-                Add to Cart
-              </Button>
-            )}
+            {/* Add to Cart Button */}
+            {(() => {
+              const hasVariants = productDetails?.variants && productDetails.variants.length > 0;
+              const isOutOfStock = hasVariants 
+                ? (selectedVariant ? selectedVariant.stock === 0 : true)
+                : productDetails?.totalStock === 0;
+              const needsVariantSelection = hasVariants && !selectedVariant;
+              
+              if (isOutOfStock) {
+                return (
+                  <Button className="w-full bg-gray-400 cursor-not-allowed text-white py-3" disabled>
+                    Out of Stock
+                  </Button>
+                );
+              }
+              
+              if (needsVariantSelection) {
+                return (
+                  <Button className="w-full bg-gray-400 cursor-not-allowed text-white py-3" disabled>
+                    Select Color & Size
+                  </Button>
+                );
+              }
+              
+              return (
+                <Button
+                  className="w-full bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white py-3 font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                  onClick={() =>
+                    handleAddToCart(
+                      productDetails?._id,
+                      selectedVariant ? selectedVariant.stock : productDetails?.totalStock,
+                      selectedVariant
+                    )
+                  }
+                >
+                  Add to Cart
+                </Button>
+              );
+            })()}
           </div>
           
           <Separator className="my-6" />

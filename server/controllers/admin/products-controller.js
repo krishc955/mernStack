@@ -4,19 +4,43 @@ const cloudinary = require("cloudinary").v2;
 
 const handleImageUpload = async (req, res) => {
   try {
-    console.log("Image upload attempt:", req.file ? "File received" : "No file");
+    console.log("Image upload attempt:", {
+      hasFile: !!req.file,
+      userAgent: req.headers['user-agent']?.includes('Mobile') ? 'Mobile' : 'Desktop',
+      contentType: req.headers['content-type']
+    });
     
     if (!req.file) {
       return res.json({
         success: false,
-        message: "No file uploaded",
+        message: "No file uploaded. Please make sure to select an image file.",
+      });
+    }
+
+    // Validate file type
+    if (!req.file.mimetype.startsWith('image/')) {
+      return res.json({
+        success: false,
+        message: "Invalid file type. Please upload an image file (JPG, PNG, WebP).",
+      });
+    }
+
+    // Validate file size (additional check)
+    if (req.file.size > 10 * 1024 * 1024) {
+      return res.json({
+        success: false,
+        message: "File too large. Please upload an image smaller than 10MB.",
       });
     }
 
     const b64 = Buffer.from(req.file.buffer).toString("base64");
     const url = "data:" + req.file.mimetype + ";base64," + b64;
     
-    console.log("Attempting Cloudinary upload...");
+    console.log("Attempting Cloudinary upload...", {
+      fileSize: req.file.size,
+      mimeType: req.file.mimetype
+    });
+    
     const result = await imageUploadUtil(url);
     
     console.log("Cloudinary upload success:", result.secure_url);
@@ -25,10 +49,25 @@ const handleImageUpload = async (req, res) => {
       result,
     });
   } catch (error) {
-    console.log("Image upload error:", error);
+    console.log("Image upload error:", {
+      message: error.message,
+      stack: error.stack,
+      userAgent: req.headers['user-agent']
+    });
+    
+    let errorMessage = "Error occurred during image upload.";
+    
+    if (error.message.includes('File too large')) {
+      errorMessage = "File is too large. Please upload an image smaller than 10MB.";
+    } else if (error.message.includes('Only image files')) {
+      errorMessage = "Only image files are allowed. Please select a JPG, PNG, or WebP file.";
+    } else if (error.message.includes('Invalid image file')) {
+      errorMessage = "Invalid image file. Please try a different image.";
+    }
+    
     res.json({
       success: false,
-      message: "Error occurred during image upload: " + error.message,
+      message: errorMessage,
     });
   }
 };
@@ -121,11 +160,20 @@ const addProduct = async (req, res) => {
       brand,
       price,
       salePrice,
-      totalStock,
       averageReview,
+      variants, // New field for variants
+      availableSizes, // New field for available sizes
+      availableColors, // New field for available colors
     } = req.body;
 
     console.log(averageReview, "averageReview");
+
+    // Calculate total stock from variants
+    const calculatedTotalStock = variants && variants.length > 0
+      ? variants.reduce((total, variant) => {
+          return total + variant.sizes.reduce((variantTotal, size) => variantTotal + (size.stock || 0), 0);
+        }, 0)
+      : 0;
 
     const newlyCreatedProduct = new Product({
       image: image || (images && images[0]) || "", // Backward compatibility
@@ -136,8 +184,11 @@ const addProduct = async (req, res) => {
       brand,
       price,
       salePrice,
-      totalStock,
+      totalStock: calculatedTotalStock, // Use calculated stock from variants
       averageReview,
+      variants: variants || [], // Support variants
+      availableSizes: availableSizes || [],
+      availableColors: availableColors || [],
     });
 
     await newlyCreatedProduct.save();
@@ -185,8 +236,10 @@ const editProduct = async (req, res) => {
       brand,
       price,
       salePrice,
-      totalStock,
       averageReview,
+      variants, // New field for variants
+      availableSizes, // New field for available sizes
+      availableColors, // New field for available colors
     } = req.body;
 
     let findProduct = await Product.findById(id);
@@ -203,7 +256,6 @@ const editProduct = async (req, res) => {
     findProduct.price = price === "" ? 0 : price || findProduct.price;
     findProduct.salePrice =
       salePrice === "" ? 0 : salePrice || findProduct.salePrice;
-    findProduct.totalStock = totalStock || findProduct.totalStock;
     
     // Handle both single and multiple images
     if (images && Array.isArray(images)) {
@@ -215,6 +267,21 @@ const editProduct = async (req, res) => {
     }
     
     findProduct.averageReview = averageReview || findProduct.averageReview;
+    
+    // Handle variants and calculate total stock
+    if (variants !== undefined) {
+      findProduct.variants = variants;
+      // Calculate total stock from variants
+      findProduct.totalStock = variants.reduce((total, variant) => {
+        return total + variant.sizes.reduce((variantTotal, size) => variantTotal + (size.stock || 0), 0);
+      }, 0);
+    }
+    if (availableSizes !== undefined) {
+      findProduct.availableSizes = availableSizes;
+    }
+    if (availableColors !== undefined) {
+      findProduct.availableColors = availableColors;
+    }
 
     await findProduct.save();
     res.status(200).json({

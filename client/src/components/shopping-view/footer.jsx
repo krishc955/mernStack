@@ -9,7 +9,7 @@ function ShoppingFooter() {
     if (message.trim()) {
       // WhatsApp Business number (replace with your actual WhatsApp number)
       const phoneNumber = "918219284066"; // Replace with your WhatsApp number
-      const encodedMessage = encodeURIComponent(`Hello Vinora! ${message}`);
+      const encodedMessage = encodeURIComponent(`Hello Wearables! ${message}`);
       const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
       window.open(whatsappUrl, '_blank');
       setMessage(""); // Clear the input after sending
@@ -75,7 +75,7 @@ function ShoppingFooter() {
             <div className="flex items-center">
               <img 
                 src={VinoraLogo} 
-                alt="Vinora" 
+                alt="Wearables" 
                 className="h-32 md:h-52 w-auto max-w-none transition-transform duration-200 hover:scale-105"
               />
             </div>
@@ -132,7 +132,7 @@ function ShoppingFooter() {
             </div>
             
             <p className="text-brown-700 text-sm text-center md:text-right font-medium tracking-wide">
-              © 2024 Vinora. All rights reserved by{" "}
+              © 2024 Wearables. All rights reserved by{" "}
               <a 
                 href="https://www.krish.royalappleshimla.com/" 
                 target="_blank" 

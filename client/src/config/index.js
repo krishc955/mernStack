@@ -70,35 +70,60 @@ export const addProductFormElements = [
     name: "brand",
     componentType: "select",
     options: [
-      { id: "nike", label: "Nike" },
-      { id: "adidas", label: "Adidas" },
-      { id: "puma", label: "Puma" },
-      { id: "levi", label: "Levi's" },
-      { id: "zara", label: "Zara" },
-      { id: "h&m", label: "H&M" },
+      { id: "lower-wear", label: "Lower Wear" },
+      { id: "upper-wear", label: "Upper Wear" },
+      { id: "accessories", label: "Accessories" },
+      { id: "undergarments", label: "Undergarments" },
     ],
   },
   {
-    label: "Price",
+    label: "Price (₹)",
     name: "price",
     componentType: "input",
     type: "number",
-    placeholder: "Enter product price",
+    placeholder: "Enter product price in ₹",
   },
   {
-    label: "Sale Price",
+    label: "Sale Price (₹)",
     name: "salePrice",
     componentType: "input",
     type: "number",
-    placeholder: "Enter sale price (optional)",
+    placeholder: "Enter sale price in ₹ (optional)",
   },
-  {
-    label: "Total Stock",
-    name: "totalStock",
-    componentType: "input",
-    type: "number",
-    placeholder: "Enter total stock",
-  },
+];
+
+export const sizeOptions = [
+  { id: "XS", label: "XS" },
+  { id: "S", label: "S" },
+  { id: "M", label: "M" },
+  { id: "L", label: "L" },
+  { id: "XL", label: "XL" },
+  { id: "XXL", label: "XXL" },
+  { id: "28", label: "28" },
+  { id: "30", label: "30" },
+  { id: "32", label: "32" },
+  { id: "34", label: "34" },
+  { id: "36", label: "36" },
+  { id: "38", label: "38" },
+  { id: "40", label: "40" },
+  { id: "42", label: "42" },
+];
+
+export const colorOptions = [
+  { id: "black", label: "Black", code: "#000000" },
+  { id: "white", label: "White", code: "#FFFFFF" },
+  { id: "red", label: "Red", code: "#FF0000" },
+  { id: "blue", label: "Blue", code: "#0000FF" },
+  { id: "green", label: "Green", code: "#008000" },
+  { id: "yellow", label: "Yellow", code: "#FFFF00" },
+  { id: "pink", label: "Pink", code: "#FFC0CB" },
+  { id: "purple", label: "Purple", code: "#800080" },
+  { id: "orange", label: "Orange", code: "#FFA500" },
+  { id: "gray", label: "Gray", code: "#808080" },
+  { id: "brown", label: "Brown", code: "#A52A2A" },
+  { id: "navy", label: "Navy", code: "#000080" },
+  { id: "maroon", label: "Maroon", code: "#800000" },
+  { id: "teal", label: "Teal", code: "#008080" },
 ];
 
 export const shoppingViewHeaderMenuItems = [
@@ -153,12 +178,10 @@ export const categoryOptionsMap = {
 };
 
 export const brandOptionsMap = {
-  nike: "Nike",
-  adidas: "Adidas",
-  puma: "Puma",
-  levi: "Levi",
-  zara: "Zara",
-  "h&m": "H&M",
+  "lower-wear": "Lower Wear",
+  "upper-wear": "Upper Wear",
+  accessories: "Accessories",
+  undergarments: "Undergarments",
 };
 
 export const filterOptions = {
@@ -170,12 +193,10 @@ export const filterOptions = {
     { id: "footwear", label: "Footwear" },
   ],
   brand: [
-    { id: "nike", label: "Nike" },
-    { id: "adidas", label: "Adidas" },
-    { id: "puma", label: "Puma" },
-    { id: "levi", label: "Levi's" },
-    { id: "zara", label: "Zara" },
-    { id: "h&m", label: "H&M" },
+    { id: "lower-wear", label: "Lower Wear" },
+    { id: "upper-wear", label: "Upper Wear" },
+    { id: "accessories", label: "Accessories" },
+    { id: "undergarments", label: "Undergarments" },
   ],
 };
 

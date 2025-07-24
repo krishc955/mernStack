@@ -25,9 +25,9 @@ function AdminProductTile({ product, handleDelete, populateEditData }) {
   };
 
   const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-IN', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'INR'
     }).format(price || 0);
   };
 
@@ -284,25 +284,6 @@ function AdminProductTile({ product, handleDelete, populateEditData }) {
         gap: '8px' 
       }}>
         <button 
-          onClick={() => populateEditData && populateEditData(product)}
-          style={{
-            flex: 1,
-            padding: '8px 12px',
-            background: '#3b82f6',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontSize: '12px',
-            fontWeight: '500',
-            transition: 'background 0.2s ease'
-          }}
-          onMouseEnter={(e) => e.target.style.background = '#2563eb'}
-          onMouseLeave={(e) => e.target.style.background = '#3b82f6'}
-        >
-          Edit
-        </button>
-        <button 
           onClick={() => handleDelete && handleDelete(product._id)}
           style={{
             flex: 1,
@@ -320,6 +301,25 @@ function AdminProductTile({ product, handleDelete, populateEditData }) {
           onMouseLeave={(e) => e.target.style.background = '#ef4444'}
         >
           Delete
+        </button>
+        <button 
+          onClick={() => populateEditData && populateEditData(product)}
+          style={{
+            flex: 1,
+            padding: '8px 12px',
+            background: '#3b82f6',
+            color: 'white',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            fontSize: '12px',
+            fontWeight: '500',
+            transition: 'background 0.2s ease'
+          }}
+          onMouseEnter={(e) => e.target.style.background = '#2563eb'}
+          onMouseLeave={(e) => e.target.style.background = '#3b82f6'}
+        >
+          Edit
         </button>
       </div>
     </div>

@@ -3,7 +3,7 @@ const Product = require("../../models/Product");
 
 const addToCart = async (req, res) => {
   try {
-    const { userId, productId, quantity } = req.body;
+    const { userId, productId, quantity, variant } = req.body;
 
     if (!userId || !productId || quantity <= 0) {
       return res.status(400).json({
@@ -27,14 +27,35 @@ const addToCart = async (req, res) => {
       cart = new Cart({ userId, items: [] });
     }
 
-    const findCurrentProductIndex = cart.items.findIndex(
-      (item) => item.productId.toString() === productId
-    );
+    // Find existing item with same product and variant
+    const findCurrentProductIndex = cart.items.findIndex((item) => {
+      const sameProduct = item.productId.toString() === productId;
+      
+      // If no variants involved, just match by product
+      if (!variant && !item.variant) {
+        return sameProduct;
+      }
+      
+      // If variants involved, match by product and variant
+      if (variant && item.variant) {
+        return sameProduct && 
+               item.variant.color === variant.color && 
+               item.variant.size === variant.size;
+      }
+      
+      return false;
+    });
 
     if (findCurrentProductIndex === -1) {
-      cart.items.push({ productId, quantity });
+      const newItem = { productId, quantity };
+      if (variant) {
+        newItem.variant = variant;
+        console.log("Adding new item with variant:", newItem);
+      }
+      cart.items.push(newItem);
     } else {
       cart.items[findCurrentProductIndex].quantity += quantity;
+      console.log("Updated existing item quantity");
     }
 
     await cart.save();
@@ -64,7 +85,7 @@ const fetchCartItems = async (req, res) => {
 
     const cart = await Cart.findOne({ userId }).populate({
       path: "items.productId",
-      select: "image title price salePrice",
+      select: "image title price salePrice description category brand variants",
     });
 
     if (!cart) {
@@ -89,8 +110,18 @@ const fetchCartItems = async (req, res) => {
       title: item.productId.title,
       price: item.productId.price,
       salePrice: item.productId.salePrice,
+      description: item.productId.description,
+      category: item.productId.category,
+      brand: item.productId.brand,
+      variants: item.productId.variants,
       quantity: item.quantity,
+      variant: item.variant, // Include variant information if exists
     }));
+
+    console.log("Returning cart items with variants:", populateCartItems.map(item => ({ 
+      title: item.title, 
+      variant: item.variant 
+    })));
 
     res.status(200).json({
       success: true,
@@ -143,7 +174,7 @@ const updateCartItemQty = async (req, res) => {
 
     await cart.populate({
       path: "items.productId",
-      select: "image title price salePrice",
+      select: "image title price salePrice description category brand variants",
     });
 
     const populateCartItems = cart.items.map((item) => ({
@@ -152,7 +183,12 @@ const updateCartItemQty = async (req, res) => {
       title: item.productId ? item.productId.title : "Product not found",
       price: item.productId ? item.productId.price : null,
       salePrice: item.productId ? item.productId.salePrice : null,
+      description: item.productId ? item.productId.description : null,
+      category: item.productId ? item.productId.category : null,
+      brand: item.productId ? item.productId.brand : null,
+      variants: item.productId ? item.productId.variants : [],
       quantity: item.quantity,
+      variant: item.variant,
     }));
 
     res.status(200).json({
@@ -183,7 +219,7 @@ const deleteCartItem = async (req, res) => {
 
     const cart = await Cart.findOne({ userId }).populate({
       path: "items.productId",
-      select: "image title price salePrice",
+      select: "image title price salePrice description category brand variants",
     });
 
     if (!cart) {
@@ -201,7 +237,7 @@ const deleteCartItem = async (req, res) => {
 
     await cart.populate({
       path: "items.productId",
-      select: "image title price salePrice",
+      select: "image title price salePrice description category brand variants",
     });
 
     const populateCartItems = cart.items.map((item) => ({
@@ -210,7 +246,12 @@ const deleteCartItem = async (req, res) => {
       title: item.productId ? item.productId.title : "Product not found",
       price: item.productId ? item.productId.price : null,
       salePrice: item.productId ? item.productId.salePrice : null,
+      description: item.productId ? item.productId.description : null,
+      category: item.productId ? item.productId.category : null,
+      brand: item.productId ? item.productId.brand : null,
+      variants: item.productId ? item.productId.variants : [],
       quantity: item.quantity,
+      variant: item.variant,
     }));
 
     res.status(200).json({

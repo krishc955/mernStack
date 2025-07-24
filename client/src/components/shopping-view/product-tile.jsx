@@ -147,6 +147,53 @@ function ShoppingProductTile({
                 {brandOptionsMap[product?.brand]}
               </span>
             </div>
+
+            {/* Variant Colors */}
+            {product?.variants && product.variants.length > 0 && (
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-gray-600">Available Colors:</span>
+                <div className="flex items-center space-x-1">
+                  {product.variants.slice(0, 4).map((variant, index) => (
+                    <div
+                      key={index}
+                      className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
+                      style={{ backgroundColor: variant.colorCode }}
+                      title={variant.color}
+                    />
+                  ))}
+                  {product.variants.length > 4 && (
+                    <span className="text-xs text-gray-500 ml-1">
+                      +{product.variants.length - 4}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Available Sizes */}
+            {product?.variants && product.variants.length > 0 && (
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-gray-600">Sizes:</span>
+                <div className="flex items-center space-x-1">
+                  {[...new Set(product.variants.flatMap(v => v.sizes.map(s => s.size)))]
+                    .sort()
+                    .slice(0, 5)
+                    .map((size, index) => (
+                      <span
+                        key={index}
+                        className="text-xs px-1.5 py-0.5 bg-gray-100 text-gray-700 rounded"
+                      >
+                        {size}
+                      </span>
+                    ))}
+                  {[...new Set(product.variants.flatMap(v => v.sizes.map(s => s.size)))].length > 5 && (
+                    <span className="text-xs text-gray-500">
+                      +{[...new Set(product.variants.flatMap(v => v.sizes.map(s => s.size)))].length - 5}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
             
             {/* Pricing */}
             <div className="flex items-center justify-between">

@@ -1,5 +1,6 @@
 import MultipleImageUpload from "@/components/admin-view/multiple-image-upload";
 import AdminProductTile from "@/components/admin-view/product-tile";
+import ProductVariants from "@/components/admin-view/product-variants";
 import CommonForm from "@/components/common/form";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,8 +28,10 @@ const initialFormData = {
   brand: "",
   price: "",
   salePrice: "",
-  totalStock: "",
   averageReview: 0,
+  variants: [], // New field for color/size variants
+  availableSizes: [],
+  availableColors: []
 };
 
 function AdminProducts() {
@@ -40,6 +43,7 @@ function AdminProducts() {
   const [imageLoadingState, setImageLoadingState] = useState(false);
   const [currentEditedId, setCurrentEditedId] = useState(null);
   const [sortBy, setSortBy] = useState("name-asc"); // New sort state
+  const [variants, setVariants] = useState([]); // New state for variants
 
   const { productList, isLoading } = useSelector((state) => state.adminProducts);
   const dispatch = useDispatch();
@@ -48,11 +52,24 @@ function AdminProducts() {
   function onSubmit(event) {
     event.preventDefault();
 
-    // Prepare form data with multiple images
+    // Calculate total stock from variants
+    const totalStockFromVariants = variants.reduce((total, variant) => {
+      return total + variant.sizes.reduce((variantTotal, size) => variantTotal + size.stock, 0);
+    }, 0);
+
+    // Extract available colors and sizes from variants
+    const availableColors = [...new Set(variants.map(v => v.color))];
+    const availableSizes = [...new Set(variants.flatMap(v => v.sizes.map(s => s.size)))];
+
+    // Prepare form data with multiple images and variants
     const submitData = {
       ...formData,
       image: uploadedImageUrls[0] || "", // First image as primary image for backward compatibility
-      images: uploadedImageUrls
+      images: uploadedImageUrls,
+      variants: variants,
+      availableColors: availableColors,
+      availableSizes: availableSizes,
+      totalStock: totalStockFromVariants // Use calculated stock from variants
     };
 
     currentEditedId !== null
@@ -93,6 +110,7 @@ function AdminProducts() {
   function resetImageStates() {
     setUploadedImageUrls([]);
     setImageFiles([]);
+    setVariants([]); // Reset variants too
   }
 
   function populateEditData(product) {
@@ -104,6 +122,13 @@ function AdminProducts() {
       setUploadedImageUrls(product.images);
     } else if (product.image) {
       setUploadedImageUrls([product.image]);
+    }
+    
+    // Handle existing variants
+    if (product.variants && product.variants.length > 0) {
+      setVariants(product.variants);
+    } else {
+      setVariants([]);
     }
     
     setOpenCreateProductsDialog(true);
@@ -349,22 +374,46 @@ function AdminProducts() {
                 setUploadedImageUrls={setUploadedImageUrls}
                 imageLoadingState={imageLoadingState}
                 setImageLoadingState={setImageLoadingState}
-                isEditMode={currentEditedId !== null}
                 maxImages={5}
               />
             </div>
 
             {/* Product Form */}
-            <div className="space-y-4">
-              <CommonForm
-                onSubmit={onSubmit}
-                formData={formData}
-                setFormData={setFormData}
-                buttonText={currentEditedId !== null ? "Edit" : "Add"}
-                formControls={addProductFormElements}
-                isBtnDisabled={!isFormValid()}
-              />
-            </div>
+            <form onSubmit={onSubmit} className="space-y-6">
+              <div className="space-y-6">
+                <CommonForm
+                  formData={formData}
+                  setFormData={setFormData}
+                  formControls={addProductFormElements}
+                  hideButton={true} // Hide the button from CommonForm
+                />
+                
+                {/* Inventory Management */}
+                <div className="border-t pt-6">
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Inventory Management</h3>
+                    <p className="text-sm text-gray-600">
+                      Manage stock levels by adding color and size variants. Total stock is automatically calculated from all variants.
+                    </p>
+                  </div>
+                  <ProductVariants
+                    variants={variants}
+                    onVariantsChange={setVariants}
+                  />
+                </div>
+                
+                {/* Submit Button - Moved to bottom */}
+                <div className="border-t pt-6">
+                  <Button 
+                    type="submit"
+                    disabled={!isFormValid()} 
+                    className="w-full bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg hover:shadow-xl"
+                  >
+                    {currentEditedId !== null ? "Update Product" : "Add Product"}
+                  </Button>
+                </div>
+              </div>
+            </form>
           </div>
         </SheetContent>
       </Sheet>

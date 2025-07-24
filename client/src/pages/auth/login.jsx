@@ -56,11 +56,11 @@ function AuthLogin() {
 
       {/* Enhanced Header */}
       <div className="text-center space-y-4">
-        {/* Vinora Logo */}
+        {/* Wearables Logo */}
         <div className="flex justify-center mb-6">
           <img 
             src={VinoraLogo} 
-            alt="Vinora" 
+            alt="Wearables" 
             className="h-16 w-auto transition-transform duration-200 hover:scale-105"
           />
         </div>

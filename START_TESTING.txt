@@ -1,0 +1,52 @@
+🎉 RAZORPAY DUMMY PAYMENT TESTING - READY TO GO!
+
+✅ YOUR TEST KEYS ARE NOW CONFIGURED:
+Key ID: rzp_test_2YvRWCWaBy4dHJ
+Secret: jztfq6oq7xti5EPqqt6cqFI2
+
+🚀 NEXT STEPS:
+
+1. RESTART YOUR SERVER:
+   cd server
+   npm run dev
+
+2. RESTART YOUR CLIENT (if needed):
+   cd client
+   npm run dev
+
+3. TEST DUMMY PAYMENTS:
+
+   🛒 Add products to cart with variants
+   📦 Go to checkout
+   💳 Select Razorpay payment
+   
+   Use these TEST details (NO REAL MONEY):
+   
+   ✅ SUCCESS PAYMENT:
+   Card: 4111 1111 1111 1111
+   CVV: 123
+   Expiry: 12/25
+   Name: Test User
+   
+   ❌ FAILED PAYMENT:
+   Card: 4000 0000 0000 0002
+   CVV: 123
+   Expiry: 12/25
+   
+   📱 UPI SUCCESS:
+   UPI ID: success@razorpay
+   
+   📱 UPI FAILURE:
+   UPI ID: failure@razorpay
+
+4. WHAT TO EXPECT:
+   ✅ Payment popup opens
+   ✅ Enter test details
+   ✅ Payment processes
+   ✅ Order gets confirmed
+   ✅ Cart clears
+   ✅ Success page shows
+
+💰 REMEMBER: These are TEST keys = NO REAL MONEY will be charged!
+
+🎊 Happy Testing!

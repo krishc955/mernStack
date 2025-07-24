@@ -10,6 +10,11 @@ const OrderSchema = new mongoose.Schema({
       image: String,
       price: String,
       quantity: Number,
+      variant: {
+        color: String,
+        colorCode: String,
+        size: String
+      }
     },
   ],
   addressInfo: {
@@ -26,8 +31,12 @@ const OrderSchema = new mongoose.Schema({
   totalAmount: Number,
   orderDate: Date,
   orderUpdateDate: Date,
+  // PayPal fields
   paymentId: String,
   payerId: String,
+  // Razorpay fields
+  razorpayOrderId: String,
+  razorpaySignature: String,
 });
 
 module.exports = mongoose.model("Order", OrderSchema);
