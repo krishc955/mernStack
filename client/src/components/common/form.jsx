@@ -113,10 +113,10 @@ function CommonForm({
     <>
       {hideButton ? (
         // When hideButton is true, don't wrap in form (parent handles it)
-        <div className="space-y-5">
+        <div className="space-y-6">
           {formControls.map((controlItem) => (
             <div className="space-y-2" key={controlItem.name}>
-              <Label className="text-sm font-semibold text-gray-700 tracking-wide">
+              <Label className="text-sm font-semibold text-brown-800 tracking-normal">
                 {controlItem.label}
               </Label>
               <div className="relative">
@@ -128,10 +128,10 @@ function CommonForm({
       ) : (
         // When hideButton is false, wrap in form with button
         <form onSubmit={onSubmit} className="space-y-6">
-          <div className="space-y-5">
+          <div className="space-y-6">
             {formControls.map((controlItem) => (
               <div className="space-y-2" key={controlItem.name}>
-                <Label className="text-sm font-semibold text-gray-700 tracking-wide">
+                <Label className="text-sm font-semibold text-brown-800 tracking-normal">
                   {controlItem.label}
                 </Label>
                 <div className="relative">
@@ -140,11 +140,11 @@ function CommonForm({
               </div>
             ))}
           </div>
-          <div className="pt-2">
+          <div className="pt-4">
             <Button 
               disabled={isBtnDisabled} 
               type="submit" 
-              className="w-full bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg hover:shadow-xl"
+              className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-md hover:shadow-lg"
             >
               {buttonText || "Submit"}
             </Button>

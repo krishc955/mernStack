@@ -1,3 +1,8 @@
+/* Import organized styles */
+@import './styles/globals.css';
+@import './styles/development.css';
+
+/* Tailwind CSS */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

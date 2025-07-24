@@ -45,67 +45,86 @@ function AuthRegister() {
   console.log(formData);
 
   return (
-    <div className="mx-auto w-full max-w-md space-y-6 relative">
-      {/* Close Button */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="absolute -top-4 -right-4 h-8 w-8 rounded-full hover:bg-gray-100 z-10"
-        onClick={handleClose}
-      >
-        <X className="h-4 w-4" />
-        <span className="sr-only">Close</span>
-      </Button>
+    <div className="min-h-screen bg-gradient-to-br from-beige-100 via-beige-50 to-beige-200 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Decorative Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-10 left-10 w-32 h-32 bg-gradient-to-r from-amber-200/20 to-orange-200/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-20 w-40 h-40 bg-gradient-to-r from-brown-200/15 to-beige-300/15 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-gradient-to-r from-amber-300/10 to-orange-300/10 rounded-full blur-2xl"></div>
+      </div>
+      
+      <div className="mx-auto w-full max-w-md space-y-6 relative z-10">{/* Close Button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute -top-4 -right-4 h-8 w-8 rounded-full hover:bg-beige-200 z-10 text-brown-700"
+          onClick={handleClose}
+        >
+          <X className="h-4 w-4" />
+          <span className="sr-only">Close</span>
+        </Button>
 
-      {/* Enhanced Header */}
-      <div className="text-center space-y-4">
-        {/* Vinora Logo */}
-        <div className="flex justify-center mb-6">
-          <img 
-            src={VinoraLogo} 
-            alt="Vinora" 
-            className="h-16 w-auto transition-transform duration-200 hover:scale-105"
+        {/* Enhanced Header with Large Logo */}
+        <div className="text-center space-y-6">
+          {/* Large Centered Logo */}
+          <div className="flex justify-center mb-8">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-amber-200/30 to-orange-200/30 rounded-full blur-xl"></div>
+              <img 
+                src={VinoraLogo} 
+                alt="Vinora Fashion" 
+                className="relative h-24 w-auto transition-transform duration-300 hover:scale-105 drop-shadow-lg"
+              />
+            </div>
+          </div>
+          
+          <div className="space-y-3">
+            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-brown-800 via-brown-700 to-amber-700 bg-clip-text text-transparent">
+              Join Vinora Fashion
+            </h1>
+            
+            <p className="text-brown-600 leading-relaxed text-base">
+              Create your account and discover the latest in fashion trends
+            </p>
+          </div>
+          
+          <p className="text-sm text-brown-600">
+            Already have an account?{" "}
+            <Link
+              className="font-semibold text-amber-700 hover:text-amber-600 hover:underline transition-colors"
+              to="/auth/login"
+            >
+              Sign in here
+            </Link>
+          </p>
+        </div>
+
+        {/* Enhanced Form Container */}
+        <div className="bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-beige-200/50">
+          <CommonForm
+            formControls={registerFormControls}
+            buttonText={"Create Vinora Account"}
+            formData={formData}
+            setFormData={setFormData}
+            onSubmit={onSubmit}
           />
         </div>
-        
-        <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-amber-800 to-amber-600 bg-clip-text text-transparent">
-          Create Your Account
-        </h1>
-        
-        <p className="text-amber-700 leading-relaxed">
-          Join thousands of satisfied customers and start your shopping journey today
-        </p>
-        
-        <p className="text-sm text-amber-600">
-          Already have an account?{" "}
-          <Link
-            className="font-medium text-amber-800 hover:text-amber-700 hover:underline transition-colors"
-            to="/auth/login"
-          >
-            Sign in here
-          </Link>
-        </p>
-      </div>
 
-      {/* Enhanced Form Container */}
-      <div className="bg-white p-8 rounded-2xl shadow-lg border border-amber-100">
-        <CommonForm
-          formControls={registerFormControls}
-          buttonText={"Create Account"}
-          formData={formData}
-          setFormData={setFormData}
-          onSubmit={onSubmit}
-        />
-      </div>
+        {/* Additional Info with Brand Colors */}
+        <div className="text-center bg-gradient-to-r from-beige-50/80 to-amber-50/80 backdrop-blur-sm p-4 rounded-xl border border-beige-200/50">
+          <p className="text-xs text-brown-600 mb-2">By creating an account, you agree to our</p>
+          <p className="text-xs space-x-2">
+            <Link to="#" className="text-amber-700 hover:underline font-medium">Terms of Service</Link>
+            <span className="text-brown-400">&</span>
+            <Link to="#" className="text-amber-700 hover:underline font-medium">Privacy Policy</Link>
+          </p>
+        </div>
 
-      {/* Additional Info */}
-      <div className="text-center text-xs text-amber-600 space-y-2">
-        <p>By creating an account, you agree to our</p>
-        <p>
-          <Link to="#" className="text-amber-800 hover:underline">Terms of Service</Link>
-          {" "}&{" "}
-          <Link to="#" className="text-amber-800 hover:underline">Privacy Policy</Link>
-        </p>
+        {/* Brand Footer */}
+        <div className="text-center text-xs text-brown-500 space-y-1">
+          <p className="font-medium">🌟 Fashion Forward • Quality First • Customer Focused 🌟</p>
+          <p>Join thousands of satisfied customers worldwide</p>
+        </div>
       </div>
     </div>
   );

@@ -3,9 +3,10 @@ import { Button } from "../ui/button";
 import { brandOptionsMap, categoryOptionsMap } from "@/config";
 import { Badge } from "../ui/badge";
 import { ChevronLeft, ChevronRight, Heart } from "lucide-react";
-import { useState } from "react";
+import { useState, memo } from "react";
+import LazyImage from "../common/LazyImage";
 
-function ShoppingProductTile({
+const ShoppingProductTile = memo(function ShoppingProductTile({
   product,
   handleGetProductDetails,
 }) {
@@ -54,7 +55,7 @@ function ShoppingProductTile({
 
           {productImages.length > 0 ? (
             <div className="relative h-[200px] md:h-[300px] overflow-hidden">
-              <img
+              <LazyImage
                 src={productImages[currentImageIndex]}
                 alt={`${product?.title} - Image ${currentImageIndex + 1}`}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
@@ -245,6 +246,6 @@ function ShoppingProductTile({
       </CardFooter>
     </Card>
   );
-}
+});
 
 export default ShoppingProductTile;

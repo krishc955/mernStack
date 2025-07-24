@@ -1,34 +1,47 @@
 import { Route, Routes } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
-import AuthLayout from "./components/auth/layout";
-import AuthLogin from "./pages/auth/login";
-import AuthRegister from "./pages/auth/register";
-import AdminLayout from "./components/admin-view/layout";
-import AdminDashboard from "./pages/admin-view/dashboard";
-import AdminProducts from "./pages/admin-view/products";
-import AdminOrders from "./pages/admin-view/orders";
-import AdminFeatures from "./pages/admin-view/features";
-import ShoppingLayout from "./components/shopping-view/layout";
-import NotFound from "./pages/not-found";
-import ShoppingHome from "./pages/shopping-view/home";
-import ShoppingListing from "./pages/shopping-view/listing";
-import ShoppingCheckout from "./pages/shopping-view/checkout";
-import ShoppingAccount from "./pages/shopping-view/account";
-import CheckAuth from "./components/common/check-auth";
-import UnauthPage from "./pages/unauth-page";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, Suspense, lazy } from "react";
 import { checkAuth } from "./store/auth-slice";
 import { Skeleton } from "@/components/ui/skeleton";
-import PaypalReturnPage from "./pages/shopping-view/paypal-return";
-import PaymentSuccessPage from "./pages/shopping-view/payment-success";
-import SearchProducts from "./pages/shopping-view/search";
-import AboutUs from "./pages/about/index.jsx";
-import Contact from "./pages/contact/index.jsx";
-import FAQ from "./pages/faq/index.jsx";
-import ShippingInfo from "./pages/shipping-info/index.jsx";
-import Returns from "./pages/returns/index.jsx";
-import SizeGuide from "./pages/size-guide/index.jsx";
+import CheckAuth from "./components/common/check-auth";
+
+// Lazy load components for better performance
+const AuthLayout = lazy(() => import("./components/auth/layout"));
+const AuthLogin = lazy(() => import("./pages/auth/login"));
+const AuthRegister = lazy(() => import("./pages/auth/register"));
+const AdminLayout = lazy(() => import("./components/admin-view/layout"));
+const AdminDashboard = lazy(() => import("./pages/admin-view/dashboard"));
+const AdminProducts = lazy(() => import("./pages/admin-view/products"));
+const AdminOrders = lazy(() => import("./pages/admin-view/orders"));
+const AdminFeatures = lazy(() => import("./pages/admin-view/features"));
+const ShoppingLayout = lazy(() => import("./components/shopping-view/layout"));
+const ShoppingHome = lazy(() => import("./pages/shopping-view/home"));
+const ShoppingListing = lazy(() => import("./pages/shopping-view/listing"));
+const ShoppingCheckout = lazy(() => import("./pages/shopping-view/checkout"));
+const ShoppingAccount = lazy(() => import("./pages/shopping-view/account"));
+const PaypalReturnPage = lazy(() => import("./pages/shopping-view/paypal-return"));
+const PaymentSuccessPage = lazy(() => import("./pages/shopping-view/payment-success"));
+const SearchProducts = lazy(() => import("./pages/shopping-view/search"));
+const AboutUs = lazy(() => import("./pages/about/index.jsx"));
+const Contact = lazy(() => import("./pages/contact/index.jsx"));
+const FAQ = lazy(() => import("./pages/faq/index.jsx"));
+const ShippingInfo = lazy(() => import("./pages/shipping-info/index.jsx"));
+const Returns = lazy(() => import("./pages/returns/index.jsx"));
+const SizeGuide = lazy(() => import("./pages/size-guide/index.jsx"));
+const NotFound = lazy(() => import("./pages/not-found"));
+const UnauthPage = lazy(() => import("./pages/unauth-page"));
+
+// Loading component
+const PageLoader = () => (
+  <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-beige-50 to-beige-100">
+    <div className="text-center space-y-4">
+      <Skeleton className="w-20 h-20 rounded-full mx-auto bg-beige-200" />
+      <Skeleton className="w-32 h-4 mx-auto bg-beige-200" />
+      <p className="text-brown-600 text-sm">Loading...</p>
+    </div>
+  </div>
+);
 
 function App() {
   const { user, isAuthenticated, isLoading } = useSelector(
@@ -40,14 +53,15 @@ function App() {
     dispatch(checkAuth());
   }, [dispatch]);
 
-  if (isLoading) return <Skeleton className="w-[800] bg-black h-[600px]" />;
+  if (isLoading) return <PageLoader />;
 
   console.log(isLoading, user);
 
   return (
     <HelmetProvider>
       <div className="flex flex-col overflow-hidden bg-white no-horizontal-scroll container-safe">
-      <Routes>
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
         <Route
           path="/"
           element={
@@ -121,6 +135,7 @@ function App() {
         <Route path="/unauth-page" element={<UnauthPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      </Suspense>
       </div>
     </HelmetProvider>
   );

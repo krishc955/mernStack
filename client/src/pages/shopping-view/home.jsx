@@ -14,7 +14,7 @@ import {
   WatchIcon,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchAllFilteredProducts,
@@ -54,125 +54,83 @@ function ShoppingHome() {
   const { toast } = useToast();
 
   // Function to extract dominant color from image edges
-  const extractImageEdgeColor = (imageUrl, index) => {
-    return new Promise((resolve) => {
+  // Optimized color extraction with memoization
+  const extractImageEdgeColor = useCallback(async (imageUrl, index) => {
+    try {
+      // Return cached color if available
+      if (imageColors[index]) return imageColors[index];
+      
       const img = new Image();
-      img.crossOrigin = 'anonymous';
+      img.crossOrigin = "anonymous";
       
-      img.onload = () => {
-        try {
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          
-          // Set canvas size to match image
-          canvas.width = img.width;
-          canvas.height = img.height;
-          
-          // Draw image to canvas
-          ctx.drawImage(img, 0, 0);
-          
-          // Sample pixels from the edges (outer 10% of each side)
-          const edgeWidth = Math.floor(img.width * 0.1);
-          const edgeHeight = Math.floor(img.height * 0.1);
-          
-          const edgePixels = [];
-          
-          // Sample from all four edges
-          // Top edge
-          for (let x = 0; x < img.width; x += 5) {
-            for (let y = 0; y < edgeHeight; y += 2) {
-              const pixelData = ctx.getImageData(x, y, 1, 1).data;
-              edgePixels.push([pixelData[0], pixelData[1], pixelData[2]]);
-            }
-          }
-          
-          // Bottom edge
-          for (let x = 0; x < img.width; x += 5) {
-            for (let y = img.height - edgeHeight; y < img.height; y += 2) {
-              const pixelData = ctx.getImageData(x, y, 1, 1).data;
-              edgePixels.push([pixelData[0], pixelData[1], pixelData[2]]);
-            }
-          }
-          
-          // Left edge
-          for (let x = 0; x < edgeWidth; x += 2) {
-            for (let y = 0; y < img.height; y += 5) {
-              const pixelData = ctx.getImageData(x, y, 1, 1).data;
-              edgePixels.push([pixelData[0], pixelData[1], pixelData[2]]);
-            }
-          }
-          
-          // Right edge
-          for (let x = img.width - edgeWidth; x < img.width; x += 2) {
-            for (let y = 0; y < img.height; y += 5) {
-              const pixelData = ctx.getImageData(x, y, 1, 1).data;
-              edgePixels.push([pixelData[0], pixelData[1], pixelData[2]]);
-            }
-          }
-          
-          // Calculate average color
-          if (edgePixels.length > 0) {
-            const avgColor = edgePixels.reduce(
-              (acc, pixel) => [
-                acc[0] + pixel[0],
-                acc[1] + pixel[1],
-                acc[2] + pixel[2]
-              ],
-              [0, 0, 0]
-            );
+      return new Promise((resolve) => {
+        img.onload = () => {
+          try {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 50; // Reduce canvas size for performance
+            canvas.height = 50;
             
-            const finalColor = [
-              Math.floor(avgColor[0] / edgePixels.length),
-              Math.floor(avgColor[1] / edgePixels.length),
-              Math.floor(avgColor[2] / edgePixels.length)
-            ];
+            ctx.drawImage(img, 0, 0, 50, 50);
+            const imageData = ctx.getImageData(0, 0, 50, 50).data;
             
-            // Create a gradient from the extracted color
-            const baseColor = `rgb(${finalColor[0]}, ${finalColor[1]}, ${finalColor[2]})`;
-            const lighterColor = `rgb(${Math.min(255, finalColor[0] + 20)}, ${Math.min(255, finalColor[1] + 20)}, ${Math.min(255, finalColor[2] + 20)})`;
-            const darkerColor = `rgb(${Math.max(0, finalColor[0] - 20)}, ${Math.max(0, finalColor[1] - 20)}, ${Math.max(0, finalColor[2] - 20)})`;
+            let r = 0, g = 0, b = 0, count = 0;
             
-            const gradient = `linear-gradient(135deg, ${lighterColor} 0%, ${baseColor} 50%, ${darkerColor} 100%)`;
+            // Sample fewer pixels for better performance
+            for (let i = 0; i < imageData.length; i += 16) { // Skip more pixels
+              r += imageData[i];
+              g += imageData[i + 1];
+              b += imageData[i + 2];
+              count++;
+            }
+            
+            r = Math.floor(r / count);
+            g = Math.floor(g / count);
+            b = Math.floor(b / count);
+            
+            const gradient = `linear-gradient(135deg, rgba(${r},${g},${b},0.1) 0%, rgba(${r},${g},${b},0.05) 100%)`;
             resolve(gradient);
-          } else {
-            // Fallback gradient
-            resolve('linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)');
+          } catch (error) {
+            resolve('linear-gradient(135deg, #c0ae8c 0%, #a68b5b 50%, #8b7355 100%)');
           }
-        } catch (error) {
-          console.error('Error extracting color:', error);
-          // Fallback gradient
-          resolve('linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)');
-        }
-      };
-      
-      img.onerror = () => {
-        // Fallback gradient
-        resolve('linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)');
-      };
-      
-      img.src = imageUrl;
-    });
-  };
-
-  // Extract colors when feature images are loaded
+        };
+        
+        img.onerror = () => {
+          resolve('linear-gradient(135deg, #c0ae8c 0%, #a68b5b 50%, #8b7355 100%)');
+        };
+        
+        img.src = imageUrl;
+      });
+    } catch (error) {
+      return 'linear-gradient(135deg, #c0ae8c 0%, #a68b5b 50%, #8b7355 100%)';
+    }
+  }, [imageColors]);  // Optimized color extraction with debouncing
   useEffect(() => {
     if (featureImageList && featureImageList.length > 0) {
-      featureImageList.forEach(async (slide, index) => {
-        if (slide?.image && !imageColors[index]) {
-          const color = await extractImageEdgeColor(slide.image, index);
-          setImageColors(prev => ({
-            ...prev,
-            [index]: color
-          }));
+      const extractColors = async () => {
+        for (let i = 0; i < Math.min(featureImageList.length, 3); i++) { // Limit to first 3 images
+          const slide = featureImageList[i];
+          if (slide?.image && !imageColors[i]) {
+            const color = await extractImageEdgeColor(slide.image, i);
+            setImageColors(prev => ({
+              ...prev,
+              [i]: color
+            }));
+          }
         }
-      });
+      };
+      
+      // Debounce the color extraction
+      const timeoutId = setTimeout(extractColors, 100);
+      return () => clearTimeout(timeoutId);
     }
-  }, [featureImageList]);
+  }, [featureImageList, extractImageEdgeColor]);
 
-  // Get background for current slide
-  const getCurrentBackground = (index) => {
-    return imageColors[index] || 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)';
-  };
+  // Memoize background getter - Pure beige background
+  const getCurrentBackground = useCallback((index) => {
+    // Always return beige gradient to match navbar
+    return 'linear-gradient(135deg, #c0ae8c 0%, #a68b5b 50%, #8b7355 100%)';
+  }, []);
 
   // Touch handlers for mobile swipe
   const minSwipeDistance = 50;
@@ -261,20 +219,28 @@ function ShoppingHome() {
     return () => clearInterval(timer);
   }, [featureImageList]);
 
+  // Optimize product fetching - only fetch featured products initially
   useEffect(() => {
     dispatch(
       fetchAllFilteredProducts({
         filterParams: {},
         sortParams: "price-lowtohigh",
+        limit: 8, // Limit initial load
       })
     );
   }, [dispatch]);
 
-  console.log(productList, "productList");
-
+  // Optimize feature images fetching
   useEffect(() => {
     dispatch(getFeatureImages());
   }, [dispatch]);
+
+  // Memoize filtered product lists for better performance
+  const featuredProducts = useMemo(() => {
+    return productList?.slice(0, 8) || [];
+  }, [productList]);
+
+  console.log(featuredProducts, "featuredProducts");
 
   return (
     <div className="flex flex-col min-h-screen" style={{ backgroundColor: '#faf8f2' }}>
@@ -307,7 +273,7 @@ function ShoppingHome() {
       
       {/* Mobile-Responsive Hero Slider with Touch Support - Larger Size */}
       <div 
-        className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[650px] xl:h-[700px] overflow-hidden select-none group"
+        className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[650px] xl:h-[700px] overflow-hidden select-none group bg-gradient-to-r from-beige-700 via-beige-600 to-beige-700"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
@@ -456,8 +422,8 @@ function ShoppingHome() {
               id="featured-products-scroll" 
               className="flex gap-4 sm:gap-6 overflow-x-auto pb-4 scrollbar-hide scroll-smooth"
             >
-              {productList && productList.length > 0
-                ? productList.map((productItem) => (
+              {featuredProducts && featuredProducts.length > 0
+                ? featuredProducts.map((productItem) => (
                     <div key={productItem._id} className="flex-shrink-0 w-72 sm:w-80">
                       <ShoppingProductTile
                         handleGetProductDetails={handleGetProductDetails}
@@ -469,7 +435,7 @@ function ShoppingHome() {
             </div>
             
             {/* Navigation Arrows - Brown with translucent background */}
-            {productList && productList.length > 1 && (
+            {featuredProducts && featuredProducts.length > 1 && (
               <>
                 <button
                   onClick={() => {
