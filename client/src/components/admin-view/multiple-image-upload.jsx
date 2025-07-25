@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import { Button } from "../ui/button";
 import axios from "axios";
 import { Skeleton } from "../ui/skeleton";
+import { API_BASE_URL } from "../../config/api";
 
 function MultipleImageUpload({
   imageFiles,
@@ -105,7 +106,7 @@ function MultipleImageUpload({
       data.append("my_file", file);
       
       const response = await axios.post(
-        "http://localhost:5000/api/admin/products/upload-image",
+        `${API_BASE_URL}/api/admin/products/upload-image`,
         data,
         {
           headers: {
@@ -153,7 +154,7 @@ function MultipleImageUpload({
     try {
       setImageLoadingState(true);
       const response = await axios.post(
-        "http://localhost:5000/api/admin/products/delete-image",
+        `${API_BASE_URL}/api/admin/products/delete-image`,
         { imageUrl }
       );
       
