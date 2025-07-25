@@ -6,15 +6,27 @@ console.log('🔑 Razorpay Config Debug (Updated):');
 console.log('KEY_ID:', process.env.RAZORPAY_KEY_ID ? `${process.env.RAZORPAY_KEY_ID.substring(0, 10)}...` : 'NOT FOUND');
 console.log('KEY_SECRET:', process.env.RAZORPAY_KEY_SECRET ? `${process.env.RAZORPAY_KEY_SECRET.substring(0, 5)}...` : 'NOT FOUND');
 
-// Initialize Razorpay instance
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID || "",
-  key_secret: process.env.RAZORPAY_KEY_SECRET || "",
-});
+// Initialize Razorpay instance only if credentials are available
+let razorpay = null;
+const isRazorpayConfigured = process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET;
+
+if (isRazorpayConfigured) {
+  razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
+  });
+  console.log('✅ Razorpay initialized successfully');
+} else {
+  console.log('⚠️ Razorpay not configured - payment functionality will be disabled');
+}
 
 // Create order
 const createOrder = async (orderData) => {
   try {
+    if (!isRazorpayConfigured) {
+      throw new Error('Razorpay is not configured. Please set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET environment variables.');
+    }
+
     console.log('🧪 Debug: Attempting to create order with current config...');
     console.log('Current KEY_ID:', process.env.RAZORPAY_KEY_ID ? `${process.env.RAZORPAY_KEY_ID.substring(0, 10)}...` : 'NOT FOUND');
     console.log('Current KEY_SECRET:', process.env.RAZORPAY_KEY_SECRET ? `${process.env.RAZORPAY_KEY_SECRET.substring(0, 5)}...` : 'NOT FOUND');
@@ -42,6 +54,10 @@ const createOrder = async (orderData) => {
 
 // Verify payment signature
 const verifyPaymentSignature = (razorpayOrderId, razorpayPaymentId, razorpaySignature) => {
+  if (!isRazorpayConfigured) {
+    throw new Error('Razorpay is not configured. Cannot verify payment signature.');
+  }
+
   const body = razorpayOrderId + "|" + razorpayPaymentId;
   const expectedSignature = crypto
     .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
@@ -54,6 +70,10 @@ const verifyPaymentSignature = (razorpayOrderId, razorpayPaymentId, razorpaySign
 // Get payment details
 const getPaymentDetails = async (paymentId) => {
   try {
+    if (!isRazorpayConfigured) {
+      throw new Error('Razorpay is not configured. Cannot fetch payment details.');
+    }
+
     const payment = await razorpay.payments.fetch(paymentId);
     return payment;
   } catch (error) {
@@ -66,4 +86,5 @@ module.exports = {
   createOrder,
   verifyPaymentSignature,
   getPaymentDetails,
+  isRazorpayConfigured,
 };

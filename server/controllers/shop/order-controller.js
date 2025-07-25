@@ -22,6 +22,14 @@ const createOrder = async (req, res) => {
     } = req.body;
 
     if (paymentMethod === "razorpay") {
+      // Check if Razorpay is configured
+      if (!razorpayHelper.isRazorpayConfigured) {
+        return res.status(503).json({
+          success: false,
+          message: "Razorpay payment is not available. Please contact support or try alternative payment methods.",
+        });
+      }
+
       // Handle Razorpay payment
       try {
         const newlyCreatedOrder = new Order({
@@ -199,6 +207,14 @@ const capturePayment = async (req, res) => {
 // New function for Razorpay payment verification
 const verifyRazorpayPayment = async (req, res) => {
   try {
+    // Check if Razorpay is configured
+    if (!razorpayHelper.isRazorpayConfigured) {
+      return res.status(503).json({
+        success: false,
+        message: "Razorpay payment verification is not available.",
+      });
+    }
+
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId } = req.body;
 
     // Verify the payment signature
