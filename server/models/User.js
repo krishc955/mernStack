@@ -13,11 +13,32 @@ const UserSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: function() {
+      return !this.isGoogleUser;
+    },
   },
   role: {
     type: String,
     default: "user",
+  },
+  // Google OAuth fields
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true,
+  },
+  profilePhoto: {
+    type: String,
+  },
+  firstName: {
+    type: String,
+  },
+  lastName: {
+    type: String,
+  },
+  isGoogleUser: {
+    type: Boolean,
+    default: false,
   },
 });
 

@@ -63,6 +63,10 @@ const loginUser = async (req, res) => {
         role: checkUser.role,
         email: checkUser.email,
         userName: checkUser.userName,
+        profilePhoto: checkUser.profilePhoto,
+        firstName: checkUser.firstName,
+        lastName: checkUser.lastName,
+        isGoogleUser: checkUser.isGoogleUser
       },
       process.env.JWT_SECRET || "CLIENT_SECRET_KEY",
       { expiresIn: "60m" }
@@ -76,6 +80,10 @@ const loginUser = async (req, res) => {
         role: checkUser.role,
         id: checkUser._id,
         userName: checkUser.userName,
+        profilePhoto: checkUser.profilePhoto,
+        firstName: checkUser.firstName,
+        lastName: checkUser.lastName,
+        isGoogleUser: checkUser.isGoogleUser
       },
     });
   } catch (e) {
@@ -107,7 +115,15 @@ const authMiddleware = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "CLIENT_SECRET_KEY");
-    req.user = decoded;
+    // Fetch fresh user data to include profile photo
+    const user = await User.findById(decoded.id).select('-password');
+    req.user = {
+      ...decoded,
+      profilePhoto: user?.profilePhoto,
+      firstName: user?.firstName,
+      lastName: user?.lastName,
+      isGoogleUser: user?.isGoogleUser
+    };
     next();
   } catch (error) {
     res.status(401).json({
@@ -117,4 +133,51 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
-module.exports = { registerUser, loginUser, logoutUser, authMiddleware };
+// Google OAuth Success Handler
+const googleAuthSuccess = async (req, res) => {
+  try {
+    const user = req.user;
+    console.log('🎉 Google OAuth Success for user:', user.email);
+    
+    const token = jwt.sign(
+      {
+        id: user._id,
+        role: user.role,
+        email: user.email,
+        userName: user.userName,
+        profilePhoto: user.profilePhoto,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        isGoogleUser: user.isGoogleUser
+      },
+      process.env.JWT_SECRET || "CLIENT_SECRET_KEY",
+      { expiresIn: "60m" }
+    );
+
+    res.cookie("token", token, { httpOnly: true, secure: false });
+    
+    // Redirect to frontend with success
+    const frontendURL = process.env.CLIENT_BASE_URL || 'http://localhost:5173';
+    res.redirect(`${frontendURL}/shop/home?auth=success`);
+  } catch (error) {
+    console.error('❌ Google OAuth Success Error:', error);
+    const frontendURL = process.env.CLIENT_BASE_URL || 'http://localhost:5173';
+    res.redirect(`${frontendURL}/auth/login?error=oauth_error`);
+  }
+};
+
+// Google OAuth Failure Handler
+const googleAuthFailure = (req, res) => {
+  console.log('❌ Google OAuth failed');
+  const frontendURL = process.env.CLIENT_BASE_URL || 'http://localhost:5173';
+  res.redirect(`${frontendURL}/auth/login?error=google_auth_failed`);
+};
+
+module.exports = { 
+  registerUser, 
+  loginUser, 
+  logoutUser, 
+  authMiddleware,
+  googleAuthSuccess,
+  googleAuthFailure 
+};

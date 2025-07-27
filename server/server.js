@@ -1,8 +1,20 @@
+require("dotenv").config();
+console.log('🚀 Starting server...');
+console.log('📋 Environment check:');
+console.log('   PORT:', process.env.PORT);
+console.log('   NODE_ENV:', process.env.NODE_ENV);
+console.log('   MONGODB_URI:', process.env.MONGODB_URI ? 'Set ✅' : 'Missing ❌');
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-require("dotenv").config();
+const session = require("express-session");
+
+console.log('📦 Loading passport configuration...');
+const passport = require("./config/passport");
+console.log('✅ Passport loaded successfully');
+
 // Updated Razorpay keys - trigger restart
 const authRouter = require("./routes/auth/auth-routes");
 const adminProductsRouter = require("./routes/admin/products-routes");
@@ -81,6 +93,22 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+// Session configuration for OAuth
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'your_session_secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
+
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use("/api/auth", authRouter);
 app.use("/api/admin/products", adminProductsRouter);
 app.use("/api/admin/orders", adminOrderRouter);
