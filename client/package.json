@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node setup-favicon.js && vite build",
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "setup-branding": "node setup-favicon.js",

@@ -96,6 +96,9 @@ jspm_packages/
 .cache/
 public
 
+# Exception for favicon
+!client/public/favicon.png
+
 # Storybook build outputs
 .out
 .storybook-out
