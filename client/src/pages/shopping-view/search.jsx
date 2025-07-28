@@ -103,22 +103,30 @@ function SearchProducts() {
   console.log(searchResults, "searchResults");
 
   return (
-    <div className="container mx-auto md:px-6 px-4 py-8">
-      <div className="flex justify-center mb-8">
+    <div className="container mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8">
+      {/* Mobile-optimized search bar */}
+      <div className="flex justify-center mb-6 sm:mb-8">
         <div className="w-full flex items-center">
           <Input
             value={keyword}
             name="keyword"
             onChange={(event) => setKeyword(event.target.value)}
-            className="py-6"
+            className="py-3 sm:py-4 md:py-6 text-sm sm:text-base"
             placeholder="Search Products..."
           />
         </div>
       </div>
+      
+      {/* No results message - Mobile responsive */}
       {!searchResults.length ? (
-        <h1 className="text-5xl font-extrabold">No result found!</h1>
+        <div className="text-center py-8 sm:py-12">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-600">No results found!</h1>
+          <p className="text-sm sm:text-base text-gray-500 mt-2">Try searching with different keywords</p>
+        </div>
       ) : null}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+      
+      {/* Responsive search results grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-3 md:gap-4 lg:gap-5">
         {searchResults.map((item) => (
           <ShoppingProductTile
             product={item}

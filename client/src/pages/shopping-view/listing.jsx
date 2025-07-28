@@ -177,7 +177,9 @@ function ShoppingListing() {
   console.log(productList, "productListproductListproductList");
 
   return (
-    <div className="grid grid-cols-1 gap-6 p-4 md:p-6">
+    <div className="grid grid-cols-1 gap-4 sm:gap-6 p-3 sm:p-4 md:p-6"
+      style={{ backgroundColor: '#faf8f2' }} // Match the brown-beige theme
+    >
       <SEOHead 
         title={`${filters?.category && Array.isArray(filters.category) && filters.category.length > 0 ? filters.category[0].charAt(0).toUpperCase() + filters.category[0].slice(1) + ' Products - ' : ''}Shop Premium Products at Vinora | Best Online Store India`}
         description={`Discover ${filters?.category && Array.isArray(filters.category) && filters.category.length > 0 ? filters.category[0] + ' ' : ''}premium products at Vinora. Shop quality ${filters?.category && Array.isArray(filters.category) && filters.category.length > 0 ? filters.category[0] : 'items'} with fast delivery, secure payments & authentic brands. Free shipping across India.`}
@@ -214,65 +216,132 @@ function ShoppingListing() {
         }}
       />
       <div className="bg-background w-full rounded-lg shadow-sm">
-        <div className="p-4 border-b flex items-center justify-between">
-          <h2 className="text-lg font-extrabold">All Products</h2>
-          <div className="flex items-center gap-3">
-            <span className="text-muted-foreground">
-              {productList?.length} Products
-            </span>
+        {/* Mobile-first responsive header */}
+        <div className="p-3 sm:p-4 border-b">
+          {/* Mobile Layout - Stack vertically */}
+          <div className="block sm:hidden space-y-3">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-extrabold text-gray-900">All Products</h2>
+              <span className="text-sm text-muted-foreground">
+                {productList?.length} Items
+              </span>
+            </div>
             
-            {/* Filter Button */}
-            <Dialog open={openFilterDialog} onOpenChange={setOpenFilterDialog}>
-              <DialogTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex items-center gap-2 bg-amber-50 border-amber-200 text-amber-800 hover:bg-amber-100 hover:text-amber-900"
-                >
-                  <Filter className="h-4 w-4" />
-                  <span>Filters</span>
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle className="flex items-center gap-2 text-amber-800">
-                    <Filter className="h-5 w-5" />
-                    Filter Products
-                  </DialogTitle>
-                </DialogHeader>
-                <div className="max-h-[500px] overflow-y-auto">
-                  <ProductFilter filters={filters} handleFilter={handleFilter} />
-                </div>
-              </DialogContent>
-            </Dialog>
+            {/* Filter and Sort buttons row for mobile */}
+            <div className="flex items-center gap-2 w-full">
+              <Dialog open={openFilterDialog} onOpenChange={setOpenFilterDialog}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 flex items-center justify-center gap-2 bg-amber-50 border-amber-200 text-amber-800 hover:bg-amber-100 hover:text-amber-900 py-2"
+                  >
+                    <Filter className="h-4 w-4" />
+                    <span className="text-sm">Filters</span>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2 text-amber-800">
+                      <Filter className="h-5 w-5" />
+                      Filter Products
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="max-h-[500px] overflow-y-auto">
+                    <ProductFilter filters={filters} handleFilter={handleFilter} />
+                  </div>
+                </DialogContent>
+              </Dialog>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex items-center gap-1"
-                >
-                  <ArrowUpDownIcon className="h-4 w-4" />
-                  <span>Sort by</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[200px]">
-                <DropdownMenuRadioGroup value={sort} onValueChange={handleSort}>
-                  {sortOptions.map((sortItem) => (
-                    <DropdownMenuRadioItem
-                      value={sortItem.id}
-                      key={sortItem.id}
-                    >
-                      {sortItem.label}
-                    </DropdownMenuRadioItem>
-                  ))}
-                </DropdownMenuRadioGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 flex items-center justify-center gap-1 py-2"
+                  >
+                    <ArrowUpDownIcon className="h-4 w-4" />
+                    <span className="text-sm">Sort</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-[200px]">
+                  <DropdownMenuRadioGroup value={sort} onValueChange={handleSort}>
+                    {sortOptions.map((sortItem) => (
+                      <DropdownMenuRadioItem
+                        value={sortItem.id}
+                        key={sortItem.id}
+                      >
+                        {sortItem.label}
+                      </DropdownMenuRadioItem>
+                    ))}
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+
+          {/* Desktop Layout - Single row */}
+          <div className="hidden sm:flex items-center justify-between">
+            <h2 className="text-lg font-extrabold text-gray-900">All Products</h2>
+            <div className="flex items-center gap-3">
+              <span className="text-muted-foreground">
+                {productList?.length} Products
+              </span>
+              
+              {/* Filter Button */}
+              <Dialog open={openFilterDialog} onOpenChange={setOpenFilterDialog}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2 bg-amber-50 border-amber-200 text-amber-800 hover:bg-amber-100 hover:text-amber-900"
+                  >
+                    <Filter className="h-4 w-4" />
+                    <span>Filters</span>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2 text-amber-800">
+                      <Filter className="h-5 w-5" />
+                      Filter Products
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="max-h-[500px] overflow-y-auto">
+                    <ProductFilter filters={filters} handleFilter={handleFilter} />
+                  </div>
+                </DialogContent>
+              </Dialog>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-1"
+                  >
+                    <ArrowUpDownIcon className="h-4 w-4" />
+                    <span>Sort by</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-[200px]">
+                  <DropdownMenuRadioGroup value={sort} onValueChange={handleSort}>
+                    {sortOptions.map((sortItem) => (
+                      <DropdownMenuRadioItem
+                        value={sortItem.id}
+                        key={sortItem.id}
+                      >
+                        {sortItem.label}
+                      </DropdownMenuRadioItem>
+                    ))}
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4 p-4">
+        {/* Responsive Product Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-3 md:gap-4 p-3 sm:p-4">
           {productList && productList.length > 0
             ? productList.map((productItem) => (
                 <ShoppingProductTile

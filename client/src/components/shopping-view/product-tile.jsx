@@ -36,7 +36,7 @@ const ShoppingProductTile = memo(function ShoppingProductTile({
 
   return (
     <Card 
-      className="w-full max-w-sm mx-auto border border-beige-300 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 overflow-hidden group bg-white"
+      className="w-full max-w-sm mx-auto border border-beige-300 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2 overflow-hidden group bg-white"
     >
       <div onClick={() => handleGetProductDetails(product?._id)} className="cursor-pointer">
         <div className="relative overflow-hidden">
@@ -54,7 +54,7 @@ const ShoppingProductTile = memo(function ShoppingProductTile({
           </button>
 
           {productImages.length > 0 ? (
-            <div className="relative h-[200px] md:h-[300px] overflow-hidden">
+            <div className="relative h-[160px] sm:h-[200px] md:h-[250px] lg:h-[300px] overflow-hidden">
               <LazyImage
                 src={productImages[currentImageIndex]}
                 alt={`${product?.title} - Image ${currentImageIndex + 1}`}
@@ -65,8 +65,8 @@ const ShoppingProductTile = memo(function ShoppingProductTile({
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </div>
           ) : (
-            <div className="w-full h-[200px] md:h-[300px] flex items-center justify-center bg-gradient-to-br from-beige-200 to-beige-100">
-              <span className="text-brown-600 text-lg font-medium">No Image</span>
+            <div className="w-full h-[160px] sm:h-[200px] md:h-[250px] lg:h-[300px] flex items-center justify-center bg-gradient-to-br from-beige-200 to-beige-100">
+              <span className="text-brown-600 text-sm sm:text-base lg:text-lg font-medium">No Image</span>
             </div>
           )}
 
@@ -134,82 +134,84 @@ const ShoppingProductTile = memo(function ShoppingProductTile({
         </div>
         
         {/* Card Content */}
-        <CardContent className="p-4 md:p-6 bg-white">
+        <CardContent className="p-3 sm:p-4 md:p-6 bg-white">
           <div className="space-y-2 md:space-y-3">
-            <h2 className="text-lg md:text-xl font-bold text-brown-800 line-clamp-2 leading-tight group-hover:text-brown-900 transition-colors">
+            {/* Product Title - More responsive sizing */}
+            <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-brown-800 line-clamp-2 leading-tight group-hover:text-brown-900 transition-colors">
               {product?.title}
             </h2>
             
-            <div className="flex items-center justify-between text-xs md:text-sm">
-              <span className="px-2 py-1 md:px-3 md:py-1 rounded-full bg-brown-100 text-brown-700 font-medium">
+            {/* Category and Brand badges - Better mobile layout */}
+            <div className="flex items-center justify-between text-xs sm:text-xs md:text-sm gap-1">
+              <span className="px-1.5 py-0.5 sm:px-2 sm:py-1 md:px-3 md:py-1 rounded-full bg-brown-100 text-brown-700 font-medium text-xs truncate flex-1 text-center">
                 {categoryOptionsMap[product?.category]}
               </span>
-              <span className="px-2 py-1 md:px-3 md:py-1 rounded-full bg-beige-100 text-beige-700 font-medium">
+              <span className="px-1.5 py-0.5 sm:px-2 sm:py-1 md:px-3 md:py-1 rounded-full bg-beige-100 text-beige-700 font-medium text-xs truncate flex-1 text-center">
                 {brandOptionsMap[product?.brand]}
               </span>
             </div>
 
-            {/* Variant Colors */}
+            {/* Variant Colors - Mobile optimized */}
             {product?.variants && product.variants.length > 0 && (
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-gray-600">Available Colors:</span>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-gray-600 text-xs">Colors:</span>
                 <div className="flex items-center space-x-1">
-                  {product.variants.slice(0, 4).map((variant, index) => (
+                  {product.variants.slice(0, 3).map((variant, index) => (
                     <div
                       key={index}
-                      className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
+                      className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border-2 border-white shadow-sm"
                       style={{ backgroundColor: variant.colorCode }}
                       title={variant.color}
                     />
                   ))}
-                  {product.variants.length > 4 && (
+                  {product.variants.length > 3 && (
                     <span className="text-xs text-gray-500 ml-1">
-                      +{product.variants.length - 4}
+                      +{product.variants.length - 3}
                     </span>
                   )}
                 </div>
               </div>
             )}
 
-            {/* Available Sizes */}
+            {/* Available Sizes - Mobile optimized */}
             {product?.variants && product.variants.length > 0 && (
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-gray-600">Sizes:</span>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-gray-600">Sizes:</span>
                 <div className="flex items-center space-x-1">
                   {[...new Set(product.variants.flatMap(v => v.sizes.map(s => s.size)))]
                     .sort()
-                    .slice(0, 5)
+                    .slice(0, 3)
                     .map((size, index) => (
                       <span
                         key={index}
-                        className="text-xs px-1.5 py-0.5 bg-gray-100 text-gray-700 rounded"
+                        className="text-xs px-1 py-0.5 bg-gray-100 text-gray-700 rounded"
                       >
                         {size}
                       </span>
                     ))}
-                  {[...new Set(product.variants.flatMap(v => v.sizes.map(s => s.size)))].length > 5 && (
+                  {[...new Set(product.variants.flatMap(v => v.sizes.map(s => s.size)))].length > 3 && (
                     <span className="text-xs text-gray-500">
-                      +{[...new Set(product.variants.flatMap(v => v.sizes.map(s => s.size)))].length - 5}
+                      +{[...new Set(product.variants.flatMap(v => v.sizes.map(s => s.size)))].length - 3}
                     </span>
                   )}
                 </div>
               </div>
             )}
             
-            {/* Pricing */}
+            {/* Pricing - Mobile optimized */}
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-1 md:space-x-2">
+              <div className="flex items-center space-x-1 sm:space-x-2">
                 {product?.salePrice > 0 ? (
                   <>
-                    <span className="text-lg md:text-2xl font-bold text-brown-800">
+                    <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold text-brown-800">
                       ₹{product?.salePrice?.toLocaleString('en-IN')}
                     </span>
-                    <span className="text-sm md:text-lg text-brown-500 line-through">
+                    <span className="text-xs sm:text-sm md:text-base text-brown-500 line-through">
                       ₹{product?.price?.toLocaleString('en-IN')}
                     </span>
                   </>
                 ) : (
-                  <span className="text-lg md:text-2xl font-bold text-brown-800">
+                  <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold text-brown-800">
                     ₹{product?.price?.toLocaleString('en-IN')}
                   </span>
                 )}
@@ -217,7 +219,7 @@ const ShoppingProductTile = memo(function ShoppingProductTile({
               
               {/* Discount Badge */}
               {product?.salePrice > 0 && (
-                <span className="px-1.5 py-0.5 md:px-2 md:py-1 rounded-full bg-brown-100 text-brown-700 text-[10px] md:text-xs font-semibold">
+                <span className="px-1 py-0.5 sm:px-1.5 sm:py-0.5 md:px-2 md:py-1 rounded-full bg-brown-100 text-brown-700 text-[9px] sm:text-[10px] md:text-xs font-semibold">
                   {Math.round(((product?.price - product?.salePrice) / product?.price) * 100)}% OFF
                 </span>
               )}
@@ -226,10 +228,10 @@ const ShoppingProductTile = memo(function ShoppingProductTile({
         </CardContent>
       </div>
       
-      {/* Card Footer */}
-      <CardFooter className="p-4 pt-0 md:p-6 md:pt-0 bg-beige-50/50">
+      {/* Card Footer - Mobile optimized */}
+      <CardFooter className="p-2 sm:p-3 md:p-4 pt-0 md:pt-0 bg-beige-50/50">
         {product?.totalStock === 0 ? (
-          <Button className="w-full bg-neutral-400 hover:bg-neutral-500 text-white font-semibold py-2 md:py-3 rounded-lg cursor-not-allowed transition-all duration-200 text-sm">
+          <Button className="w-full bg-neutral-400 hover:bg-neutral-500 text-white font-semibold py-1.5 sm:py-2 md:py-3 rounded-lg cursor-not-allowed transition-all duration-200 text-xs sm:text-sm">
             Out Of Stock
           </Button>
         ) : (
@@ -238,7 +240,7 @@ const ShoppingProductTile = memo(function ShoppingProductTile({
               e.stopPropagation();
               handleGetProductDetails(product?._id);
             }}
-            className="w-full bg-gradient-to-r from-brown-600 to-brown-700 hover:from-brown-700 hover:to-brown-800 text-white font-semibold py-2 md:py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 text-sm"
+            className="w-full bg-gradient-to-r from-brown-600 to-brown-700 hover:from-brown-700 hover:to-brown-800 text-white font-semibold py-1.5 sm:py-2 md:py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 text-xs sm:text-sm"
           >
             Buy Now
           </Button>
