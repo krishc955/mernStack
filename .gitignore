@@ -103,3 +103,31 @@ public
 # Temporary folders
 tmp/
 temp/
+
+# Environment Variables - Exclude ALL .env files except templates
+.env
+.env.local
+.env.*.local
+*.env
+**/server/.env
+**/client/.env
+
+# But allow template files
+!.env.example
+!*.env.example
+!.env.development
+!.env.production  
+!.env.render.production
+!.env.vercel.production
+
+# Production secrets (contains actual API keys and secrets)
+PRODUCTION_SECRETS_LOCAL_ONLY.txt
+*.secrets.txt
+*_SECRETS_*
+
+# Documentation with sensitive data
+DEPLOYMENT_CHECKLIST.md
+GOOGLE_OAUTH_PRODUCTION_SETUP.md
+*_CHECKLIST.md
+RENDER_ENV_VARIABLES.txt
+RENDER_ERROR_FIX.md
