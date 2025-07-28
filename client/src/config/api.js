@@ -19,7 +19,7 @@ const getApiBaseUrl = () => {
   if (import.meta.env.MODE === 'production') {
     return 'https://mernstack-7sfn.onrender.com'; // Your Render backend URL
   } else {
-    return 'http://localhost:5001'; // Development backend
+    return 'http://localhost:5000'; // Development backend
   }
 };
 
