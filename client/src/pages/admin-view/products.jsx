@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
@@ -52,6 +53,9 @@ function AdminProducts() {
   function onSubmit(event) {
     event.preventDefault();
 
+    console.log("📤 Submitting form with variants:", variants);
+    console.log("📤 Current edit mode:", currentEditedId !== null ? 'EDIT' : 'ADD');
+
     // Calculate total stock from variants
     const totalStockFromVariants = variants.reduce((total, variant) => {
       return total + variant.sizes.reduce((variantTotal, size) => variantTotal + size.stock, 0);
@@ -61,7 +65,9 @@ function AdminProducts() {
     const availableColors = [...new Set(variants.map(v => v.color))];
     const availableSizes = [...new Set(variants.flatMap(v => v.sizes.map(s => s.size)))];
 
-    // Prepare form data with multiple images and variants
+    console.log("📤 Calculated total stock:", totalStockFromVariants);
+    console.log("📤 Available colors:", availableColors);
+    console.log("📤 Available sizes:", availableSizes);
     const submitData = {
       ...formData,
       image: uploadedImageUrls[0] || "", // First image as primary image for backward compatibility
@@ -114,6 +120,9 @@ function AdminProducts() {
   }
 
   function populateEditData(product) {
+    console.log("🔧 Populating edit data for product:", product._id);
+    console.log("🔧 Product variants found:", product.variants);
+    
     setFormData(product);
     setCurrentEditedId(product._id);
     
@@ -126,8 +135,10 @@ function AdminProducts() {
     
     // Handle existing variants
     if (product.variants && product.variants.length > 0) {
+      console.log("🔧 Setting variants to:", product.variants);
       setVariants(product.variants);
     } else {
+      console.log("🔧 No variants found, setting empty array");
       setVariants([]);
     }
     
@@ -357,16 +368,23 @@ function AdminProducts() {
           }
         }}
       >
-        <SheetContent side="right" className="w-full sm:w-[600px] lg:w-[800px] overflow-auto p-0">
-          <div className="p-4 sm:p-6">
-            <SheetHeader className="mb-6">
-              <SheetTitle className="text-lg sm:text-xl">
+        <SheetContent side="right" className="w-full max-w-full h-screen overflow-auto p-0 sm:max-w-[95vw] md:max-w-[90vw] lg:max-w-[85vw] xl:max-w-[80vw]">
+          <div className="p-3 sm:p-4 md:p-6 h-full">
+            <SheetHeader className="mb-4 sm:mb-6 sticky top-0 bg-white z-10 pb-3 border-b">
+              <SheetTitle className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">
                 {currentEditedId !== null ? "Edit Product" : "Add New Product"}
               </SheetTitle>
+              <SheetDescription className="text-sm text-gray-600">
+                {currentEditedId !== null 
+                  ? "Update product details, images, and variants" 
+                  : "Add a new product with images and variants to your store"
+                }
+              </SheetDescription>
             </SheetHeader>
             
             {/* Multiple Image Upload */}
-            <div className="mb-6">
+            <div className="mb-4 sm:mb-6">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">Product Images</h3>
               <MultipleImageUpload
                 imageFiles={imageFiles}
                 setImageFiles={setImageFiles}
@@ -379,35 +397,46 @@ function AdminProducts() {
             </div>
 
             {/* Product Form */}
-            <form onSubmit={onSubmit} className="space-y-6">
-              <div className="space-y-6">
-                <CommonForm
-                  formData={formData}
-                  setFormData={setFormData}
-                  formControls={addProductFormElements}
-                  hideButton={true} // Hide the button from CommonForm
-                />
+            <form onSubmit={onSubmit} className="space-y-4 sm:space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 
-                {/* Inventory Management */}
-                <div className="border-t pt-6">
-                  <div className="mb-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Inventory Management</h3>
-                    <p className="text-sm text-gray-600">
+                {/* Basic Product Information */}
+                <div className="lg:col-span-2">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 border-b pb-2">Basic Information</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <CommonForm
+                      formData={formData}
+                      setFormData={setFormData}
+                      formControls={addProductFormElements}
+                      hideButton={true} // Hide the button from CommonForm
+                    />
+                  </div>
+                </div>
+                
+                {/* Inventory Management - Full width for better visibility */}
+                <div className="lg:col-span-2 border-t pt-4 sm:pt-6">
+                  <div className="mb-4 sm:mb-6">
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Inventory Management</h3>
+                    <p className="text-sm text-gray-600 mb-4">
                       Manage stock levels by adding color and size variants. Total stock is automatically calculated from all variants.
                     </p>
                   </div>
-                  <ProductVariants
-                    variants={variants}
-                    onVariantsChange={setVariants}
-                  />
+                  
+                  {/* Variants section with better spacing */}
+                  <div className="bg-gray-50 rounded-lg p-4 sm:p-6">
+                    <ProductVariants
+                      variants={variants}
+                      onVariantsChange={setVariants}
+                    />
+                  </div>
                 </div>
                 
-                {/* Submit Button - Moved to bottom */}
-                <div className="border-t pt-6">
+                {/* Submit Button - Sticky at bottom for mobile */}
+                <div className="lg:col-span-2 border-t pt-4 sm:pt-6 sticky bottom-0 bg-white z-10 mt-auto">
                   <Button 
                     type="submit"
                     disabled={!isFormValid()} 
-                    className="w-full bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg hover:shadow-xl"
+                    className="w-full bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-semibold py-3 sm:py-4 px-4 sm:px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg hover:shadow-xl text-sm sm:text-base"
                   >
                     {currentEditedId !== null ? "Update Product" : "Add Product"}
                   </Button>

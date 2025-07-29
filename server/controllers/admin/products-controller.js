@@ -157,7 +157,10 @@ const addProduct = async (req, res) => {
       title,
       description,
       category,
-      brand,
+      brand, // Now represents fabric
+      fabric, // Additional fabric field
+      stitchType, // New field for stitch type
+      occasion, // New field for occasion
       price,
       salePrice,
       averageReview,
@@ -181,7 +184,10 @@ const addProduct = async (req, res) => {
       title,
       description,
       category,
-      brand,
+      brand, // Now represents fabric
+      fabric: fabric || brand, // Additional fabric field
+      stitchType: stitchType || "stitched", // Default to stitched
+      occasion: occasion || "casual", // Default to casual
       price,
       salePrice,
       totalStock: calculatedTotalStock, // Use calculated stock from variants
@@ -233,7 +239,10 @@ const editProduct = async (req, res) => {
       title,
       description,
       category,
-      brand,
+      brand, // Now represents fabric
+      fabric, // Additional fabric field
+      stitchType, // New field for stitch type
+      occasion, // New field for occasion
       price,
       salePrice,
       averageReview,
@@ -253,6 +262,9 @@ const editProduct = async (req, res) => {
     findProduct.description = description || findProduct.description;
     findProduct.category = category || findProduct.category;
     findProduct.brand = brand || findProduct.brand;
+    findProduct.fabric = fabric || brand || findProduct.fabric;
+    findProduct.stitchType = stitchType || findProduct.stitchType;
+    findProduct.occasion = occasion || findProduct.occasion;
     findProduct.price = price === "" ? 0 : price || findProduct.price;
     findProduct.salePrice =
       salePrice === "" ? 0 : salePrice || findProduct.salePrice;

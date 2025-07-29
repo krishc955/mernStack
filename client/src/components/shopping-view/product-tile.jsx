@@ -1,6 +1,6 @@
 import { Card, CardContent, CardFooter } from "../ui/card";
 import { Button } from "../ui/button";
-import { brandOptionsMap, categoryOptionsMap } from "@/config";
+import { fabricOptionsMap, categoryOptionsMap } from "@/config";
 import { Badge } from "../ui/badge";
 import { ChevronLeft, ChevronRight, Heart } from "lucide-react";
 import { useState, memo } from "react";
@@ -147,7 +147,7 @@ const ShoppingProductTile = memo(function ShoppingProductTile({
                 {categoryOptionsMap[product?.category]}
               </span>
               <span className="px-1.5 py-0.5 sm:px-2 sm:py-1 md:px-3 md:py-1 rounded-full bg-beige-100 text-beige-700 font-medium text-xs truncate flex-1 text-center">
-                {brandOptionsMap[product?.brand]}
+                {fabricOptionsMap[product?.brand] || product?.brand}
               </span>
             </div>
 

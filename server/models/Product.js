@@ -28,8 +28,11 @@ const ProductSchema = new mongoose.Schema(
     images: [String], // New field for multiple images
     title: String,
     description: String,
-    category: String,
-    brand: String,
+    category: String, // suits, sarees, kurtas, jackets, shawls, etc.
+    brand: String, // Now represents fabric: cotton, silk, chiffon, etc.
+    fabric: String, // Additional fabric field for backward compatibility
+    stitchType: String, // stitched, unstitched, semi-stitched
+    occasion: String, // casual, formal, wedding, party, festival, office
     price: Number,
     salePrice: Number,
     totalStock: Number, // Keep for backward compatibility

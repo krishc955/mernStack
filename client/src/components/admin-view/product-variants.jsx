@@ -116,16 +116,56 @@ function ProductVariants({ variants = [], onVariantsChange }) {
   };
 
   const handleVariantStockUpdate = (variantIndex, sizeIndex, newStock) => {
-    const updatedVariants = [...variants];
-    updatedVariants[variantIndex].sizes[sizeIndex].stock = parseInt(newStock) || 0;
+    console.log('🔄 Stock Update:', { variantIndex, sizeIndex, newStock });
+    const stockValue = newStock === '' ? 0 : parseInt(newStock) || 0;
+    
+    // Create a deep copy of variants to avoid mutation issues
+    const updatedVariants = variants.map((variant, vIndex) => {
+      if (vIndex === variantIndex) {
+        return {
+          ...variant,
+          sizes: variant.sizes.map((size, sIndex) => {
+            if (sIndex === sizeIndex) {
+              return {
+                ...size,
+                stock: stockValue
+              };
+            }
+            return { ...size };
+          })
+        };
+      }
+      return {
+        ...variant,
+        sizes: variant.sizes.map(size => ({ ...size }))
+      };
+    });
+    
+    console.log('✅ Updated variants:', updatedVariants);
     onVariantsChange(updatedVariants);
   };
 
   const handleBulkStockUpdate = (variantIndex, stockValue) => {
-    const updatedVariants = [...variants];
-    updatedVariants[variantIndex].sizes.forEach(size => {
-      size.stock = parseInt(stockValue) || 0;
+    const stockNum = stockValue === '' ? 0 : parseInt(stockValue) || 0;
+    
+    // Create a deep copy of variants to avoid mutation issues
+    const updatedVariants = variants.map((variant, vIndex) => {
+      if (vIndex === variantIndex) {
+        return {
+          ...variant,
+          sizes: variant.sizes.map(size => ({
+            ...size,
+            stock: stockNum
+          }))
+        };
+      }
+      return {
+        ...variant,
+        sizes: variant.sizes.map(size => ({ ...size }))
+      };
     });
+    
+    console.log('✅ Bulk updated variant:', updatedVariants[variantIndex]);
     onVariantsChange(updatedVariants);
   };
 
@@ -232,7 +272,7 @@ function ProductVariants({ variants = [], onVariantsChange }) {
             {/* Size Selection */}
             <div className="space-y-3">
               <Label className="text-sm font-medium">Select Sizes</Label>
-              <div className="grid grid-cols-6 gap-2">
+              <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
                 {sizeOptions.map((size) => (
                   <Button
                     key={size.id}
@@ -240,7 +280,7 @@ function ProductVariants({ variants = [], onVariantsChange }) {
                     variant={selectedSizes.includes(size.id) ? "default" : "outline"}
                     size="sm"
                     onClick={() => handleSizeToggle(size.id)}
-                    className="h-10 text-sm"
+                    className="h-10 text-xs sm:text-sm"
                   >
                     {size.label}
                   </Button>
@@ -248,37 +288,60 @@ function ProductVariants({ variants = [], onVariantsChange }) {
               </div>
             </div>
 
-            {/* Stock Input Grid */}
+            {/* Stock Input Grid - Improved Mobile Layout */}
             {selectedColor && selectedSizes.length > 0 && (
               <div className="space-y-3">
-                <Label className="text-sm font-medium">Set Stock Quantities</Label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
+                <Label className="text-sm font-medium text-gray-900">Set Stock Quantities for Each Size</Label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 p-4 bg-gradient-to-r from-gray-50 to-blue-50 rounded-lg border">
                   {selectedSizes.map((size) => {
                     const stockKey = `${selectedColor}-${size}`;
                     const colorOption = colorOptions.find(c => c.id === selectedColor);
                     return (
-                      <div key={size} className="flex items-center gap-3 p-3 bg-white rounded-md border">
-                        <div className="flex items-center gap-2 flex-1">
-                          <div 
-                            className="w-4 h-4 rounded-full border border-gray-300"
-                            style={{ backgroundColor: colorOption?.code }}
-                          ></div>
-                          <span className="font-medium text-sm">{size}</span>
+                      <div key={size} className="bg-white rounded-lg border border-gray-200 p-3 shadow-sm hover:shadow-md transition-shadow">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <div 
+                              className="w-5 h-5 rounded-full border-2 border-gray-300 shadow-sm"
+                              style={{ backgroundColor: colorOption?.code }}
+                            ></div>
+                            <span className="font-semibold text-sm text-gray-800">Size {size}</span>
+                          </div>
+                          <Badge variant="outline" className="text-xs">
+                            {colorOption?.label}
+                          </Badge>
                         </div>
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-2">
+                          <Label htmlFor={stockKey} className="text-xs text-gray-600 font-medium min-w-0">
+                            Stock:
+                          </Label>
                           <Input
+                            id={stockKey}
                             type="number"
                             min="0"
+                            max="9999"
                             placeholder="0"
                             value={stockValues[stockKey] || ""}
                             onChange={(e) => handleStockChange(stockKey, e.target.value)}
-                            className="w-20 h-8 text-sm text-center"
+                            className="flex-1 h-9 text-sm text-center font-medium border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                           />
-                          <span className="text-xs text-gray-500">pcs</span>
+                          <span className="text-xs text-gray-500 font-medium">pcs</span>
                         </div>
                       </div>
                     );
                   })}
+                </div>
+                
+                {/* Quick Stock Total Preview */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-blue-900">Total Stock for this Variant:</span>
+                    <Badge className="bg-blue-600 text-white text-sm px-3 py-1">
+                      {selectedSizes.reduce((total, size) => {
+                        const stockKey = `${selectedColor}-${size}`;
+                        return total + (parseInt(stockValues[stockKey]) || 0);
+                      }, 0)} pieces
+                    </Badge>
+                  </div>
                 </div>
               </div>
             )}
@@ -310,89 +373,116 @@ function ProductVariants({ variants = [], onVariantsChange }) {
       {/* Existing Variants */}
       {variants.length > 0 && (
         <div className="space-y-4">
-          <h4 className="font-semibold text-gray-900 flex items-center gap-2">
-            <Palette className="h-4 w-4" />
+          <h4 className="font-semibold text-gray-900 flex items-center gap-2 text-base sm:text-lg">
+            <Palette className="h-4 w-4 sm:h-5 sm:w-5" />
             Current Variants ({variants.length})
           </h4>
           
           <div className="grid gap-4">
             {variants.map((variant, variantIndex) => (
-              <Card key={variantIndex} className="overflow-hidden">
-                <CardHeader className="pb-3 bg-gradient-to-r from-gray-50 to-gray-100">
+              <Card key={variantIndex} className="overflow-hidden border-2 hover:border-blue-200 transition-colors">
+                <CardHeader className="pb-3 bg-gradient-to-r from-blue-50 to-indigo-50">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div 
-                        className="w-8 h-8 rounded-full border-2 border-white shadow-md"
+                        className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-white shadow-md"
                         style={{ backgroundColor: variant.colorCode }}
                       ></div>
                       <div>
-                        <CardTitle className="text-lg capitalize">{variant.color}</CardTitle>
-                        <p className="text-sm text-gray-600">
-                          {variant.sizes.length} sizes • {variant.sizes.reduce((sum, s) => sum + s.stock, 0)} total stock
-                        </p>
+                        <CardTitle className="text-base sm:text-lg capitalize font-bold text-gray-800">{variant.color}</CardTitle>
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+                          <p className="text-xs sm:text-sm text-gray-600">
+                            {variant.sizes.length} sizes available
+                          </p>
+                          <Badge className="bg-blue-600 text-white text-xs w-fit">
+                            {variant.sizes.reduce((sum, s) => sum + s.stock, 0)} total stock
+                          </Badge>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </CardHeader>
                 
                 <CardContent className="pt-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
                     {variant.sizes.map((sizeItem, sizeIndex) => (
-                      <div key={sizeIndex} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border">
-                        <div className="flex items-center gap-2 flex-1">
-                          <span className="font-medium text-sm min-w-8">{sizeItem.size}</span>
-                          <Badge 
-                            variant={sizeItem.stock === 0 ? "destructive" : sizeItem.stock < 5 ? "outline" : "secondary"}
-                            className="text-xs"
-                          >
-                            {sizeItem.stock === 0 ? "Out" : sizeItem.stock < 5 ? "Low" : "Good"}
-                          </Badge>
+                      <div key={sizeIndex} className="bg-white border-2 border-gray-200 rounded-lg p-3 hover:border-blue-300 hover:shadow-md transition-all">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-sm sm:text-base text-gray-800">Size {sizeItem.size}</span>
+                            <Badge 
+                              variant={sizeItem.stock === 0 ? "destructive" : sizeItem.stock < 5 ? "secondary" : "default"}
+                              className="text-xs"
+                            >
+                              {sizeItem.stock === 0 ? "Out of Stock" : sizeItem.stock < 5 ? "Low Stock" : "In Stock"}
+                            </Badge>
+                          </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Input
-                            type="number"
-                            min="0"
-                            value={sizeItem.stock}
-                            onChange={(e) => handleVariantStockUpdate(variantIndex, sizeIndex, e.target.value)}
-                            className="w-20 h-8 text-sm text-center"
-                          />
+                          <div className="flex-1">
+                            <Label className="text-xs text-gray-600 font-medium">Stock Quantity:</Label>
+                            <Input
+                              type="number"
+                              min="0"
+                              max="9999"
+                              value={sizeItem.stock || 0}
+                              onChange={(e) => {
+                                const newValue = e.target.value;
+                                handleVariantStockUpdate(variantIndex, sizeIndex, newValue);
+                              }}
+                              onBlur={(e) => {
+                                // Ensure we have a valid number on blur
+                                const value = e.target.value;
+                                if (value === '' || isNaN(value)) {
+                                  handleVariantStockUpdate(variantIndex, sizeIndex, '0');
+                                }
+                              }}
+                              className="w-full h-9 text-sm text-center font-semibold border-gray-300 focus:border-blue-500 focus:ring-blue-500 mt-1"
+                              placeholder="0"
+                            />
+                          </div>
                           <Button
                             type="button"
                             variant="ghost"
                             size="sm"
                             onClick={() => handleRemoveSize(variantIndex, sizeIndex)}
-                            className="p-1 h-8 w-8 text-red-500 hover:text-red-700"
+                            className="p-2 h-9 w-9 text-red-500 hover:text-red-700 hover:bg-red-50 mt-auto"
+                            title="Remove this size"
                           >
-                            <Trash2 className="h-3 w-3" />
+                            <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
                       </div>
                     ))}
                   </div>
                   
-                  {/* Variant Action Buttons - Moved to end */}
-                  <div className="flex items-center justify-between gap-3 pt-4 mt-4 border-t border-gray-200">
-                    <div className="flex items-center gap-2">
-                      <label className="text-sm font-medium text-gray-700">Bulk Update:</label>
-                      <Input
-                        type="number"
-                        min="0"
-                        placeholder="Set all"
-                        className="w-24 h-8 text-xs"
-                        onBlur={(e) => {
-                          if (e.target.value) {
-                            handleBulkStockUpdate(variantIndex, e.target.value);
-                            e.target.value = '';
-                          }
-                        }}
-                      />
-                      <span className="text-xs text-gray-500">units</span>
+                  {/* Variant Action Buttons - Improved Mobile Layout */}
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-4 mt-4 border-t border-gray-200">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-auto">
+                      <label className="text-sm font-medium text-gray-700 whitespace-nowrap">Bulk Update All Sizes:</label>
+                      <div className="flex items-center gap-2 w-full sm:w-auto">
+                        <Input
+                          type="number"
+                          min="0"
+                          max="9999"
+                          placeholder="Enter quantity"
+                          className="w-full sm:w-32 h-8 text-sm"
+                          onBlur={(e) => {
+                            if (e.target.value) {
+                              handleBulkStockUpdate(variantIndex, e.target.value);
+                              e.target.value = '';
+                            }
+                          }}
+                        />
+                        <span className="text-sm text-gray-500 whitespace-nowrap">pieces each</span>
+                      </div>
                     </div>
                     <Button
                       type="button"
                       variant="destructive"
                       size="sm"
                       onClick={() => handleRemoveVariant(variantIndex)}
+                      className="w-full sm:w-auto mt-2 sm:mt-0"
                     >
                       <Trash2 className="h-4 w-4 mr-2" />
                       Remove Variant

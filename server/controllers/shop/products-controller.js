@@ -2,7 +2,14 @@ const Product = require("../../models/Product");
 
 const getFilteredProducts = async (req, res) => {
   try {
-    const { category = [], brand = [], sortBy = "price-lowtohigh" } = req.query;
+    const { 
+      category = [], 
+      fabric = [], 
+      brand = [], // Keep for backward compatibility
+      stitchType = [],
+      occasion = [],
+      sortBy = "price-lowtohigh" 
+    } = req.query;
 
     let filters = {};
 
@@ -10,8 +17,23 @@ const getFilteredProducts = async (req, res) => {
       filters.category = { $in: category.split(",") };
     }
 
-    if (brand.length) {
+    // Handle fabric filtering (both brand and fabric fields for compatibility)
+    if (fabric.length) {
+      filters.$or = [
+        { brand: { $in: fabric.split(",") } },
+        { fabric: { $in: fabric.split(",") } }
+      ];
+    } else if (brand.length) {
+      // Fallback to brand field for backward compatibility
       filters.brand = { $in: brand.split(",") };
+    }
+
+    if (stitchType.length) {
+      filters.stitchType = { $in: stitchType.split(",") };
+    }
+
+    if (occasion.length) {
+      filters.occasion = { $in: occasion.split(",") };
     }
 
     let sort = {};
