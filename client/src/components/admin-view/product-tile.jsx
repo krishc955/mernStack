@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 function AdminProductTile({ product, handleDelete, populateEditData }) {
-  console.log("🔥 COMPACT AdminProductTile:", product?.title);
+  // Admin product tile component render
   
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);

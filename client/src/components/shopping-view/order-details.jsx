@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { Badge } from "../ui/badge";
-import { DialogContent } from "../ui/dialog";
+import { DialogContent, DialogTitle } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 import OrderProgressTracker from "./OrderProgressTracker";
@@ -10,6 +10,9 @@ function ShoppingOrderDetailsView({ orderDetails }) {
 
   return (
     <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto">
+      <DialogTitle className="sr-only">
+        Order Details - Order #{orderDetails?.orderId}
+      </DialogTitle>
       <div className="grid gap-6 pr-2">
         
         {/* Order Progress Tracker */}

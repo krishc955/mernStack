@@ -1,7 +1,7 @@
 import { StarIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Button } from "../ui/button";
-import { Dialog, DialogContent } from "../ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
 import { Separator } from "../ui/separator";
 import { Input } from "../ui/input";
 import { useDispatch, useSelector } from "react-redux";
@@ -53,8 +53,6 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
   }, [productDetails]);
 
   function handleRatingChange(getRating) {
-    console.log(getRating, "getRating");
-
     setRating(getRating);
   }
 
@@ -109,8 +107,6 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
       };
     }
     
-    console.log("Adding to cart with data:", cartData);
-    
     dispatch(addToCart(cartData)).then((data) => {
       if (data?.payload?.success) {
         dispatch(fetchCartItems(user?.id));
@@ -153,8 +149,6 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
     if (productDetails !== null) dispatch(getReviews(productDetails?._id));
   }, [productDetails]);
 
-  console.log(reviews, "reviews");
-
   const averageReview =
     reviews && reviews.length > 0
       ? reviews.reduce((sum, reviewItem) => sum + reviewItem.reviewValue, 0) /
@@ -164,6 +158,11 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
   return (
     <Dialog open={open} onOpenChange={handleDialogClose}>
       <DialogContent className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:p-8 max-w-[95vw] sm:max-w-[85vw] lg:max-w-[80vw] max-h-[90vh] overflow-y-auto">
+        {/* Visually hidden title for accessibility */}
+        <DialogTitle className="sr-only">
+          {productDetails?.title} - Product Details
+        </DialogTitle>
+        
         {/* Image Section - Larger on top for mobile, left side for desktop */}
         <div className="lg:col-span-2 relative overflow-hidden rounded-lg group">
           {productImages.length > 0 ? (

@@ -240,8 +240,6 @@ function ShoppingHome() {
     return productList?.slice(0, 8) || [];
   }, [productList]);
 
-  console.log(featuredProducts, "featuredProducts");
-
   return (
     <div className="flex flex-col min-h-screen" style={{ backgroundColor: '#faf8f2' }}>
       <SEOHead 

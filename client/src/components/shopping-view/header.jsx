@@ -5,7 +5,7 @@ import {
   useNavigate,
   useSearchParams,
 } from "react-router-dom";
-import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "../ui/sheet";
 import { Button } from "../ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import VinoraLogo from "../../assets/img.png";
@@ -336,6 +336,12 @@ function ShoppingHeader() {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-full max-w-xs bg-gradient-to-b from-brown-800 via-brown-700 to-brown-800 border-brown-600 p-4 overflow-y-auto overflow-x-hidden">
+              <SheetTitle className="sr-only">
+                Navigation Menu
+              </SheetTitle>
+              <SheetDescription className="sr-only">
+                Mobile navigation menu with access to all site pages and user options
+              </SheetDescription>
               <div className="mb-4 max-w-full overflow-hidden">
                 <Link to="/shop/home" className="flex items-center transition-colors h-10">
                   <img 

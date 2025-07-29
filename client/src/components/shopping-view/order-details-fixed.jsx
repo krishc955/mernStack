@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { Badge } from "../ui/badge";
-import { DialogContent } from "../ui/dialog";
+import { DialogContent, DialogTitle } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 
@@ -9,6 +9,9 @@ function ShoppingOrderDetailsView({ orderDetails }) {
 
   return (
     <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+      <DialogTitle className="sr-only">
+        Order Details - {orderDetails?._id}
+      </DialogTitle>
       <div className="grid gap-6 pr-2">
         <div className="grid gap-2">
           <div className="flex mt-6 items-center justify-between">

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import CommonForm from "../common/form";
-import { DialogContent } from "../ui/dialog";
+import { DialogContent, DialogTitle } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 import { Badge } from "../ui/badge";
@@ -22,7 +22,7 @@ function AdminOrderDetailsView({ orderDetails }) {
   const dispatch = useDispatch();
   const { toast } = useToast();
 
-  console.log(orderDetails, "orderDetailsorderDetails");
+  // Optional: Log order details for debugging (remove in production)
 
   function handleUpdateStatus(event) {
     event.preventDefault();
@@ -44,6 +44,9 @@ function AdminOrderDetailsView({ orderDetails }) {
 
   return (
     <DialogContent className="sm:max-w-[1200px] max-h-[95vh] overflow-hidden flex flex-col">
+      <DialogTitle className="sr-only">
+        Admin Order Details - Order #{orderDetails?._id}
+      </DialogTitle>
       {/* Header Section - Fixed */}
       <div className="flex-shrink-0 pb-4 border-b">
         <h2 className="text-xl font-semibold text-gray-900">Order Details</h2>

@@ -32,7 +32,7 @@ function AdminOrdersView() {
     dispatch(getAllOrdersForAdmin());
   }, [dispatch]);
 
-  console.log(orderDetails, "orderList");
+  // Optional: Debug order details (remove in production)
 
   useEffect(() => {
     if (orderDetails !== null) setOpenDetailsDialog(true);

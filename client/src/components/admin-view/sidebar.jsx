@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "../ui/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "../ui/sheet";
 
 const adminSidebarMenuItems = [
   {
@@ -61,6 +61,12 @@ function AdminSideBar({ open, setOpen }) {
       {/* Mobile Sidebar Sheet */}
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent side="left" className="w-80 p-0 bg-white">
+          <SheetTitle className="sr-only">
+            Admin Panel Navigation
+          </SheetTitle>
+          <SheetDescription className="sr-only">
+            Mobile navigation for admin panel with access to all admin features
+          </SheetDescription>
           <div className="flex flex-col h-full">
             {/* Mobile Header */}
             <div className="flex items-center gap-3 px-6 py-4 border-b bg-beige-100">
