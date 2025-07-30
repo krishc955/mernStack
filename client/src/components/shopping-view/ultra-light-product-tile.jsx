@@ -2,7 +2,7 @@ import { memo, useState, useCallback, useMemo } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import OptimizedImage from "@/components/common/OptimizedImage";
-import { ChevronLeft, ChevronRight, Heart } from "@/components/icons/lightweight-icons";
+import { ChevronLeft, ChevronRight, Heart } from "@/components/icons/lightweight-icons.jsx";
 
 // Ultra-light product tile for maximum performance
 const UltraLightProductTile = memo(({ product, onProductClick, isInView = true }) => {
