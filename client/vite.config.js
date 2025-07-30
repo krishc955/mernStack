@@ -59,7 +59,13 @@ export default defineConfig(({ command, mode }) => {
             'vendor-react': ['react', 'react-dom'],
             'vendor-router': ['react-router-dom'],
             'vendor-redux': ['@reduxjs/toolkit', 'react-redux'],
-            'vendor-ui': ['lucide-react', '@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-label'],
+            'vendor-ui-core': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
+            'vendor-ui-forms': ['@radix-ui/react-label', '@radix-ui/react-select'],
+            'vendor-utils': ['axios', 'clsx'],
+            
+            // Chunk heavy libraries separately  
+            'chunk-charts': ['recharts'],
+            'chunk-helmet': ['react-helmet-async'],
             
             // Feature-based chunks for better loading
             'chunk-admin': [
@@ -109,7 +115,11 @@ export default defineConfig(({ command, mode }) => {
       terserOptions: isProduction ? {
         compress: {
           drop_console: true, // Remove console.logs in production
-          drop_debugger: true
+          drop_debugger: true,
+          pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.warn']
+        },
+        mangle: {
+          safari10: true
         }
       } : {},
       

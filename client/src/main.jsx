@@ -5,16 +5,24 @@ import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./store/store.js";
 import { Toaster } from "./components/ui/toaster.jsx";
+import { initPerformanceOptimizations } from './utils/performance.js';
+
+// Initialize performance optimizations
+initPerformanceOptimizations();
 
 // Register service worker for caching
-if ('serviceWorker' in navigator) {
+if ('serviceWorker' in navigator && import.meta.env.MODE === 'production') {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
       .then((registration) => {
-        console.log('SW registered: ', registration);
+        if (import.meta.env.MODE === 'development') {
+          console.log('SW registered: ', registration);
+        }
       })
       .catch((registrationError) => {
-        console.log('SW registration failed: ', registrationError);
+        if (import.meta.env.MODE === 'development') {
+          console.log('SW registration failed: ', registrationError);
+        }
       });
   });
 }

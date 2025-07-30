@@ -2,9 +2,9 @@ import { Card, CardContent, CardFooter } from "../ui/card";
 import { Button } from "../ui/button";
 import { fabricOptionsMap, categoryOptionsMap } from "@/config";
 import { Badge } from "../ui/badge";
-import { ChevronLeft, ChevronRight, Heart } from "lucide-react";
+import { ChevronLeft, ChevronRight, Heart } from "../icons/lightweight-icons";
 import { useState, memo } from "react";
-import LazyImage from "../common/LazyImage";
+import OptimizedImage from "../common/OptimizedImage";
 
 const ShoppingProductTile = memo(function ShoppingProductTile({
   product,
@@ -55,10 +55,15 @@ const ShoppingProductTile = memo(function ShoppingProductTile({
 
           {productImages.length > 0 ? (
             <div className="relative h-[160px] sm:h-[200px] md:h-[250px] lg:h-[300px] overflow-hidden">
-              <LazyImage
+              <OptimizedImage
                 src={productImages[currentImageIndex]}
                 alt={`${product?.title} - Image ${currentImageIndex + 1}`}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                width={300}
+                height={300}
+                quality={85}
+                format="webp"
+                sizes="(max-width: 640px) 160px, (max-width: 768px) 200px, (max-width: 1024px) 250px, 300px"
               />
               
               {/* Gradient Overlay */}

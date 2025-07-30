@@ -24,7 +24,7 @@ import {
   fetchAllFilteredProducts,
   fetchProductDetails,
 } from "@/store/shop/products-slice";
-import { ArrowUpDownIcon, Filter } from "lucide-react";
+import { ArrowUpDown, Filter } from "../../../components/icons/lightweight-icons";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate } from "react-router-dom";
@@ -314,7 +314,7 @@ function ShoppingListing() {
                     size="sm"
                     className="flex items-center gap-1"
                   >
-                    <ArrowUpDownIcon className="h-4 w-4" />
+                    <ArrowUpDown className="h-4 w-4" />
                     <span>Sort by</span>
                   </Button>
                 </DropdownMenuTrigger>
