@@ -24,7 +24,7 @@ import {
   fetchAllFilteredProducts,
   fetchProductDetails,
 } from "@/store/shop/products-slice";
-import { ArrowUpDown, Filter } from "../../../components/icons/lightweight-icons.jsx";
+import { ArrowUpDown, Filter } from "@/components/icons/lightweight-icons";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate } from "react-router-dom";

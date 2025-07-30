@@ -2,7 +2,7 @@ import { Card, CardContent, CardFooter } from "../ui/card";
 import { Button } from "../ui/button";
 import { fabricOptionsMap, categoryOptionsMap } from "@/config";
 import { Badge } from "../ui/badge";
-import { ChevronLeft, ChevronRight, Heart } from "../icons/lightweight-icons.jsx";
+import { ChevronLeft, ChevronRight, Heart } from "@/components/icons/lightweight-icons";
 import { useState, memo } from "react";
 import OptimizedImage from "../common/OptimizedImage";
 
