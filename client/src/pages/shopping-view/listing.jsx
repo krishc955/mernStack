@@ -254,7 +254,7 @@ function ShoppingListing() {
                     size="sm"
                     className="flex-1 flex items-center justify-center gap-1 py-2"
                   >
-                    <ArrowUpDownIcon className="h-4 w-4" />
+                    <ArrowUpDown className="h-4 w-4" />
                     <span className="text-sm">Sort</span>
                   </Button>
                 </DropdownMenuTrigger>
