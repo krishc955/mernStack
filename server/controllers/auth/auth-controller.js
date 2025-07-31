@@ -100,9 +100,13 @@ const loginUser = async (req, res) => {
 };
 
 //logout
-
 const logoutUser = (req, res) => {
-  res.clearCookie("token").json({
+  // Clear all possible token cookies for Safari compatibility
+  res.clearCookie("token");
+  res.clearCookie("safari_auth_token");
+  res.clearCookie("auth_success");
+  
+  res.json({
     success: true,
     message: "Logged out successfully!",
   });
@@ -110,17 +114,39 @@ const logoutUser = (req, res) => {
 
 //auth middleware
 const authMiddleware = async (req, res, next) => {
-  const token = req.cookies.token;
-  if (!token)
+  // Try multiple token sources for Safari compatibility
+  let token = req.cookies.token || req.cookies.safari_auth_token;
+  
+  // Enhanced debugging for Safari issues
+  const userAgent = req.headers['user-agent'] || '';
+  const isSafari = userAgent.includes('Safari') && !userAgent.includes('Chrome');
+  
+  if (!token) {
+    console.log('❌ No token found in cookies');
+    console.log('🍪 Available cookies:', Object.keys(req.cookies));
+    console.log('🍎 Is Safari:', isSafari);
+    
     return res.status(401).json({
       success: false,
       message: "Unauthorised user!",
     });
+  }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "CLIENT_SECRET_KEY");
+    console.log('✅ Token verified for user:', decoded.email);
+    
     // Fetch fresh user data to include profile photo
     const user = await User.findById(decoded.id).select('-password');
+    
+    if (!user) {
+      console.log('❌ User not found in database:', decoded.id);
+      return res.status(401).json({
+        success: false,
+        message: "User not found!",
+      });
+    }
+    
     req.user = {
       ...decoded,
       profilePhoto: user?.profilePhoto,
@@ -128,8 +154,12 @@ const authMiddleware = async (req, res, next) => {
       lastName: user?.lastName,
       isGoogleUser: user?.isGoogleUser
     };
+    
     next();
   } catch (error) {
+    console.error('❌ Token verification failed:', error.message);
+    console.log('🍎 Safari user agent:', isSafari);
+    
     res.status(401).json({
       success: false,
       message: "Unauthorised user!",
@@ -141,8 +171,25 @@ const authMiddleware = async (req, res, next) => {
 const googleAuthSuccess = async (req, res) => {
   try {
     const user = req.user;
-    const isSafari = req.query.safari === 'true';
-    console.log('🎉 Google OAuth Success for user:', user.email, isSafari ? '(Safari)' : '');
+    const isSafari = req.query.safari === 'true' || req.session?.isSafari;
+    
+    console.log('🎉 Google OAuth Success Handler Called');
+    console.log('👤 User Object:', {
+      id: user?._id,
+      email: user?.email,
+      userName: user?.userName
+    });
+    console.log('🍎 Safari Detection:', isSafari);
+    console.log('🔍 Headers:', {
+      userAgent: req.headers['user-agent'],
+      referer: req.headers['referer']
+    });
+
+    if (!user) {
+      console.error('❌ No user found in req.user');
+      const frontendURL = process.env.CLIENT_BASE_URL || 'http://localhost:5173';
+      return res.redirect(`${frontendURL}/auth/login?error=no_user_data`);
+    }
     
     const token = jwt.sign(
       {
@@ -159,38 +206,65 @@ const googleAuthSuccess = async (req, res) => {
       { expiresIn: "60m" }
     );
 
-    // Safari-specific cookie settings
+    console.log('🔑 JWT Token Generated');
+
+    // Enhanced Safari-specific cookie settings
     const cookieOptions = {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: isSafari ? 'lax' : (process.env.NODE_ENV === 'production' ? 'none' : 'lax'),
       maxAge: 60 * 60 * 1000, // 1 hour
-      path: '/'
+      path: '/',
+      domain: process.env.NODE_ENV === 'production' ? undefined : undefined // Let browser set
     };
 
-    // For Safari, try multiple cookie approaches
+    console.log('🍪 Cookie Options:', cookieOptions);
+
+    // Enhanced Safari cookie strategy
     if (isSafari) {
-      // Set both httpOnly and accessible cookies for Safari
+      console.log('🍎 Setting Safari-specific cookies');
+      
+      // Primary token cookie
       res.cookie("token", token, cookieOptions);
-      res.cookie("auth_success", "true", { 
+      
+      // Safari-specific backup cookie (accessible to JS)
+      res.cookie("safari_auth_token", token, { 
         ...cookieOptions, 
-        httpOnly: false, // Make this accessible to client
-        maxAge: 5 * 60 * 1000 // 5 minutes only
+        httpOnly: false, // Make this accessible to client JS
+        maxAge: 10 * 60 * 1000, // 10 minutes for Safari auth flow
+        secure: process.env.NODE_ENV === 'production'
+      });
+      
+      // Safari auth success indicator
+      res.cookie("auth_success", "true", { 
+        httpOnly: false, 
+        maxAge: 2 * 60 * 1000, // 2 minutes only
+        sameSite: 'lax',
+        path: '/'
       });
     } else {
+      console.log('🌐 Setting standard cookies');
       res.cookie("token", token, cookieOptions);
     }
     
-    // Redirect to frontend with success
+    // Redirect to frontend with enhanced success parameters
     const frontendURL = process.env.CLIENT_BASE_URL || 'http://localhost:5173';
-    const redirectURL = `${frontendURL}/shop/home?auth=success${isSafari ? '&safari=true' : ''}`;
+    const redirectParams = new URLSearchParams({
+      auth: 'success',
+      timestamp: Date.now(),
+      ...(isSafari && { safari: 'true' }),
+      ...(user.email && { email: user.email })
+    });
     
-    console.log('🔄 Redirecting to:', redirectURL);
+    const redirectURL = `${frontendURL}/shop/home?${redirectParams.toString()}`;
+    
+    console.log('🔄 Final Redirect URL:', redirectURL);
     res.redirect(redirectURL);
   } catch (error) {
     console.error('❌ Google OAuth Success Error:', error);
+    console.error('❌ Error Stack:', error.stack);
     const frontendURL = process.env.CLIENT_BASE_URL || 'http://localhost:5173';
-    res.redirect(`${frontendURL}/auth/login?error=oauth_error`);
+    res.redirect(`${frontendURL}/auth/login?error=oauth_server_error&message=${encodeURIComponent(error.message)}`);
   }
 };
 
