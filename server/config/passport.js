@@ -8,7 +8,11 @@ passport.use(new GoogleStrategy({
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
   callbackURL: process.env.NODE_ENV === 'production' 
     ? "https://mernstack-7sfn.onrender.com/api/auth/google/callback"
-    : "/api/auth/google/callback"
+    : "/api/auth/google/callback",
+  // Additional options for better Safari compatibility
+  scope: ['profile', 'email'],
+  accessType: 'offline',
+  prompt: 'consent'
 }, async (accessToken, refreshToken, profile, done) => {
   try {
     console.log('Google OAuth Profile:', {

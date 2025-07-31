@@ -141,7 +141,8 @@ const authMiddleware = async (req, res, next) => {
 const googleAuthSuccess = async (req, res) => {
   try {
     const user = req.user;
-    console.log('🎉 Google OAuth Success for user:', user.email);
+    const isSafari = req.query.safari === 'true';
+    console.log('🎉 Google OAuth Success for user:', user.email, isSafari ? '(Safari)' : '');
     
     const token = jwt.sign(
       {
@@ -158,15 +159,34 @@ const googleAuthSuccess = async (req, res) => {
       { expiresIn: "60m" }
     );
 
-    res.cookie("token", token, { 
-      httpOnly: true, 
+    // Safari-specific cookie settings
+    const cookieOptions = {
+      httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
-    });
+      sameSite: isSafari ? 'lax' : (process.env.NODE_ENV === 'production' ? 'none' : 'lax'),
+      maxAge: 60 * 60 * 1000, // 1 hour
+      path: '/'
+    };
+
+    // For Safari, try multiple cookie approaches
+    if (isSafari) {
+      // Set both httpOnly and accessible cookies for Safari
+      res.cookie("token", token, cookieOptions);
+      res.cookie("auth_success", "true", { 
+        ...cookieOptions, 
+        httpOnly: false, // Make this accessible to client
+        maxAge: 5 * 60 * 1000 // 5 minutes only
+      });
+    } else {
+      res.cookie("token", token, cookieOptions);
+    }
     
     // Redirect to frontend with success
     const frontendURL = process.env.CLIENT_BASE_URL || 'http://localhost:5173';
-    res.redirect(`${frontendURL}/shop/home?auth=success`);
+    const redirectURL = `${frontendURL}/shop/home?auth=success${isSafari ? '&safari=true' : ''}`;
+    
+    console.log('🔄 Redirecting to:', redirectURL);
+    res.redirect(redirectURL);
   } catch (error) {
     console.error('❌ Google OAuth Success Error:', error);
     const frontendURL = process.env.CLIENT_BASE_URL || 'http://localhost:5173';

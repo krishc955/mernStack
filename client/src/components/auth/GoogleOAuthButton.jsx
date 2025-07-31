@@ -1,17 +1,40 @@
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const GoogleOAuthButton = ({ className = "" }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isSafari, setIsSafari] = useState(false);
+
+  useEffect(() => {
+    // Detect Safari browser
+    const userAgent = window.navigator.userAgent;
+    const isIOSSafari = /iPad|iPhone|iPod/.test(userAgent) && /Safari/.test(userAgent) && !/Chrome/.test(userAgent);
+    const isMacSafari = /Safari/.test(userAgent) && /Apple Computer/.test(navigator.vendor) && !/Chrome/.test(userAgent);
+    setIsSafari(isIOSSafari || isMacSafari);
+  }, []);
 
   const handleGoogleLogin = () => {
     setIsLoading(true);
     
     // Get the current API base URL from environment or default
     const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    const googleAuthURL = `${API_BASE_URL}/api/auth/google`;
     
-    // Redirect to Google OAuth endpoint
-    window.location.href = `${API_BASE_URL}/api/auth/google`;
+    if (isSafari) {
+      // Safari-specific handling
+      console.log('🍎 Safari detected - using direct navigation');
+      
+      // For Safari, avoid popup and use direct navigation
+      // Add a parameter to help with tracking
+      const safariAuthURL = `${googleAuthURL}?safari=true&t=${Date.now()}`;
+      
+      // Use location.assign for better Safari compatibility
+      window.location.assign(safariAuthURL);
+    } else {
+      // Standard Chrome/Firefox handling
+      console.log('🌐 Standard browser - using direct redirect');
+      window.location.href = googleAuthURL;
+    }
   };
 
   return (
@@ -19,7 +42,7 @@ const GoogleOAuthButton = ({ className = "" }) => {
       onClick={handleGoogleLogin}
       disabled={isLoading}
       variant="outline"
-      className={`w-full flex items-center justify-center gap-2 ${className}`}
+      className={`w-full flex items-center justify-center gap-2 ${className} ${isSafari ? 'safari-oauth-btn' : ''}`}
     >
       {isLoading ? (
         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>

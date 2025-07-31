@@ -29,8 +29,15 @@ try {
   
   // Google OAuth routes
   router.get("/google", 
+    (req, res, next) => {
+      // Pass Safari detection to the authentication
+      req.session.isSafari = req.query.safari === 'true';
+      next();
+    },
     passport.authenticate("google", { 
-      scope: ["profile", "email"] 
+      scope: ["profile", "email"],
+      accessType: 'offline',
+      prompt: 'consent'
     })
   );
 
@@ -38,6 +45,13 @@ try {
     passport.authenticate("google", { 
       failureRedirect: "/auth/login?error=google_auth_failed" 
     }), 
+    (req, res, next) => {
+      // Add Safari info to query for success handler
+      if (req.session.isSafari) {
+        req.query.safari = 'true';
+      }
+      next();
+    },
     googleAuthSuccess
   );
 

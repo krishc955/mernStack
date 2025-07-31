@@ -5,6 +5,7 @@ import { useEffect, Suspense, lazy } from "react";
 import { checkAuth } from "./store/auth-slice";
 import { Skeleton } from "@/components/ui/skeleton";
 import CheckAuth from "./components/common/check-auth";
+import SafariAuthHandler from "./components/auth/SafariAuthHandler";
 
 // Lazy load components for better performance
 const AuthLayout = lazy(() => import("./components/auth/layout"));
@@ -59,6 +60,7 @@ function App() {
 
   return (
     <HelmetProvider>
+      <SafariAuthHandler />
       <div className="flex flex-col overflow-hidden bg-white no-horizontal-scroll container-safe">
       <Suspense fallback={<PageLoader />}>
         <Routes>
