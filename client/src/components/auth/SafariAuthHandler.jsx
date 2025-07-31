@@ -17,23 +17,58 @@ const SafariAuthHandler = () => {
     const error = urlParams.get('error');
     const email = urlParams.get('email');
     const timestamp = urlParams.get('timestamp');
+    
+    // Safari URL-based token parts
+    const tokenPart1 = urlParams.get('t');
+    const tokenPart2 = urlParams.get('t2');
+    const tokenPart3 = urlParams.get('t3');
 
     console.log('🔍 Safari Auth Handler - URL Params:', {
       authSuccess,
       isSafari,
       error,
       email,
-      timestamp
+      timestamp,
+      hasTokenParts: !!(tokenPart1 && tokenPart2)
     });
 
     if (authSuccess === 'success') {
       console.log('🎉 OAuth success detected', isSafari ? '(Safari)' : '');
       
-      // Enhanced Safari cookie checking
+      // Enhanced Safari handling with URL-based tokens
       if (isSafari === 'true') {
         console.log('🍎 Safari OAuth flow detected');
         
-        // Check for multiple Safari-specific cookies
+        // Handle URL-based token for Safari
+        if (tokenPart1 && tokenPart2) {
+          console.log('🔑 Safari URL tokens found - reconstructing full token');
+          
+          const fullToken = tokenPart1 + tokenPart2 + (tokenPart3 || '');
+          console.log('📏 Reconstructed token length:', fullToken.length);
+          
+          // Set the token as a cookie manually for Safari
+          const tokenExpiry = new Date();
+          tokenExpiry.setHours(tokenExpiry.getHours() + 1); // 1 hour
+          
+          document.cookie = `token=${fullToken}; path=/; expires=${tokenExpiry.toUTCString()}; SameSite=Lax`;
+          console.log('✅ Safari token set via JavaScript');
+          
+          // Also set backup token
+          document.cookie = `safari_auth_token=${fullToken}; path=/; expires=${tokenExpiry.toUTCString()}; SameSite=Lax`;
+          
+          // Clean up URL immediately to prevent token exposure
+          const cleanURL = window.location.origin + '/shop/home?auth=success&safari=true&processing=true';
+          window.history.replaceState({}, '', cleanURL);
+          
+          // Give Safari time to process the cookie
+          setTimeout(() => {
+            proceedWithAuthCheck();
+          }, 1000);
+          
+          return;
+        }
+        
+        // Fallback: Check for existing Safari cookies
         const cookies = document.cookie.split('; ').reduce((acc, cookie) => {
           const [key, value] = cookie.split('=');
           acc[key] = value;
@@ -48,17 +83,14 @@ const SafariAuthHandler = () => {
         
         if (authSuccessCookie) {
           console.log('✅ Safari auth success cookie found');
-          // Clean up the temporary cookie
           document.cookie = 'auth_success=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
         }
         
-        if (safariToken) {
-          console.log('✅ Safari backup token found');
-          // If main token is missing but safari token exists, copy it
-          if (!mainToken) {
-            console.log('🔄 Copying Safari token to main token');
-            document.cookie = `token=${safariToken}; path=/; max-age=${60 * 60}; SameSite=Lax`;
-          }
+        if (safariToken && !mainToken) {
+          console.log('🔄 Copying Safari token to main token');
+          const tokenExpiry = new Date();
+          tokenExpiry.setHours(tokenExpiry.getHours() + 1);
+          document.cookie = `token=${safariToken}; path=/; expires=${tokenExpiry.toUTCString()}; SameSite=Lax`;
         }
         
         // Give Safari a moment to process cookies
@@ -76,6 +108,12 @@ const SafariAuthHandler = () => {
     function proceedWithAuthCheck() {
       console.log('🔐 Proceeding with auth check...');
       
+      // Clean URL before auth check
+      if (location.search.includes('t=') || location.search.includes('t2=')) {
+        const cleanURL = window.location.origin + '/shop/home?auth=success' + (isSafari ? '&safari=true' : '');
+        window.history.replaceState({}, '', cleanURL);
+      }
+      
       // Check authentication status
       dispatch(checkAuth()).then((result) => {
         console.log('📋 Auth check result:', result?.payload);
@@ -86,23 +124,29 @@ const SafariAuthHandler = () => {
             description: `Welcome back${email ? `, ${email.split('@')[0]}` : ''}!`
           });
           
-          // Clean up URL parameters and redirect
           console.log('✅ Authentication successful, redirecting to home');
           navigate('/shop/home', { replace: true });
         } else {
           console.error('❌ Auth check failed after OAuth');
           
-          // For Safari, try alternative cookie approach
+          // For Safari, try alternative approaches
           if (isSafari === 'true') {
-            const safariToken = document.cookie
-              .split('; ')
-              .find(row => row.startsWith('safari_auth_token='))
-              ?.split('=')[1];
+            console.log('🔄 Safari auth failed - trying backup methods');
+            
+            // Check if we have any tokens in cookies
+            const allCookies = document.cookie;
+            console.log('🍪 All cookies for debugging:', allCookies);
+            
+            // Try to extract any available token
+            const tokenMatch = allCookies.match(/(?:^|;\s*)(safari_auth_token|token)=([^;]+)/);
+            if (tokenMatch) {
+              const foundToken = tokenMatch[2];
+              console.log('� Found token in cookies, length:', foundToken.length);
               
-            if (safariToken) {
-              console.log('🔄 Retrying with Safari backup token');
-              // Set the main token and retry
-              document.cookie = `token=${safariToken}; path=/; max-age=${60 * 60}; SameSite=Lax`;
+              // Ensure main token is set
+              const tokenExpiry = new Date();
+              tokenExpiry.setHours(tokenExpiry.getHours() + 1);
+              document.cookie = `token=${foundToken}; path=/; expires=${tokenExpiry.toUTCString()}; SameSite=Lax`;
               
               setTimeout(() => {
                 dispatch(checkAuth()).then((retryResult) => {
@@ -116,7 +160,7 @@ const SafariAuthHandler = () => {
                     handleAuthFailure();
                   }
                 });
-              }, 200);
+              }, 300);
               return;
             }
           }
@@ -130,9 +174,10 @@ const SafariAuthHandler = () => {
     }
 
     function handleAuthFailure() {
+      console.error('❌ Final auth failure - redirecting to login');
       toast({
         title: "Authentication incomplete",
-        description: "Please try signing in again",
+        description: "Please try signing in again. If the issue persists, try clearing your browser cache.",
         variant: "destructive"
       });
       navigate('/auth/login', { replace: true });
@@ -165,12 +210,11 @@ const SafariAuthHandler = () => {
         variant: "destructive"
       });
       
-      // Clean up URL and redirect to login
       navigate('/auth/login', { replace: true });
     }
   }, [location, navigate, dispatch, toast]);
 
-  return null; // This component doesn't render anything
+  return null;
 };
 
 export default SafariAuthHandler;

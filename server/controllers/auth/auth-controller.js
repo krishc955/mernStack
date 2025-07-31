@@ -208,58 +208,65 @@ const googleAuthSuccess = async (req, res) => {
 
     console.log('🔑 JWT Token Generated');
 
-    // Enhanced Safari-specific cookie settings
-    const cookieOptions = {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: isSafari ? 'lax' : (process.env.NODE_ENV === 'production' ? 'none' : 'lax'),
-      maxAge: 60 * 60 * 1000, // 1 hour
-      path: '/',
-      domain: process.env.NODE_ENV === 'production' ? undefined : undefined // Let browser set
-    };
+    const frontendURL = process.env.CLIENT_BASE_URL || 'http://localhost:5173';
 
-    console.log('🍪 Cookie Options:', cookieOptions);
-
-    // Enhanced Safari cookie strategy
+    // For Safari, use URL-based token passing as primary method
     if (isSafari) {
-      console.log('🍎 Setting Safari-specific cookies');
+      console.log('🍎 Safari detected - using URL token method');
       
-      // Primary token cookie
-      res.cookie("token", token, cookieOptions);
+      // Also try to set cookies as backup
+      try {
+        res.cookie("token", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax',
+          maxAge: 60 * 60 * 1000,
+          path: '/'
+        });
+        
+        res.cookie("safari_auth_token", token, {
+          httpOnly: false, // Accessible to JS
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax',
+          maxAge: 10 * 60 * 1000, // 10 minutes
+          path: '/'
+        });
+      } catch (cookieError) {
+        console.warn('⚠️ Cookie setting failed:', cookieError.message);
+      }
       
-      // Safari-specific backup cookie (accessible to JS)
-      res.cookie("safari_auth_token", token, { 
-        ...cookieOptions, 
-        httpOnly: false, // Make this accessible to client JS
-        maxAge: 10 * 60 * 1000, // 10 minutes for Safari auth flow
-        secure: process.env.NODE_ENV === 'production'
+      // Use URL parameters to pass token for Safari
+      const redirectParams = new URLSearchParams({
+        auth: 'success',
+        safari: 'true',
+        t: token.substring(0, 50), // First part of token
+        t2: token.substring(50, 100), // Second part
+        t3: token.substring(100), // Remaining part
+        email: user.email,
+        timestamp: Date.now()
       });
       
-      // Safari auth success indicator
-      res.cookie("auth_success", "true", { 
-        httpOnly: false, 
-        maxAge: 2 * 60 * 1000, // 2 minutes only
-        sameSite: 'lax',
+      const redirectURL = `${frontendURL}/shop/home?${redirectParams.toString()}`;
+      console.log('🔄 Safari URL-based redirect:', redirectURL.substring(0, 100) + '...');
+      
+      return res.redirect(redirectURL);
+    } else {
+      console.log('🌐 Standard browser - using cookies');
+      
+      // Standard cookie approach for other browsers
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        maxAge: 60 * 60 * 1000,
         path: '/'
       });
-    } else {
-      console.log('🌐 Setting standard cookies');
-      res.cookie("token", token, cookieOptions);
+      
+      const redirectURL = `${frontendURL}/shop/home?auth=success&timestamp=${Date.now()}`;
+      console.log('🔄 Standard redirect:', redirectURL);
+      
+      return res.redirect(redirectURL);
     }
-    
-    // Redirect to frontend with enhanced success parameters
-    const frontendURL = process.env.CLIENT_BASE_URL || 'http://localhost:5173';
-    const redirectParams = new URLSearchParams({
-      auth: 'success',
-      timestamp: Date.now(),
-      ...(isSafari && { safari: 'true' }),
-      ...(user.email && { email: user.email })
-    });
-    
-    const redirectURL = `${frontendURL}/shop/home?${redirectParams.toString()}`;
-    
-    console.log('🔄 Final Redirect URL:', redirectURL);
-    res.redirect(redirectURL);
   } catch (error) {
     console.error('❌ Google OAuth Success Error:', error);
     console.error('❌ Error Stack:', error.stack);
