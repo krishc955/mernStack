@@ -177,12 +177,19 @@ const googleAuthSuccess = async (req, res) => {
     console.log('👤 User Object:', {
       id: user?._id,
       email: user?.email,
-      userName: user?.userName
+      userName: user?.userName,
+      role: user?.role
     });
     console.log('🍎 Safari Detection:', isSafari);
     console.log('🔍 Headers:', {
       userAgent: req.headers['user-agent'],
-      referer: req.headers['referer']
+      referer: req.headers['referer'],
+      origin: req.headers['origin']
+    });
+    console.log('🍪 Existing Cookies:', req.cookies);
+    console.log('🔧 Session Info:', {
+      sessionID: req.sessionID,
+      isSafari: req.session?.isSafari
     });
 
     if (!user) {
@@ -206,9 +213,10 @@ const googleAuthSuccess = async (req, res) => {
       { expiresIn: "60m" }
     );
 
-    console.log('🔑 JWT Token Generated');
+    console.log('🔑 JWT Token Generated - Length:', token.length);
 
     const frontendURL = process.env.CLIENT_BASE_URL || 'http://localhost:5173';
+    console.log('🌐 Frontend URL:', frontendURL);
 
     // For Safari, use URL-based token passing as primary method
     if (isSafari) {
@@ -231,6 +239,8 @@ const googleAuthSuccess = async (req, res) => {
           maxAge: 10 * 60 * 1000, // 10 minutes
           path: '/'
         });
+        
+        console.log('✅ Safari cookies set successfully');
       } catch (cookieError) {
         console.warn('⚠️ Cookie setting failed:', cookieError.message);
       }
@@ -247,7 +257,7 @@ const googleAuthSuccess = async (req, res) => {
       });
       
       const redirectURL = `${frontendURL}/shop/home?${redirectParams.toString()}`;
-      console.log('🔄 Safari URL-based redirect:', redirectURL.substring(0, 100) + '...');
+      console.log('🔄 Safari URL-based redirect to:', redirectURL.substring(0, 150) + '...');
       
       return res.redirect(redirectURL);
     } else {
@@ -262,14 +272,23 @@ const googleAuthSuccess = async (req, res) => {
         path: '/'
       });
       
+      console.log('✅ Standard cookies set successfully');
+      
       const redirectURL = `${frontendURL}/shop/home?auth=success&timestamp=${Date.now()}`;
-      console.log('🔄 Standard redirect:', redirectURL);
+      console.log('🔄 Standard redirect to:', redirectURL);
       
       return res.redirect(redirectURL);
     }
   } catch (error) {
     console.error('❌ Google OAuth Success Error:', error);
     console.error('❌ Error Stack:', error.stack);
+    console.error('❌ Request details:', {
+      user: req.user,
+      query: req.query,
+      session: req.session,
+      headers: req.headers
+    });
+    
     const frontendURL = process.env.CLIENT_BASE_URL || 'http://localhost:5173';
     res.redirect(`${frontendURL}/auth/login?error=oauth_server_error&message=${encodeURIComponent(error.message)}`);
   }

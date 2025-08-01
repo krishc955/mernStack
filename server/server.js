@@ -17,6 +17,7 @@ console.log('✅ Passport loaded successfully');
 
 // Updated Razorpay keys - trigger restart
 const authRouter = require("./routes/auth/auth-routes");
+const safariDiagnosticsRouter = require("./routes/auth/safari-diagnostics");
 const adminProductsRouter = require("./routes/admin/products-routes");
 const adminOrderRouter = require("./routes/admin/order-routes");
 const adminAnalyticsRouter = require("./routes/admin/analytics-routes");
@@ -112,6 +113,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use("/api/auth", authRouter);
+app.use("/api/diagnostics", safariDiagnosticsRouter);
 app.use("/api/admin/products", adminProductsRouter);
 app.use("/api/admin/orders", adminOrderRouter);
 app.use("/api/admin/analytics", adminAnalyticsRouter);

@@ -11,6 +11,7 @@ import SafariAuthHandler from "./components/auth/SafariAuthHandler";
 const AuthLayout = lazy(() => import("./components/auth/layout"));
 const AuthLogin = lazy(() => import("./pages/auth/login"));
 const AuthRegister = lazy(() => import("./pages/auth/register"));
+const SafariAuthTest = lazy(() => import("./components/auth/SafariAuthTest"));
 const AdminLayout = lazy(() => import("./components/admin-view/layout"));
 const AdminDashboard = lazy(() => import("./pages/admin-view/dashboard"));
 const AdminProducts = lazy(() => import("./pages/admin-view/products"));
@@ -83,6 +84,7 @@ function App() {
         >
           <Route path="login" element={<AuthLogin />} />
           <Route path="register" element={<AuthRegister />} />
+          <Route path="safari-test" element={<SafariAuthTest />} />
         </Route>
         <Route
           path="/admin"
@@ -133,6 +135,9 @@ function App() {
         <Route path="/size-guide" element={<ShoppingLayout />}>
           <Route index element={<SizeGuide />} />
         </Route>
+        
+        {/* Safari Authentication Diagnostics - Public Route */}
+        <Route path="/safari-auth-test" element={<SafariAuthTest />} />
         
         <Route path="/unauth-page" element={<UnauthPage />} />
         <Route path="*" element={<NotFound />} />
