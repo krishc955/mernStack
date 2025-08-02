@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const VideoSection = () => {
   const [videos, setVideos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   // Production-ready fetch with proper error handling and timeout
   const fetchVideos = useCallback(async () => {
@@ -318,7 +320,11 @@ const VideoSection = () => {
           padding: '0 20px'
         }}>
           <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8 sm:mb-12 text-brown-800 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8 sm:mb-12 text-brown-800 tracking-tight" style={{
+              fontFamily: "'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif",
+              letterSpacing: '-0.03em',
+              fontWeight: '700'
+            }}>
               Loading Videos
             </h2>
           </div>
@@ -372,7 +378,11 @@ const VideoSection = () => {
           textAlign: 'center'
         }}>
           <div style={{ marginBottom: '2rem' }}>
-            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8 sm:mb-12 text-brown-800 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8 sm:mb-12 text-brown-800 tracking-tight" style={{
+              fontFamily: "'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif",
+              letterSpacing: '-0.03em',
+              fontWeight: '700'
+            }}>
               Latest Videos
             </h2>
           </div>
@@ -404,9 +414,11 @@ const VideoSection = () => {
             
             <h3 style={{
               fontSize: '1.5rem',
-              fontWeight: '700',
+              fontWeight: '600',
               color: 'hsl(0, 60%, 50%)',
-              marginBottom: '1rem'
+              marginBottom: '1rem',
+              fontFamily: "'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif",
+              letterSpacing: '-0.02em'
             }}>
               Unable to Load Videos
             </h3>
@@ -415,7 +427,10 @@ const VideoSection = () => {
               color: 'hsl(30, 25%, 50%)',
               fontSize: '1.1rem',
               marginBottom: '2rem',
-              lineHeight: '1.6'
+              lineHeight: '1.6',
+              fontFamily: "'Inter', 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+              letterSpacing: '-0.01em',
+              fontWeight: '400'
             }}>
               {error}
             </p>
@@ -429,7 +444,9 @@ const VideoSection = () => {
                 border: 'none',
                 borderRadius: '12px',
                 fontSize: '1rem',
-                fontWeight: '600',
+                fontWeight: '500',
+                fontFamily: "'Inter', 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+                letterSpacing: '-0.01em',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
                 boxShadow: '0 4px 15px rgba(101, 74, 55, 0.3)',
@@ -463,7 +480,11 @@ const VideoSection = () => {
           textAlign: 'center'
         }}>
           <div style={{ marginBottom: '2rem' }}>
-            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8 sm:mb-12 text-brown-800 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8 sm:mb-12 text-brown-800 tracking-tight" style={{
+              fontFamily: "'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif",
+              letterSpacing: '-0.03em',
+              fontWeight: '700'
+            }}>
               Latest Videos
             </h2>
           </div>
@@ -499,9 +520,11 @@ const VideoSection = () => {
             
             <h3 style={{
               fontSize: '1.75rem',
-              fontWeight: '700',
+              fontWeight: '600',
               color: 'hsl(30, 35%, 20%)',
-              marginBottom: '1rem'
+              marginBottom: '1rem',
+              fontFamily: "'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif",
+              letterSpacing: '-0.02em'
             }}>
               No Videos Available
             </h3>
@@ -509,7 +532,10 @@ const VideoSection = () => {
             <p style={{
               color: 'hsl(30, 25%, 50%)',
               fontSize: '1.1rem',
-              lineHeight: '1.6'
+              lineHeight: '1.6',
+              fontFamily: "'Inter', 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+              letterSpacing: '-0.01em',
+              fontWeight: '400'
             }}>
               Check back later for new video content.
             </p>
@@ -527,7 +553,11 @@ const VideoSection = () => {
         padding: '0 20px'
       }}>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8 sm:mb-12 text-brown-800 tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8 sm:mb-12 text-brown-800 tracking-tight" style={{
+            fontFamily: "'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif",
+            letterSpacing: '-0.03em',
+            fontWeight: '700'
+          }}>
             Latest Videos
           </h2>
           <p style={{
@@ -535,7 +565,11 @@ const VideoSection = () => {
             fontSize: '1.1rem',
             marginTop: '1rem',
             maxWidth: '600px',
-            margin: '1rem auto 0'
+            margin: '1rem auto 0',
+            fontFamily: "'Inter', 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+            letterSpacing: '-0.01em',
+            fontWeight: '400',
+            lineHeight: '1.6'
           }}>
             Discover our curated collection of engaging video content
           </p>
@@ -572,15 +606,19 @@ const VideoSection = () => {
                     }}>📺</div>
                     <h3 style={{ 
                       margin: '0 0 8px 0', 
-                      fontSize: '1.1rem',
+                      fontSize: '1.2rem',
                       fontWeight: '600',
+                      fontFamily: "'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif",
+                      letterSpacing: '-0.02em',
                       textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)'
                     }}>{video.title}</h3>
                     <p style={{ 
                       margin: 0, 
-                      fontSize: '0.9rem', 
+                      fontSize: '0.95rem', 
                       opacity: 0.9,
-                      fontWeight: '500'
+                      fontWeight: '400',
+                      fontFamily: "'Inter', 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+                      letterSpacing: '-0.01em'
                     }}>Video not available</p>
                   </div>
                 </div>
@@ -589,39 +627,95 @@ const VideoSection = () => {
               {/* Video Info */}
               <div className="video-info-card">
                 <h3 style={{
-                  fontSize: '0.95rem',
-                  fontWeight: '700',
+                  fontSize: '1.1rem',
+                  fontWeight: '600',
                   color: 'hsl(30, 35%, 20%)',
-                  margin: '0 0 8px 0',
-                  lineHeight: '1.4',
+                  margin: '0 0 12px 0',
+                  lineHeight: '1.5',
+                  fontFamily: "'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif",
+                  letterSpacing: '-0.02em',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap'
                 }}>
                   {video.title}
                 </h3>
-                <p style={{
-                  fontSize: '0.8rem',
-                  color: 'hsl(30, 25%, 50%)',
-                  margin: 0,
-                  textTransform: 'capitalize',
-                  fontWeight: '500',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}>
-                  <span style={{
-                    width: '6px',
-                    height: '6px',
-                    borderRadius: '50%',
-                    background: 'hsl(30, 40%, 45%)',
-                    display: 'inline-block'
-                  }} />
-                  {video.category || 'Uncategorized'}
-                </p>
+                {video.description && (
+                  <p style={{
+                    fontSize: '0.875rem',
+                    color: 'hsl(30, 25%, 50%)',
+                    margin: 0,
+                    lineHeight: '1.6',
+                    fontFamily: "'Inter', 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+                    letterSpacing: '-0.01em',
+                    display: '-webkit-box',
+                    WebkitLineClamp: '2',
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                    fontWeight: '400'
+                  }}>
+                    {video.description}
+                  </p>
+                )}
               </div>
             </div>
           ))}
+        </div>
+
+        {/* View All Videos Button */}
+        <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
+          <button 
+            onClick={() => navigate('/videos')}
+            style={{
+              background: 'linear-gradient(135deg, hsl(30, 40%, 45%) 0%, hsl(35, 35%, 55%) 100%)',
+              color: 'hsl(42, 30%, 95%)',
+              padding: '16px 32px',
+              border: 'none',
+              borderRadius: '16px',
+              fontSize: '1.1rem',
+              fontWeight: '500',
+              fontFamily: "'Inter', 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+              letterSpacing: '-0.01em',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 8px 25px rgba(101, 74, 55, 0.3)',
+              position: 'relative',
+              overflow: 'hidden',
+              minWidth: '200px'
+            }}
+            onMouseOver={(e) => {
+              e.target.style.transform = 'translateY(-3px) scale(1.02)';
+              e.target.style.boxShadow = '0 12px 35px rgba(101, 74, 55, 0.4)';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.transform = 'translateY(0) scale(1)';
+              e.target.style.boxShadow = '0 8px 25px rgba(101, 74, 55, 0.3)';
+            }}
+          >
+            <span style={{ 
+              position: 'relative', 
+              zIndex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px'
+            }}>
+              <span>View All Videos</span>
+              <svg 
+                width="20" 
+                height="20" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+                style={{ transition: 'transform 0.3s ease' }}
+              >
+                <path d="m9 18 6-6-6-6"/>
+              </svg>
+            </span>
+          </button>
         </div>
       </div>
     </section>

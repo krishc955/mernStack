@@ -32,6 +32,7 @@ const ShippingInfo = lazy(() => import("./pages/shipping-info/index.jsx"));
 const Returns = lazy(() => import("./pages/returns/index.jsx"));
 const SizeGuide = lazy(() => import("./pages/size-guide/index.jsx"));
 const SocialMedia = lazy(() => import("./pages/social-media/index.jsx"));
+const VideosPage = lazy(() => import("./pages/shopping-view/videos"));
 const NotFound = lazy(() => import("./pages/not-found"));
 const UnauthPage = lazy(() => import("./pages/unauth-page"));
 
@@ -138,6 +139,9 @@ function App() {
         </Route>
         <Route path="/social-media" element={<ShoppingLayout />}>
           <Route index element={<SocialMedia />} />
+        </Route>
+        <Route path="/videos" element={<ShoppingLayout />}>
+          <Route index element={<VideosPage />} />
         </Route>
         
         <Route path="/unauth-page" element={<UnauthPage />} />
