@@ -40,61 +40,91 @@ function CustomerAssurance() {
   ];
 
   return (
-    <section className="py-12 lg:py-16 bg-beige-100">
+    <section className="py-8 lg:py-16 bg-gradient-to-r from-beige-700 via-beige-600 to-beige-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header - Mobile Optimized */}
-        <div className="text-center mb-8 lg:mb-12">
-          <h2 className="text-2xl lg:text-3xl xl:text-4xl font-extrabold text-brown-800 mb-3 lg:mb-4 tracking-tight">
+        <div className="text-center mb-6 lg:mb-12">
+          <h2 className="text-xl lg:text-3xl xl:text-4xl font-extrabold text-beige-100 mb-2 lg:mb-4 tracking-tight">
             Why Choose Vinora?
           </h2>
-          <p className="text-brown-700/80 text-sm lg:text-lg font-medium max-w-2xl mx-auto leading-relaxed tracking-wide px-2">
+          <p className="text-beige-200/90 text-xs lg:text-lg font-medium max-w-2xl mx-auto leading-relaxed tracking-wide px-2">
             We're committed to providing you with an exceptional shopping experience, from selection to delivery.
           </p>
         </div>
 
-        {/* Assurance Cards Grid - Mobile Optimized */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8">
+        {/* Assurance Cards - Mobile: Horizontal Scroll, Desktop: Grid */}
+        <div className="block md:hidden">
+          <div className="flex gap-2 overflow-x-auto pb-4 scrollbar-hide scroll-smooth">
+            {assuranceItems.map((item, index) => (
+              <div 
+                key={index}
+                className={`relative bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-beige-300/50 group ${item.hoverBg} flex-shrink-0 w-52`}
+              >
+                {/* Icon Container */}
+                <div className={`w-8 h-8 ${item.bgColor} rounded-full flex items-center justify-center mb-2 mx-auto group-hover:scale-110 transition-transform duration-300`}>
+                  <item.icon className={`h-4 w-4 ${item.color}`} />
+                </div>
+                
+                {/* Content */}
+                <div className="text-center">
+                  <h3 className="text-sm font-bold text-brown-800 mb-1 tracking-tight leading-tight">
+                    {item.title}
+                  </h3>
+                  <p className="text-brown-700/85 text-xs leading-relaxed font-medium tracking-wide">
+                    {item.description}
+                  </p>
+                </div>
+
+                {/* Decorative Element */}
+                <div className="absolute top-1 right-1 opacity-10 group-hover:opacity-20 transition-opacity duration-300">
+                  <CheckCircle className="h-3 w-3 text-brown-600" />
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* Scroll indicator for mobile */}
+          <div className="text-center mt-2">
+            <p className="text-xs text-beige-200/80 font-medium">← Swipe to see more →</p>
+          </div>
+        </div>
+
+        {/* Desktop: Grid layout */}
+        <div className="hidden md:grid grid-cols-3 gap-6">
           {assuranceItems.map((item, index) => (
             <div 
               key={index}
-              className={`relative bg-white/90 backdrop-blur-sm rounded-xl lg:rounded-2xl p-4 lg:p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 lg:hover:-translate-y-2 border border-beige-300/50 group ${item.hoverBg}`}
+              className={`relative bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border border-beige-300/50 group ${item.hoverBg}`}
             >
-              {/* Icon Container - Smaller on Mobile */}
-              <div className={`w-10 h-10 lg:w-16 lg:h-16 ${item.bgColor} rounded-full flex items-center justify-center mb-3 lg:mb-6 mx-auto group-hover:scale-110 transition-transform duration-300`}>
-                <item.icon className={`h-5 w-5 lg:h-8 lg:w-8 ${item.color}`} />
+              {/* Icon Container */}
+              <div className={`w-12 h-12 ${item.bgColor} rounded-full flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform duration-300`}>
+                <item.icon className={`h-6 w-6 ${item.color}`} />
               </div>
               
-              {/* Content - Optimized Typography */}
+              {/* Content */}
               <div className="text-center">
-                <h3 className="text-sm lg:text-xl font-bold text-brown-800 mb-2 lg:mb-3 tracking-tight leading-tight">
+                <h3 className="text-lg font-bold text-brown-800 mb-2 tracking-tight leading-tight">
                   {item.title}
                 </h3>
-                <p className="text-brown-700/85 text-xs lg:text-sm leading-relaxed font-medium tracking-wide hidden sm:block">
+                <p className="text-brown-700/85 text-sm leading-relaxed font-medium tracking-wide">
                   {item.description}
-                </p>
-                {/* Simplified mobile description */}
-                <p className="text-brown-700/85 text-xs leading-relaxed font-medium tracking-wide sm:hidden">
-                  {item.title === "Easy Returns" && "30-day return policy"}
-                  {item.title === "Safe Delivery" && "Secure & insured shipping"}
-                  {item.title === "Premium Quality" && "Curated elegant products"}
                 </p>
               </div>
 
-              {/* Decorative Element - Hidden on small screens */}
-              <div className="absolute top-2 right-2 lg:top-4 lg:right-4 opacity-10 group-hover:opacity-20 transition-opacity duration-300 hidden sm:block">
-                <CheckCircle className="h-4 w-4 lg:h-6 lg:w-6 text-brown-600" />
+              {/* Decorative Element */}
+              <div className="absolute top-3 right-3 opacity-10 group-hover:opacity-20 transition-opacity duration-300">
+                <CheckCircle className="h-5 w-5 text-brown-600" />
               </div>
             </div>
           ))}
         </div>
 
         {/* Call to Action Button */}
-        <div className="mt-8 lg:mt-12 text-center">
+        <div className="mt-6 lg:mt-12 text-center">
           <button
             onClick={handleShopNowClick}
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-bold py-3 px-8 lg:py-4 lg:px-10 rounded-xl text-base lg:text-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 transform"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-bold py-2 px-6 lg:py-4 lg:px-10 rounded-lg lg:rounded-xl text-sm lg:text-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 transform"
           >
-            <ShoppingBag className="h-5 w-5 lg:h-6 lg:w-6" />
+            <ShoppingBag className="h-4 w-4 lg:h-6 lg:w-6" />
             Shop All Products
           </button>
         </div>

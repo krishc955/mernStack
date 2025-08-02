@@ -12,6 +12,11 @@ import {
   ShirtIcon,
   UmbrellaIcon,
   WatchIcon,
+  Crown,
+  Flower,
+  Sparkles,
+  Gem,
+  Star,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState, useCallback, useMemo } from "react";
@@ -26,14 +31,16 @@ import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import { useToast } from "@/components/ui/use-toast";
 import ProductDetailsDialog from "@/components/shopping-view/product-details";
 import VideoSection from "@/components/shopping-view/VideoSection";
+import CustomerAssurance from "@/components/shopping-view/customer-assurance";
 import { getFeatureImages } from "@/store/common-slice";
 
 const categoriesWithIcon = [
-  { id: "men", label: "Men", icon: ShirtIcon },
-  { id: "women", label: "Women", icon: CloudLightning },
-  { id: "kids", label: "Kids", icon: BabyIcon },
-  { id: "accessories", label: "Accessories", icon: WatchIcon },
-  { id: "footwear", label: "Footwear", icon: UmbrellaIcon },
+  { id: "suits", label: "Suits", icon: ShirtIcon },
+  { id: "sarees", label: "Sarees", icon: Flower },
+  { id: "kurtas", label: "Kurtas", icon: Star },
+  { id: "jackets", label: "Jackets", icon: UmbrellaIcon },
+  { id: "lehengas", label: "Lehengas", icon: Crown },
+  { id: "gowns", label: "Gowns", icon: Sparkles },
 ];
 function ShoppingHome() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -364,53 +371,6 @@ function ShoppingHome() {
         {/* Swipe indicators for mobile */}
         <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-black/20 to-transparent pointer-events-none sm:hidden" />
       </div>
-      {/* Categories Section - Elegant Brown-Beige Theme */}
-      <section className="py-12 sm:py-16 bg-beige-200">
-        <div className="container mx-auto px-4 sm:px-6">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8 sm:mb-12 text-brown-800 tracking-tight">
-            Shop by Category
-          </h2>
-          {/* Mobile: Horizontal scroll, Desktop: Grid */}
-          <div className="block sm:hidden">
-            <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
-              {categoriesWithIcon.map((categoryItem) => (
-                <Card
-                  key={categoryItem.id}
-                  onClick={() =>
-                    handleNavigateToListingPage(categoryItem, "category")
-                  }
-                  className="cursor-pointer transition-all duration-300 flex-shrink-0 w-36 h-32 bg-white border-beige-300 shadow-md hover:shadow-xl hover:-translate-y-1 hover:bg-beige-50"
-                >
-                  <CardContent className="flex flex-col items-center justify-center p-4 h-full">
-                    <categoryItem.icon className="w-10 h-10 mb-3 text-brown-700" />
-                    <span className="font-semibold text-sm text-center leading-tight text-brown-800">{categoryItem.label}</span>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-          {/* Desktop: Grid layout */}
-          <div className="hidden sm:grid grid-cols-3 lg:grid-cols-5 gap-6">
-            {categoriesWithIcon.map((categoryItem) => (
-              <Card
-                key={categoryItem.id}
-                onClick={() =>
-                  handleNavigateToListingPage(categoryItem, "category")
-                }
-                className="cursor-pointer transition-all duration-300 h-36 bg-white border-beige-300 shadow-md hover:shadow-xl hover:-translate-y-1 hover:bg-beige-50"
-              >
-                <CardContent className="flex flex-col items-center justify-center p-8 h-full">
-                  <categoryItem.icon className="w-16 h-16 mb-4 text-brown-700" />
-                  <span className="font-semibold text-lg text-brown-800">{categoryItem.label}</span>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Video Section */}
-      <VideoSection />
 
       {/* Featured Products Section - Brown-Beige Theme */}
       <section className="py-12 sm:py-16 bg-beige-100">
@@ -476,6 +436,38 @@ function ShoppingHome() {
                 </button>
               </>
             )}
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Vinora Section */}
+      <CustomerAssurance />
+
+      {/* Video Section */}
+      <VideoSection />
+
+      {/* Categories Section - Elegant Brown-Beige Theme */}
+      <section className="py-12 sm:py-16 bg-gradient-to-r from-beige-700 via-beige-600 to-beige-700">
+        <div className="container mx-auto px-4 sm:px-6">
+          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8 sm:mb-12 text-beige-100 tracking-tight">
+            Shop by Category
+          </h2>
+          {/* Always Horizontal Scroll for all devices */}
+          <div className="flex gap-4 sm:gap-6 overflow-x-auto pb-4 scrollbar-hide">
+            {categoriesWithIcon.map((categoryItem) => (
+              <Card
+                key={categoryItem.id}
+                onClick={() =>
+                  handleNavigateToListingPage(categoryItem, "category")
+                }
+                className="cursor-pointer transition-all duration-300 flex-shrink-0 w-36 h-32 sm:w-44 sm:h-40 bg-white border-beige-300 shadow-md hover:shadow-xl hover:-translate-y-1 hover:bg-beige-50"
+              >
+                <CardContent className="flex flex-col items-center justify-center p-4 sm:p-6 h-full">
+                  <categoryItem.icon className="w-10 h-10 sm:w-14 sm:h-14 mb-3 sm:mb-4 text-brown-700" />
+                  <span className="font-semibold text-sm sm:text-base text-center leading-tight text-brown-800">{categoryItem.label}</span>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>

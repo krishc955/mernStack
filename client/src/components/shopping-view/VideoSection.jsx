@@ -70,7 +70,7 @@ const VideoSection = () => {
       display: flex;
       flex-direction: column;
       gap: 12px;
-      max-width: 245px;
+      max-width: 210px;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     
@@ -112,14 +112,14 @@ const VideoSection = () => {
       border-radius: 14px !important;
       display: block !important;
       width: 100% !important;
-      max-width: 245px !important;
+      max-width: 210px !important;
       position: relative;
       z-index: 2;
     }
     
     .video-placeholder {
-      width: 245px;
-      height: 138px;
+      width: 210px;
+      height: 118px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -215,6 +215,36 @@ const VideoSection = () => {
       0% { background-position: -200% 0; }
       100% { background-position: 200% 0; }
     }
+    
+    /* Mobile responsive styles - keep smaller video sizes */
+    @media (max-width: 768px) {
+      .video-card {
+        max-width: 208px;
+      }
+      
+      .video-embed-raw iframe {
+        max-width: 208px !important;
+      }
+      
+      .video-placeholder {
+        width: 208px;
+        height: 117px;
+      }
+      
+      .video-error-placeholder {
+        width: 208px !important;
+        height: 117px !important;
+      }
+      
+      .loading-skeleton-video {
+        width: 208px !important;
+        height: 117px !important;
+      }
+      
+      .loading-skeleton-text {
+        width: 208px !important;
+      }
+    }
   `, []);
 
   useEffect(() => {
@@ -267,9 +297,9 @@ const VideoSection = () => {
     
     if (hasError || !htmlContent) {
       return (
-        <div style={{
-          width: '245px',
-          height: '138px',
+        <div className="video-error-placeholder" style={{
+          width: '210px',
+          height: '118px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -342,13 +372,13 @@ const VideoSection = () => {
                 flexDirection: 'column',
                 gap: '12px'
               }}>
-                <div className="loading-skeleton" style={{
-                  width: '245px',
-                  height: '138px',
+                <div className="loading-skeleton loading-skeleton-video" style={{
+                  width: '210px',
+                  height: '118px',
                   borderRadius: '16px',
                   border: '2px solid hsl(40, 20%, 90%)'
                 }} />
-                <div className="loading-skeleton" style={{
+                <div className="loading-skeleton loading-skeleton-text" style={{
                   width: '210px',
                   height: '20px',
                   borderRadius: '8px',
@@ -560,19 +590,6 @@ const VideoSection = () => {
           }}>
             Latest Videos
           </h2>
-          <p style={{
-            color: 'hsl(30, 25%, 50%)',
-            fontSize: '1.1rem',
-            marginTop: '1rem',
-            maxWidth: '600px',
-            margin: '1rem auto 0',
-            fontFamily: "'Inter', 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
-            letterSpacing: '-0.01em',
-            fontWeight: '400',
-            lineHeight: '1.6'
-          }}>
-            Discover our curated collection of engaging video content
-          </p>
         </div>
 
         {/* Horizontal scrollable video container */}
