@@ -79,6 +79,7 @@ const loginUser = async (req, res) => {
     }).json({
       success: true,
       message: "Logged in successfully",
+      token: token, // Include token in response for localStorage storage
       user: {
         email: checkUser.email,
         role: checkUser.role,
@@ -114,16 +115,25 @@ const logoutUser = (req, res) => {
 
 //auth middleware
 const authMiddleware = async (req, res, next) => {
-  // Try multiple token sources for Safari compatibility
+  // Try multiple token sources - cookies (for login flow) and Authorization header (for API calls)
   let token = req.cookies.token || req.cookies.safari_auth_token;
   
-  // Enhanced debugging for Safari issues
+  // Check Authorization header if no cookie token found
+  if (!token && req.headers.authorization) {
+    const authHeader = req.headers.authorization;
+    if (authHeader.startsWith('Bearer ')) {
+      token = authHeader.substring(7); // Remove 'Bearer ' prefix
+    }
+  }
+  
+  // Enhanced debugging
   const userAgent = req.headers['user-agent'] || '';
   const isSafari = userAgent.includes('Safari') && !userAgent.includes('Chrome');
   
   if (!token) {
-    console.log('❌ No token found in cookies');
+    console.log('❌ No token found in cookies or Authorization header');
     console.log('🍪 Available cookies:', Object.keys(req.cookies));
+    console.log('🔐 Authorization header:', req.headers.authorization ? 'Present' : 'Missing');
     console.log('🍎 Is Safari:', isSafari);
     
     return res.status(401).json({
@@ -177,19 +187,12 @@ const googleAuthSuccess = async (req, res) => {
     console.log('👤 User Object:', {
       id: user?._id,
       email: user?.email,
-      userName: user?.userName,
-      role: user?.role
+      userName: user?.userName
     });
     console.log('🍎 Safari Detection:', isSafari);
     console.log('🔍 Headers:', {
       userAgent: req.headers['user-agent'],
-      referer: req.headers['referer'],
-      origin: req.headers['origin']
-    });
-    console.log('🍪 Existing Cookies:', req.cookies);
-    console.log('🔧 Session Info:', {
-      sessionID: req.sessionID,
-      isSafari: req.session?.isSafari
+      referer: req.headers['referer']
     });
 
     if (!user) {
@@ -213,10 +216,9 @@ const googleAuthSuccess = async (req, res) => {
       { expiresIn: "60m" }
     );
 
-    console.log('🔑 JWT Token Generated - Length:', token.length);
+    console.log('🔑 JWT Token Generated');
 
     const frontendURL = process.env.CLIENT_BASE_URL || 'http://localhost:5173';
-    console.log('🌐 Frontend URL:', frontendURL);
 
     // For Safari, use URL-based token passing as primary method
     if (isSafari) {
@@ -239,8 +241,6 @@ const googleAuthSuccess = async (req, res) => {
           maxAge: 10 * 60 * 1000, // 10 minutes
           path: '/'
         });
-        
-        console.log('✅ Safari cookies set successfully');
       } catch (cookieError) {
         console.warn('⚠️ Cookie setting failed:', cookieError.message);
       }
@@ -257,7 +257,7 @@ const googleAuthSuccess = async (req, res) => {
       });
       
       const redirectURL = `${frontendURL}/shop/home?${redirectParams.toString()}`;
-      console.log('🔄 Safari URL-based redirect to:', redirectURL.substring(0, 150) + '...');
+      console.log('🔄 Safari URL-based redirect:', redirectURL.substring(0, 100) + '...');
       
       return res.redirect(redirectURL);
     } else {
@@ -272,23 +272,14 @@ const googleAuthSuccess = async (req, res) => {
         path: '/'
       });
       
-      console.log('✅ Standard cookies set successfully');
-      
       const redirectURL = `${frontendURL}/shop/home?auth=success&timestamp=${Date.now()}`;
-      console.log('🔄 Standard redirect to:', redirectURL);
+      console.log('🔄 Standard redirect:', redirectURL);
       
       return res.redirect(redirectURL);
     }
   } catch (error) {
     console.error('❌ Google OAuth Success Error:', error);
     console.error('❌ Error Stack:', error.stack);
-    console.error('❌ Request details:', {
-      user: req.user,
-      query: req.query,
-      session: req.session,
-      headers: req.headers
-    });
-    
     const frontendURL = process.env.CLIENT_BASE_URL || 'http://localhost:5173';
     res.redirect(`${frontendURL}/auth/login?error=oauth_server_error&message=${encodeURIComponent(error.message)}`);
   }

@@ -2,7 +2,6 @@ import { Outlet, useLocation } from "react-router-dom";
 import ShoppingHeader from "./header";
 import ShoppingFooter from "./footer";
 import CustomerAssurance from "./customer-assurance";
-import ShopByBrand from "./shop-by-brand";
 
 function ShoppingLayout() {
   const location = useLocation();
@@ -17,8 +16,6 @@ function ShoppingLayout() {
       </main>
       {/* customer assurance section - only on home page */}
       {isHomePage && <CustomerAssurance />}
-      {/* shop by brand section - only on home page */}
-      {isHomePage && <ShopByBrand />}
       {/* common footer */}
       <ShoppingFooter />
     </div>

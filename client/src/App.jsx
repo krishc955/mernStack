@@ -11,12 +11,12 @@ import SafariAuthHandler from "./components/auth/SafariAuthHandler";
 const AuthLayout = lazy(() => import("./components/auth/layout"));
 const AuthLogin = lazy(() => import("./pages/auth/login"));
 const AuthRegister = lazy(() => import("./pages/auth/register"));
-const SafariAuthTest = lazy(() => import("./components/auth/SafariAuthTest"));
 const AdminLayout = lazy(() => import("./components/admin-view/layout"));
 const AdminDashboard = lazy(() => import("./pages/admin-view/dashboard"));
 const AdminProducts = lazy(() => import("./pages/admin-view/products"));
 const AdminOrders = lazy(() => import("./pages/admin-view/orders"));
 const AdminFeatures = lazy(() => import("./pages/admin-view/features"));
+const AdminVideos = lazy(() => import("./pages/admin-view/videos"));
 const ShoppingLayout = lazy(() => import("./components/shopping-view/layout"));
 const ShoppingHome = lazy(() => import("./pages/shopping-view/home"));
 const ShoppingListing = lazy(() => import("./pages/shopping-view/listing"));
@@ -31,6 +31,7 @@ const FAQ = lazy(() => import("./pages/faq/index.jsx"));
 const ShippingInfo = lazy(() => import("./pages/shipping-info/index.jsx"));
 const Returns = lazy(() => import("./pages/returns/index.jsx"));
 const SizeGuide = lazy(() => import("./pages/size-guide/index.jsx"));
+const SocialMedia = lazy(() => import("./pages/social-media/index.jsx"));
 const NotFound = lazy(() => import("./pages/not-found"));
 const UnauthPage = lazy(() => import("./pages/unauth-page"));
 
@@ -84,7 +85,6 @@ function App() {
         >
           <Route path="login" element={<AuthLogin />} />
           <Route path="register" element={<AuthRegister />} />
-          <Route path="safari-test" element={<SafariAuthTest />} />
         </Route>
         <Route
           path="/admin"
@@ -98,6 +98,7 @@ function App() {
           <Route path="products" element={<AdminProducts />} />
           <Route path="orders" element={<AdminOrders />} />
           <Route path="features" element={<AdminFeatures />} />
+          <Route path="videos" element={<AdminVideos />} />
         </Route>
         <Route
           path="/shop"
@@ -135,9 +136,9 @@ function App() {
         <Route path="/size-guide" element={<ShoppingLayout />}>
           <Route index element={<SizeGuide />} />
         </Route>
-        
-        {/* Safari Authentication Diagnostics - Public Route */}
-        <Route path="/safari-auth-test" element={<SafariAuthTest />} />
+        <Route path="/social-media" element={<ShoppingLayout />}>
+          <Route index element={<SocialMedia />} />
+        </Route>
         
         <Route path="/unauth-page" element={<UnauthPage />} />
         <Route path="*" element={<NotFound />} />

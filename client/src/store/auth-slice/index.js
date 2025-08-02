@@ -105,6 +105,11 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.user = action.payload.success ? action.payload.user : null;
         state.isAuthenticated = action.payload.success;
+        
+        // Store token in localStorage for API calls
+        if (action.payload.success && action.payload.token) {
+          localStorage.setItem('vinora_auth_token', action.payload.token);
+        }
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -128,6 +133,9 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.user = null;
         state.isAuthenticated = false;
+        
+        // Clear token from localStorage
+        localStorage.removeItem('vinora_auth_token');
       });
   },
 });

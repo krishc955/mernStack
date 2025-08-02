@@ -323,3 +323,85 @@ export const addressFormControls = [
     placeholder: "Enter any additional notes",
   },
 ];
+
+export const videoFormControls = [
+  {
+    label: "Video Title",
+    name: "title",
+    componentType: "input",
+    type: "text",
+    placeholder: "Enter video title",
+  },
+  {
+    label: "Description",
+    name: "description",
+    componentType: "textarea",
+    placeholder: "Enter video description",
+  },
+  {
+    label: "Facebook Embed Code (Required)",
+    name: "embedCode",
+    componentType: "textarea",
+    placeholder: "Paste Facebook embed iframe code here - this is the primary way to display videos",
+    rows: 4,
+  },
+  {
+    label: "Video URL (Optional)",
+    name: "videoUrl",
+    componentType: "input",
+    type: "url",
+    placeholder: "Enter video URL if you have it (optional)",
+  },
+  {
+    label: "Platform",
+    name: "platform",
+    componentType: "select",
+    options: [
+      { id: "facebook", label: "Facebook" },
+      { id: "instagram", label: "Instagram" },
+      { id: "youtube", label: "YouTube" },
+    ],
+  },
+  {
+    label: "Thumbnail URL",
+    name: "thumbnail",
+    componentType: "input",
+    type: "url",
+    placeholder: "Enter thumbnail image URL (optional)",
+  },
+  {
+    label: "Category",
+    name: "category",
+    componentType: "select",
+    options: [
+      { id: "fashion", label: "Fashion" },
+      { id: "styling", label: "Styling" },
+      { id: "behind-scenes", label: "Behind Scenes" },
+      { id: "customer-stories", label: "Customer Stories" },
+      { id: "tutorials", label: "Tutorials" },
+    ],
+  },
+  {
+    label: "Tags",
+    name: "tags",
+    componentType: "input",
+    type: "text",
+    placeholder: "Enter tags separated by commas",
+  },
+  {
+    label: "Display Order",
+    name: "displayOrder",
+    componentType: "input",
+    type: "number",
+    placeholder: "Enter display order (0 = first)",
+  },
+  {
+    label: "Status",
+    name: "isActive",
+    componentType: "select",
+    options: [
+      { id: "true", label: "Active" },
+      { id: "false", label: "Inactive" },
+    ],
+  },
+];

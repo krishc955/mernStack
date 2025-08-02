@@ -17,7 +17,6 @@ console.log('✅ Passport loaded successfully');
 
 // Updated Razorpay keys - trigger restart
 const authRouter = require("./routes/auth/auth-routes");
-const safariDiagnosticsRouter = require("./routes/auth/safari-diagnostics");
 const adminProductsRouter = require("./routes/admin/products-routes");
 const adminOrderRouter = require("./routes/admin/order-routes");
 const adminAnalyticsRouter = require("./routes/admin/analytics-routes");
@@ -31,6 +30,7 @@ const shopReviewRouter = require("./routes/shop/review-routes");
 
 const commonFeatureRouter = require("./routes/common/feature-routes");
 const testRouter = require("./routes/admin/test-routes");
+const videoRouter = require("./routes/admin/video-routes");
 
 //create a database connection -> u can also
 //create a separate file for this and then import/use that file here
@@ -113,11 +113,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use("/api/auth", authRouter);
-app.use("/api/diagnostics", safariDiagnosticsRouter);
 app.use("/api/admin/products", adminProductsRouter);
 app.use("/api/admin/orders", adminOrderRouter);
 app.use("/api/admin/analytics", adminAnalyticsRouter);
 app.use("/api/admin/test", testRouter);
+app.use("/api", videoRouter);
 
 app.use("/api/shop/products", shopProductsRouter);
 app.use("/api/shop/cart", shopCartRouter);

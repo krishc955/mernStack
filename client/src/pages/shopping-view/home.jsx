@@ -25,6 +25,7 @@ import { useNavigate } from "react-router-dom";
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import { useToast } from "@/components/ui/use-toast";
 import ProductDetailsDialog from "@/components/shopping-view/product-details";
+import VideoSection from "@/components/shopping-view/VideoSection";
 import { getFeatureImages } from "@/store/common-slice";
 
 const categoriesWithIcon = [
@@ -407,6 +408,9 @@ function ShoppingHome() {
           </div>
         </div>
       </section>
+
+      {/* Video Section */}
+      <VideoSection />
 
       {/* Featured Products Section - Brown-Beige Theme */}
       <section className="py-12 sm:py-16 bg-beige-100">
