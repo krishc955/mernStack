@@ -367,7 +367,7 @@ const VideosPage = () => {
     <div style={{
       minHeight: '100vh',
       background: 'linear-gradient(135deg, hsl(42, 25%, 98%) 0%, hsl(40, 30%, 96%) 50%, hsl(42, 25%, 98%) 100%)',
-      paddingTop: '2rem',
+      paddingTop: '0',
       paddingBottom: '4rem'
     }}>
       <div style={{
@@ -376,7 +376,7 @@ const VideosPage = () => {
         padding: '0 min(20px, 2vw)'
       }}>
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: '0' }}>
           <h1 style={{
             fontSize: 'clamp(2rem, 5vw, 3rem)',
             fontWeight: '600',
@@ -387,26 +387,14 @@ const VideosPage = () => {
           }}>
             Video Gallery
           </h1>
-          <p style={{
-            color: 'hsl(30, 25%, 50%)',
-            fontSize: '1.2rem',
-            maxWidth: '600px',
-            margin: '0 auto',
-            fontFamily: "'Inter', 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
-            letterSpacing: '-0.01em',
-            fontWeight: '400',
-            lineHeight: '1.6'
-          }}>
-            Explore our complete collection of videos showcasing fashion, styling tips, and behind-the-scenes content
-          </p>
         </div>
 
         {/* Loading State */}
         {isLoading && (
           <div className="video-grid" style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
-            gap: '0.75rem',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))',
+            gap: '1.5rem',
             marginBottom: '2rem'
           }}>
             {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -542,8 +530,8 @@ const VideosPage = () => {
           <>
             <div className="video-grid" style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
-              gap: '0.75rem',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))',
+              gap: '1.5rem',
               marginBottom: '2rem'
             }}>
               {videos.map((video, index) => (

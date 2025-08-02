@@ -418,15 +418,30 @@ function ShoppingHome() {
           <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8 sm:mb-12 text-brown-800 tracking-tight">
             Featured Products
           </h2>
-          {/* Always horizontal scroll on all screen sizes with navigation arrows */}
-          <div className="relative group">
+          {/* Mobile: 2 column grid, Tablet: 3 column grid, Desktop: horizontal scroll */}
+          <div className="block md:hidden">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+              {featuredProducts && featuredProducts.length > 0
+                ? featuredProducts.slice(0, 6).map((productItem) => (
+                    <div key={productItem._id} className="w-full">
+                      <ShoppingProductTile
+                        handleGetProductDetails={handleGetProductDetails}
+                        product={productItem}
+                      />
+                    </div>
+                  ))
+                : null}
+            </div>
+          </div>
+          {/* Desktop: horizontal scroll with navigation arrows */}
+          <div className="hidden md:block relative group">
             <div 
               id="featured-products-scroll" 
-              className="flex gap-4 sm:gap-6 overflow-x-auto pb-4 scrollbar-hide scroll-smooth"
+              className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide scroll-smooth"
             >
               {featuredProducts && featuredProducts.length > 0
                 ? featuredProducts.map((productItem) => (
-                    <div key={productItem._id} className="flex-shrink-0 w-72 sm:w-80">
+                    <div key={productItem._id} className="flex-shrink-0 w-80">
                       <ShoppingProductTile
                         handleGetProductDetails={handleGetProductDetails}
                         product={productItem}
